@@ -27,20 +27,31 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    other_data : [
-        {
-            type : mongoose.Schema.ObjectId,
-            default : ""
-        }
-    ],
     forgot_Password_otp: {
         type: String,
         default: ""
     },
     forgot_Password_expiry: {
         type: Date,
-        default: ""
+        default: null
+    },
+    curr_participant_info: {
+        type: Array,
+        default: []
+    },
+    old_participant_info: {
+        type: Array,
+        default: []
+    },
+    participate_count: {
+        type: Number,
+        default: 0
+    },
+    host_count: {
+        type: Number,
+        default: 0
     }
+
 }, {
     timestamps: true
 })

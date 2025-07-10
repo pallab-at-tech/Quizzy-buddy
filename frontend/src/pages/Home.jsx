@@ -3,7 +3,7 @@ import { IoStar } from "react-icons/io5";
 import backimg1 from "../assets/q2-edit.png"
 import backimg2 from "../assets/q3-edit.png"
 import { PiShootingStarFill } from "react-icons/pi";
-import { GiCrownOfThorns } from "react-icons/gi";
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     return (
@@ -15,10 +15,10 @@ const Home = () => {
                     <ul className='grid grid-cols-[1fr_200px_200px] py-4'>
                         <li>Logo</li>
                         <li>
-                            <button className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign Up</button>
+                            <Link to={"/sign-up"}  className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign Up</Link>
                         </li>
                         <li>
-                            <button className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign in</button>
+                            <Link to={"/sign-in"} className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign in</Link>
                         </li>
                     </ul>
                 </div>
@@ -57,7 +57,7 @@ const Home = () => {
 
                 <div className='w-full flex items-center flex-col text-[#000415]'>
                     <h1 className='font-bold text-[80px] relative top-[50px] right-[55px]'>Welcome to ,</h1>
-                    <h1 className='text-[80px] font-bold flex items-center'>Quizzy budd <h1 className='text-[110px] font-semibold'>y</h1> </h1>
+                    <div className='text-[80px] font-bold flex items-center'>Quizzy budd <p className='text-[110px] font-semibold'>y</p> </div>
                     <h1 className='relative top-[-33px] right-[-60px] text-[#06187e] font-semibold text-lg'>
                         "Where Challenge. Learn. Repeat."
                     </h1>

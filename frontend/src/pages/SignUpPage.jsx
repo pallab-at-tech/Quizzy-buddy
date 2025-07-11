@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import SummaryApi from '../common/SumarryApi'
+import Axios from '../utils/Axios'
 
 const SignUpPage = () => {
     const [data, setData] = useState({
@@ -11,10 +14,7 @@ const SignUpPage = () => {
     })
 
     const valid = Object.values(data).every(el => el)
-
     const navigate = useNavigate()
-    const location = useLocation()
-
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -28,17 +28,60 @@ const SignUpPage = () => {
         })
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+
+        if (data.password !== data.confirmPassword) {
+            toast.error("password and confirm password must be same")
+            return
+        }
+
+        try {
+
+            const response = await Axios({
+                ...SummaryApi.register,
+                data: data
+            })
+
+
+            if (response.data.error) {
+                toast.error(response?.data?.message)
+            }
+
+            if (response.data.success) {
+                toast.success(response?.data?.message)
+
+                setData({
+                    name: "",
+                    email: "",
+                    password: "",
+                    confirmPassword: ""
+                })
+
+                navigate("/sign-in")
+            }
+
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.message
+            )
+        }
+    }
+
+
+
     return (
         <section className='min-w-screen max-w-screen min-h-screen max-h-screen grid lg:grid-cols-[70%_1fr] bg-[#e1dede] overflow-hidden'>
 
             <div className={`md:px-0 px-8 md:-mt-0 -mt-[150px]`}>
-                <form className={`flex flex-col items-center justify-center h-full w-full gap-1`}>
+                <form className={`flex flex-col items-center justify-center h-full w-full gap-1`} onSubmit={handleSubmit}>
 
                     <h1 className='md:text-3xl text-2xl font-bold text-[#000727] my-2'>Welcome</h1>
 
                     <div className='group'>
                         <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Name : </p>
-                        <input type="email" onChange={handleChange} name='name' value={data.name} required className='bg-[#b2b8de] rounded md:w-[320px] w-[250px] h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
+                        <input type="text" onChange={handleChange} name='name' value={data.name} required className='bg-[#b2b8de] rounded md:w-[320px] w-[250px] h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
                     </div>
 
 
@@ -58,8 +101,7 @@ const SignUpPage = () => {
                     </div>
 
                     <div className='flex flex-col gap-1'>
-                        <button disabled={!valid} className={`p-2  md:w-[320px] w-[250px] bg-[#1c45a4] text-[#d1cece]  mt-2 rounded  font-semibold`}>sign up</button>
-                        <Link className='text-[#000727] text-sm pr-6'>Forgot Password ?</Link>
+                        <button className={`p-2  md:w-[320px] w-[250px] bg-[#1c45a4] text-[#d1cece]  mt-2 rounded  font-semibold cursor-pointer`}>sign up</button>
 
                         <div className='lg:hidden flex text-sm gap-1'>
                             <p className='text-[#1c45a4]'>Already have account ?</p>

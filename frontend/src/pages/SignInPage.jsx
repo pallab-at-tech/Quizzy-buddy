@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import Axios from '../utils/Axios'
+import SummaryApi from '../common/SumarryApi'
+import toast from 'react-hot-toast'
 
 const SignInPage = () => {
 
@@ -12,9 +15,6 @@ const SignInPage = () => {
 
 
     const navigate = useNavigate()
-    const location = useLocation()
-
-
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -28,10 +28,45 @@ const SignInPage = () => {
         })
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+
+            const response = await Axios({
+                ...SummaryApi.login,
+                data: data
+            })
+
+            if (response?.data?.error) {
+                toast.error(response?.data?.message)
+            }
+
+            if (response?.data?.success) {
+
+                toast.success(response?.data?.message)
+                localStorage.setItem('accesstoken', response.data.data.accessToken)
+                localStorage.setItem('refreshToken', response.data.data.refreshToken)
+
+                setData({
+                    email: "",
+                    password: ""
+                })
+
+                navigate("/")
+            }
+
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.message
+            )
+        }
+    }
+
 
 
     return (
-        <section className={`min-w-screen max-w-screen min-h-screen max-h-screen grid lg:grid-cols-[30%_1fr] bg-[#e1dede] overflow-hidden`}>
+        <section className={` min-w-screen max-w-screen min-h-screen max-h-screen grid lg:grid-cols-[30%_1fr] bg-[#e1dede] overflow-hidden`}>
 
             <div className={`lg:flex hidden w-full rounded-r-2xl bg-[#1c45a4]  flex-col justify-around px-16 items-center`}>
 
@@ -47,7 +82,7 @@ const SignInPage = () => {
 
 
             <div className={`md:px-0 px-8 md:-mt-0 -mt-[150px]`}>
-                <form className={`flex flex-col items-center justify-center h-full w-full gap-1`}>
+                <form className={`flex flex-col items-center justify-center h-full w-full gap-1`} onSubmit={handleSubmit}>
 
                     <h1 className='md:text-3xl text-2xl font-bold text-[#000727] my-2'>Welcome Your Account</h1>
 
@@ -65,7 +100,7 @@ const SignInPage = () => {
 
                     <div className='flex flex-col gap-1'>
                         <button disabled={!valid} className={`p-2  md:w-[320px] w-[250px] bg-[#1c45a4] text-[#d1cece]  mt-2 rounded  font-semibold`}>Login</button>
-                        <Link className='text-[#1c45a4] text-sm pr-6'>Forgot Password ?</Link>
+                        <Link to={"/forgot-password"} className='text-[#1c45a4] text-sm pr-6'>Forgot Password ?</Link>
 
                         <div className='lg:hidden flex text-sm gap-1'>
                             <p className='text-[#1c45a4]'>Don't have account ?</p>
@@ -79,8 +114,6 @@ const SignInPage = () => {
 
 
             </div>
-
-
 
         </section>
     )

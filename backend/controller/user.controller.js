@@ -429,3 +429,25 @@ export const userRefressingTokenController = async (request, response) => {
     }
 }
 
+export const userDetailsController = async(request , response) =>{
+    try {
+
+        const userId = request.userId
+        const userData = await userModel.findById(userId).select("-password -refresh_token -forgot_Password_otp -forgot_Password_expiry")
+
+        return response.json({
+            message : 'user Details',
+            data : userData,
+            error : false,
+            success : true
+        })
+        
+    } catch (error) {
+        return response.status(400).json({
+            message : error.message || error,
+            success : false,
+            error : true
+        })
+    }
+}
+

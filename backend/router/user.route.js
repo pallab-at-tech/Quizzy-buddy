@@ -1,5 +1,5 @@
 import express from 'express'
-import { userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userResetPasswordController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
+import { userDetailsController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userResetPasswordController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
 import auth from '../middleware/auth.js'
 
 const userRouter = express()
@@ -11,5 +11,6 @@ userRouter.put("/forgot-password",userForgotPassword)
 userRouter.put("/verify-forgot-password",userVerifyForgotPasswordController)
 userRouter.put("/reset-password" ,userResetPasswordController)
 userRouter.post("/refresh-token",userRefressingTokenController)
+userRouter.get("/user-details",auth,userDetailsController)
 
 export default userRouter

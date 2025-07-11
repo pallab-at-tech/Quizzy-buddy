@@ -44,7 +44,7 @@ Axios.interceptors.response.use(
                 }
 
                 localStorage.clear();
-                window.location.href = "/SignIn";
+                window.location.href = "/sign-in";
             }
 
         }

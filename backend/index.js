@@ -24,15 +24,17 @@ app.use(helmet({
 }))
 
 
-// api end point
 
-app.use("/api", userRouter)
 
 app.get("/", (req, res) => {
     return res.json({
         message: "hey , there i am about to start..."
     })
 })
+
+// api end point
+
+app.use("/api", userRouter)
 
 
 const PORT = 8080 || process.env.PORT

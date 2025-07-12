@@ -90,13 +90,13 @@ const Home = () => {
 
                     </div>
                 ) : (
-                    <div className='bg-[#fcfcfc] min-h-screen min-w-screen'>
+                    <div className='bg-[#fcfcfc] min-h-screen'>
 
-                        <div className='grid lg:grid-cols-[60%_40%] lg:px-0  pt-16'>
+                        <div className='grid lg:grid-cols-[55%_45%] lg:px-0 md:px-14  lg:pt-16 md:pt-12 pt-8'>
 
                             <div className='hidden flex-col items-center justify-center pt-[60px] px-[22%] lg:flex'>
                                 <div>
-                                    <p className='text-5xl font-bold flex gap-2.5'>
+                                    <p className='text-5xl font-bold flex flex-wrap gap-2.5'>
                                         <p className='text-[#1633ff]'>Challenge</p>
                                         <p>Your Mind</p>
                                     </p>
@@ -114,11 +114,11 @@ const Home = () => {
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
-                                    <div className='grid md:grid-cols-[30%_70%] grid-cols-2 bg-[#ff6900d9] pt-2 pl-2 rounded-xl overflow-hidden relative'>
+                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#ff6900d9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
                                         <div className='flex flex-col'>
                                             <h1 className='font-bold text-xl'>Practice</h1>
-                                            <div className='text-sm md:font-semibold'>
+                                            <div className='text-sm font-semibold'>
                                                 <p>Refine</p>
                                                 <p>Skills Daily</p>
                                             </div>
@@ -128,7 +128,7 @@ const Home = () => {
                                         </div>
                                     </div>
 
-                                    <div className='grid md:grid-cols-[30%_70%] grid-cols-2 bg-[#11740cb9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#11740cb9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col'>
                                             <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
                                             <div className='text-sm font-semibold'>
@@ -136,28 +136,29 @@ const Home = () => {
                                                 <p>just code</p>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className='absolute bottom-0 top-0 right-0'>
                                             <img src={i1} alt="" className='h-full' />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className='grid grid-cols-2 gap-6'>
+                                <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
-                                    <div className='grid grid-cols-[30%_70%] bg-[#ff6900d9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#ff6900d9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+
                                         <div className='flex flex-col'>
-                                            <h1 className='font-bold md:text-xl text-lg'>Practice</h1>
+                                            <h1 className='font-bold text-xl'>Practice</h1>
                                             <div className='text-sm font-semibold'>
                                                 <p>Refine</p>
                                                 <p>Skills Daily</p>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className='absolute bottom-0 top-0 right-0'>
                                             <img src={i1} alt="" className='h-full' />
                                         </div>
                                     </div>
 
-                                    <div className='grid grid-cols-[30%_70%] bg-[#11740cb9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#11740cb9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col'>
                                             <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
                                             <div className='text-sm font-semibold'>
@@ -165,7 +166,7 @@ const Home = () => {
                                                 <p>just code</p>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className='absolute bottom-0 top-0 right-0'>
                                             <img src={i1} alt="" className='h-full' />
                                         </div>
                                     </div>

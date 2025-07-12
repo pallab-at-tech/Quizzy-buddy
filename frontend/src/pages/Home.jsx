@@ -5,6 +5,7 @@ import backimg2 from "../assets/q3-edit.png"
 import { PiShootingStarFill } from "react-icons/pi";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import i1 from "../assets/i1.png"
 
 const Home = () => {
 
@@ -12,7 +13,7 @@ const Home = () => {
 
     console.log("From home page user", user)
     return (
-        <section >
+        <section className='w-full'>
 
             {
                 !user?._id ? (
@@ -89,7 +90,89 @@ const Home = () => {
 
                     </div>
                 ) : (
-                    <div>
+                    <div className='bg-[#fcfcfc] min-h-screen min-w-screen'>
+
+                        <div className='grid lg:grid-cols-[60%_40%] lg:px-0  pt-16'>
+
+                            <div className='hidden flex-col items-center justify-center pt-[60px] px-[22%] lg:flex'>
+                                <div>
+                                    <p className='text-5xl font-bold flex gap-2.5'>
+                                        <p className='text-[#1633ff]'>Challenge</p>
+                                        <p>Your Mind</p>
+                                    </p>
+                                    <p className='text-base pt-3.5 break-words text-[#01062b9f]'>Challenge yourself with engaging quizzes, earn points, and climb the leaderboard and become the ultimate champion.</p>
+
+
+                                    <div className='mt-16'>
+                                        <p className='font-semibold text-xl'>LeaderBoard</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className='flex flex-col justify-center w-full gap-4 md:px-6 px-3'>
+
+                                <div className='grid grid-cols-2 md:gap-6 gap-4'>
+
+                                    <div className='grid md:grid-cols-[30%_70%] grid-cols-2 bg-[#ff6900d9] pt-2 pl-2 rounded-xl overflow-hidden relative'>
+
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold text-xl'>Practice</h1>
+                                            <div className='text-sm md:font-semibold'>
+                                                <p>Refine</p>
+                                                <p>Skills Daily</p>
+                                            </div>
+                                        </div>
+                                        <div className='absolute bottom-0 top-0 right-0'>
+                                            <img src={i1} alt="" className='h-full' />
+                                        </div>
+                                    </div>
+
+                                    <div className='grid md:grid-cols-[30%_70%] grid-cols-2 bg-[#11740cb9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
+                                            <div className='text-sm font-semibold'>
+                                                <p>Enter</p>
+                                                <p>just code</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <img src={i1} alt="" className='h-full' />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='grid grid-cols-2 gap-6'>
+
+                                    <div className='grid grid-cols-[30%_70%] bg-[#ff6900d9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold md:text-xl text-lg'>Practice</h1>
+                                            <div className='text-sm font-semibold'>
+                                                <p>Refine</p>
+                                                <p>Skills Daily</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <img src={i1} alt="" className='h-full' />
+                                        </div>
+                                    </div>
+
+                                    <div className='grid grid-cols-[30%_70%] bg-[#11740cb9] pt-2 pl-2 rounded-xl overflow-hidden'>
+                                        <div className='flex flex-col'>
+                                            <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
+                                            <div className='text-sm font-semibold'>
+                                                <p>Enter</p>
+                                                <p>just code</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <img src={i1} alt="" className='h-full' />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
 
                     </div>
                 )

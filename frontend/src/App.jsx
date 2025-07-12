@@ -10,6 +10,7 @@ import { setUserDetails } from './store/userSlice'
 function App() {
 
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
 
 
   const fetchUser = async () => {
@@ -28,7 +29,9 @@ function App() {
   return (
     <>
 
-      {/* <Header /> */}
+      {
+        user?._id && <Header />
+      }
       <Home />
       {/* <Footer/> */}
 

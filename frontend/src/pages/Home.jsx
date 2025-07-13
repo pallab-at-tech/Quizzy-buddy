@@ -100,10 +100,10 @@ const Home = () => {
 
                             <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[22%] px-3'>
                                 <div>
-                                    <p className='md:text-5xl text-3xl font-bold flex flex-wrap gap-2.5'>
+                                    <div className='md:text-5xl text-3xl font-bold flex flex-wrap gap-2.5'>
                                         <p className='text-[#1633ff]'>Challenge</p>
                                         <p>Your Mind</p>
-                                    </p>
+                                    </div>
                                     <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:block hidden'>
                                         Challenge yourself with engaging quizzes, earn points, and climb the leaderboard and become the ultimate champion.
                                     </p>

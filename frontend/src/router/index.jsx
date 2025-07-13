@@ -5,35 +5,56 @@ import SignUpPage from '../pages/SignUpPage';
 import ForgotPassword from '../pages/ForgotPassword';
 import OtpVerificationpage from '../pages/OtpVerificationpage';
 import ResetPassword from '../pages/ResetPassword';
+import Dashboard from '../Layout/Dashboard';
+import Profile from '../Layout/Profile';
+import Home from '../pages/Home';
 
 
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />
+        element: <App />,
+
+        children: [
+            {
+                index : true,
+                element : <Home/>
+            },
+            {
+                path: "/dashboard/:user",
+                element: <Dashboard />,
+
+                children: [
+                    {
+                        index: true,
+                        element: <Profile />
+                    },
+                ]
+            }
+
+        ]
     },
     {
-        path : "/sign-in",
-        element : <SignInPage/>
+        path: "/sign-in",
+        element: <SignInPage />
     },
     {
-        path : "/sign-up",
-        element : <SignUpPage/>
+        path: "/sign-up",
+        element: <SignUpPage />
     },
     {
-        path : "/forgot-password",
-        element : <ForgotPassword/>
+        path: "/forgot-password",
+        element: <ForgotPassword />
     },
     {
-        path : "/otp-verfication",
-        element : <OtpVerificationpage/>
+        path: "/otp-verfication",
+        element: <OtpVerificationpage />
     },
     {
-        path : "/reset-password",
-        element : <ResetPassword/>
-    }
-    
+        path: "/reset-password",
+        element: <ResetPassword />
+    },
 ]);
 
 export default router

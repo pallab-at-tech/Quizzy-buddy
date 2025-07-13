@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import './App.css'
 import Footer from './components/Footer'
 import Header from './components/Header'
+import { Outlet } from 'react-router-dom'
 import Home from './pages/Home'
 import fetchUserDetails from './utils/FetchUserDetails'
 import { useDispatch, useSelector } from 'react-redux'
@@ -32,7 +33,12 @@ function App() {
       {
         user?._id && <Header />
       }
-      <Home />
+
+      {
+        <Outlet/>
+      }
+
+      {/* <Home /> */}
       {/* <Footer/> */}
 
     </>

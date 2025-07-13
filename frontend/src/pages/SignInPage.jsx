@@ -48,6 +48,8 @@ const SignInPage = () => {
                 localStorage.setItem('accesstoken', response.data.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.data.refreshToken)
 
+                localStorage.setItem('login',true)
+
                 setData({
                     email: "",
                     password: ""

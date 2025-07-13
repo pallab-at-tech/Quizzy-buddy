@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IoStar } from "react-icons/io5";
 import backimg1 from "../assets/q2-edit.png"
 import backimg2 from "../assets/q3-edit.png"
@@ -6,12 +6,16 @@ import { PiShootingStarFill } from "react-icons/pi";
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import i1 from "../assets/i1.png"
+import i2 from "../assets/i2.png"
+import i3 from "../assets/i3.png"
+import i4 from "../assets/i4.png"
 
 const Home = () => {
 
     const user = useSelector(state => state.user)
 
     console.log("From home page user", user)
+
     return (
         <section className='w-full'>
 
@@ -92,84 +96,90 @@ const Home = () => {
                 ) : (
                     <div className='bg-[#fcfcfc] min-h-screen'>
 
-                        <div className='grid lg:grid-cols-[55%_45%] lg:px-0 md:px-14  lg:pt-16 md:pt-12 pt-8'>
+                        <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-16 '>
 
-                            <div className='hidden flex-col items-center justify-center pt-[60px] px-[22%] lg:flex'>
+                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[22%] px-3'>
                                 <div>
-                                    <p className='text-5xl font-bold flex flex-wrap gap-2.5'>
+                                    <p className='md:text-5xl text-3xl font-bold flex flex-wrap gap-2.5'>
                                         <p className='text-[#1633ff]'>Challenge</p>
                                         <p>Your Mind</p>
                                     </p>
-                                    <p className='text-base pt-3.5 break-words text-[#01062b9f]'>Challenge yourself with engaging quizzes, earn points, and climb the leaderboard and become the ultimate champion.</p>
+                                    <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:block hidden'>
+                                        Challenge yourself with engaging quizzes, earn points, and climb the leaderboard and become the ultimate champion.
+                                    </p>
+
+                                    <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:hidden block'>
+                                        Challenge yourself with engaging quizzes, earn points, and climb the leaderboard.
+                                    </p>
 
 
-                                    <div className='mt-16'>
-                                        <p className='font-semibold text-xl'>LeaderBoard</p>
+                                    <div className='md:mt-10 mt-8'>
+                                        <p className='font-semibold text-xl lg:block hidden'>LeaderBoard</p>
                                     </div>
                                 </div>
 
                             </div>
 
-                            <div className='flex flex-col justify-center w-full gap-4 md:px-6 px-3'>
+                            <div className='flex flex-col justify-center w-full gap-4  px-3 '>
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
-                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#ff6900d9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
-                                        <div className='flex flex-col'>
+                                        <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold text-xl'>Practice</h1>
-                                            <div className='text-sm font-semibold'>
+                                            <div className='text-sm md:font-semibold font-medium '>
                                                 <p>Refine</p>
                                                 <p>Skills Daily</p>
                                             </div>
                                         </div>
-                                        <div className='absolute bottom-0 top-0 right-0'>
-                                            <img src={i1} alt="" className='h-full' />
+                                        <div className='absolute bottom-0 top-0 -right-2 z-0'>
+                                            <img src={i4} alt="" className='md:h-[150px] h-[100px] transform scale-x-[-1] opacity-[90%]' />
                                         </div>
-                                    </div>
+                                    </Link>
 
-                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#11740cb9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
-                                        <div className='flex flex-col'>
+                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#10b107] pt-2 pl-3 rounded-xl overflow-hidden relative  md:min-h-[130px] min-h-[100px]'>
+                                        <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
-                                            <div className='text-sm font-semibold'>
+                                            <div className='text-sm md:font-semibold font-medium'>
                                                 <p>Enter</p>
                                                 <p>just code</p>
                                             </div>
                                         </div>
-                                        <div className='absolute bottom-0 top-0 right-0'>
-                                            <img src={i1} alt="" className='h-full' />
+                                        <div className='absolute bottom-0 top-0 right-0 z-0'>
+                                            <img src={i2} alt="" className='md:h-[240px] h-[150px] transform scale-x-[-1]' />
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
-                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#ff6900d9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#0073ffd9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
-                                        <div className='flex flex-col'>
-                                            <h1 className='font-bold text-xl'>Practice</h1>
-                                            <div className='text-sm font-semibold'>
-                                                <p>Refine</p>
-                                                <p>Skills Daily</p>
+                                        <div className='flex flex-col relative z-10'>
+                                            <h1 className='font-bold text-xl'>Host</h1>
+                                            <div className='text-sm md:font-semibold font-medium '>
+                                                <p>Rise</p>
+                                                <p>through rank</p>
                                             </div>
                                         </div>
-                                        <div className='absolute bottom-0 top-0 right-0'>
-                                            <img src={i1} alt="" className='h-full' />
+                                        <div className='absolute bottom-1  right-0 z-0  top-4'>
+                                            <img src={i1} alt="" className='md:h-[120px] h-[70px] opacity-[90%]' />
                                         </div>
-                                    </div>
+                                    </Link>
 
-                                    <div className='grid lg:grid-cols-[30%_70%]  bg-[#11740cb9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
-                                        <div className='flex flex-col'>
-                                            <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
-                                            <div className='text-sm font-semibold'>
-                                                <p>Enter</p>
-                                                <p>just code</p>
+                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#79b716] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                        <div className='flex flex-col relative z-10'>
+                                            <h1 className='font-bold md:text-xl text-lg'>Explore</h1>
+                                            <div className='text-sm md:font-semibold font-medium'>
+                                                <p>Battle</p>
+                                                <p>for excellance</p>
                                             </div>
                                         </div>
-                                        <div className='absolute bottom-0 top-0 right-0'>
-                                            <img src={i1} alt="" className='h-full' />
+                                        <div className='absolute bottom-0 top-0 right-0 z-0'>
+                                            <img src={i3} alt="" className='md:h-[220px] h-full' />
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
 

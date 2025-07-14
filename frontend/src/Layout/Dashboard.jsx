@@ -13,7 +13,7 @@ const Dashboard = () => {
   return (
     <section className='bg-[#fcfcfc] grid grid-cols-[20%_1fr]'>
 
-      <div className='bg-[#fcfcfc] min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] border-r border-[#c8c3c3] shadow-md p-6'>
+      <div className='hidden lg:block bg-[#fcfcfc] min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] border-r border-[#c8c3c3] shadow-md p-6'>
 
         {/* profile */}
         <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>
@@ -70,7 +70,7 @@ const Dashboard = () => {
 
       </div>
 
-      <div className='bg-[#fcfcfc] min-h-[200vh]'>
+      <div className='bg-[#fcfcfc]'>
         {
           <Outlet />
         }

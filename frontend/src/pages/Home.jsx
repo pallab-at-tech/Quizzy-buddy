@@ -94,7 +94,7 @@ const Home = () => {
 
                     </div>
                 ) : (
-                    <div className='bg-[#fcfcfc] min-h-screen'>
+                    <div className='bg-[#fcfcfc] min-h-screen lg:pr-[100px]'>
 
                         <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-16 '>
 
@@ -120,7 +120,7 @@ const Home = () => {
 
                             </div>
 
-                            <div className='flex flex-col justify-center w-full gap-4  px-3 '>
+                            <div className='flex flex-col justify-center  w-full gap-4  px-3 '>
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 

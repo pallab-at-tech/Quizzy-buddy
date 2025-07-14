@@ -24,44 +24,48 @@ const Dashboard = () => {
 
           <div className='text-sm'>
             <p className='max-w-[22ch] break-all line-clamp-1 font-semibold'>{user?.name}</p>
-            <p className='max-w-[22ch] break-all line-clamp-1'>{user?.email}</p>
+            <p className='max-w-[22ch] break-all line-clamp-1 text-[#00085b] font-normal'>{user?.email}</p>
           </div>
 
         </Link>
 
 
-        <div className='mt-2'>
-          <p className='text-sm'>For Users</p>
+        <div className=''>
+          <p className='text-[11px] mt-6 mb-1 text-[rgb(236,236,244)] bg-blue-600 w-fit py-1 px-2 rounded'>For Users</p>
 
-          <div>
-            <p>Registration/Application</p>
+          <div className='flex flex-col  gap-1.5 font-semibold'>
+
+            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
+              <p className='pl-2'>Registration/Application</p>
+            </Link>
+
+            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+              <p className='pl-2'>My rounds</p>
+            </Link>
+
+            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+              <p className='pl-2'>Bookmark</p>
+            </Link>
+
+            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+              <p className='pl-2'>Achivements</p>
+            </Link>
+
           </div>
-
-          <div>
-            <p>My rounds</p>
-          </div>
-
-          <div>
-            <p>Bookmark</p>
-          </div>
-
-          <div>
-            <p>Achivements</p>
-          </div>
-
 
         </div>
 
-        <div>
-          <p className='text-sm'>For Organizers</p>
+        <div className=''>
+          <p className='text-[11px] mt-6 mb-1 text-[rgb(236,236,244)] bg-blue-600 w-fit py-1 px-2 rounded'>For Organizers</p>
 
-          <div>
-            <p>Organizer Pannel</p>
-          </div>
+          <Link className='block hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md font-semibold'>
+            <p className='pl-2'>Organizer Pannel</p>
+          </Link>
+
         </div>
 
-        <div>
-          <p>Logout</p>
+        <div className='mt-10 flex justify-center'>
+          <p className='border-2 border-blue-600 transition-all duration-150 hover:bg-blue-600 hover:text-white w-[40%] text-center py-1.5 rounded-md font-semibold cursor-pointer'>Logout</p>
         </div>
 
       </div>

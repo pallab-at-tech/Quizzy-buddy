@@ -12,7 +12,7 @@ const Header = () => {
 
 
   return (
-    <header className='min-h-[70px] sticky top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid lg:grid-cols-[60%_1fr_1fr_1fr] md:grid-cols-[50%_1fr_1fr_1fr] grid-cols-[40%_1fr_1fr] items-center '>
+    <header className='min-h-[70px] sticky z-50 top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid lg:grid-cols-[60%_1fr_1fr_1fr] md:grid-cols-[50%_1fr_1fr_1fr] grid-cols-[40%_1fr_1fr] items-center '>
 
       <Link to={"/"}>logo</Link>
 

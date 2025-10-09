@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SumarryApi'
 import toast from 'react-hot-toast'
@@ -10,9 +10,8 @@ const SignInPage = () => {
         email: "",
         password: ""
     })
-
+    const [signInLoading, setSignInLoading] = useState(false)
     const valid = Object.values(data).every(el => el)
-
 
     const navigate = useNavigate()
 
@@ -33,6 +32,8 @@ const SignInPage = () => {
 
         try {
 
+            setSignInLoading(true)
+
             const response = await Axios({
                 ...SummaryApi.login,
                 data: data
@@ -40,6 +41,7 @@ const SignInPage = () => {
 
             if (response?.data?.error) {
                 toast.error(response?.data?.message)
+                setSignInLoading(false)
             }
 
             if (response?.data?.success) {
@@ -48,12 +50,14 @@ const SignInPage = () => {
                 localStorage.setItem('accesstoken', response.data.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.data.refreshToken)
 
-                localStorage.setItem('login',true)
+                localStorage.setItem('login', true)
 
                 setData({
                     email: "",
                     password: ""
                 })
+
+                setSignInLoading(false)
 
                 navigate("/")
             }
@@ -62,62 +66,96 @@ const SignInPage = () => {
             toast.error(
                 error?.response?.data?.message
             )
+            setSignInLoading(false)
         }
     }
 
 
-
     return (
-        <section className={` min-w-screen max-w-screen min-h-screen max-h-screen grid lg:grid-cols-[30%_1fr] bg-[#e1dede] overflow-hidden`}>
+        <section className="min-h-screen grid lg:grid-cols-[35%_1fr] bg-[#e8ecf8] overflow-hidden">
 
-            <div className={`lg:flex hidden w-full rounded-r-2xl bg-[#1c45a4]  flex-col justify-around px-16 items-center`}>
-
-                <div className='text-[#e7e7e7] text-4xl font-bold text-center'>
-                    <p>Don't have an</p>
-                    <p>account ?</p>
+            {/* Left Panel */}
+            <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-b from-[#1c45a4] to-[#15327d] text-white px-10 rounded-r-3xl shadow-lg">
+                <div className="text-center space-y-2">
+                    <h2 className="text-4xl font-bold leading-tight">Don’t have an</h2>
+                    <h2 className="text-4xl font-bold leading-tight">account yet?</h2>
+                    <p className="text-sm text-gray-200 mt-2">
+                        Join us today and take your quiz experience to the next level.
+                    </p>
                 </div>
 
-                <div>
-                    <Link to={"/sign-up"} className='px-5 py-3 text-[#e7e7e7] text-base rounded-4xl border-2 font-bold border-[#e7e7e7] hover:border-none hover:bg-[#031461] hover:scale-105 hover:px-[20px] transition-all duration-150 cursor-pointer'>sign up</Link>
-                </div>
+                <Link
+                    to="/sign-up"
+                    className="mt-10 px-6 py-3 text-white text-base font-semibold border-2 border-white rounded-full hover:bg-white hover:text-[#1c45a4] hover:scale-105 transition-all duration-200 shadow-md"
+                >
+                    Sign Up
+                </Link>
             </div>
 
+            {/* Right Form Section */}
+            <div className="bg-white sm:bg-transparent flex flex-col items-center justify-center px-6 md:px-20 py-10 relative">
+                <div className="sm:bg-white rounded-2xl sm:shadow-xl py-8 px-4 md:p-10 w-full max-w-md">
+                    <h1 className="text-3xl font-extrabold text-[#1c45a4] text-center mb-6">
+                        Welcome Back 👋
+                    </h1>
 
-            <div className={`md:px-0 px-8 md:-mt-0 -mt-[150px]`}>
-                <form className={`flex flex-col items-center justify-center h-full w-full gap-1`} onSubmit={handleSubmit}>
-
-                    <h1 className='md:text-3xl text-2xl font-bold text-[#000727] my-2'>Welcome Your Account</h1>
-
-
-                    <div className='group'>
-                        <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Email : </p>
-                        <input type="email" onChange={handleChange} name='email' value={data.email} required className='bg-[#b2b8de] rounded md:w-[320px] w-[250px] h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
-                    </div>
-
-                    <div className='group'>
-                        <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Password : </p>
-                        <input type="text" onChange={handleChange} name='password' value={data.password} required className='bg-[#b2b8de] md:w-[320px] w-[250px]  h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
-                    </div>
-
-
-                    <div className='flex flex-col gap-1'>
-                        <button disabled={!valid} className={`p-2  md:w-[320px] w-[250px] bg-[#1c45a4] text-[#d1cece]  mt-2 rounded  font-semibold`}>Login</button>
-                        <Link to={"/forgot-password"} className='text-[#1c45a4] text-sm pr-6'>Forgot Password ?</Link>
-
-                        <div className='lg:hidden flex text-sm gap-1'>
-                            <p className='text-[#1c45a4]'>Don't have account ?</p>
-                            <Link to={"/sign-up"}>sign up</Link>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                        {/* Email Input */}
+                        <div className="flex flex-col text-left">
+                            <label className="font-semibold text-[#1c45a4] mb-1">Email</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={data.email}
+                                onChange={handleChange}
+                                required
+                                className="bg-[#edf1ff] border border-[#c3ccf5] focus:border-[#1c45a4] focus:ring-2 focus:ring-[#1c45a4]/30 rounded-lg px-4 py-2 text-[#100f0f] outline-none transition-all duration-200"
+                            />
                         </div>
-                    </div>
 
+                        {/* Password Input */}
+                        <div className="flex flex-col text-left">
+                            <label className="font-semibold text-[#1c45a4] mb-1">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={data.password}
+                                onChange={handleChange}
+                                required
+                                className="bg-[#edf1ff] border border-[#c3ccf5] focus:border-[#1c45a4] focus:ring-2 focus:ring-[#1c45a4]/30 rounded-lg px-4 py-2 text-[#100f0f] outline-none transition-all duration-200"
+                            />
+                        </div>
 
+                        {/* Buttons */}
+                        <button
+                            type="submit"
+                            className={`mt-2 w-full py-2.5 font-semibold text-white rounded-lg transition-all duration-200 ${!signInLoading && valid
+                                ? "bg-[#1c45a4] hover:bg-[#15327d] hover:scale-[1.02] cursor-pointer"
+                                : "bg-[#9bb4f0] cursor-not-allowed"
+                                }`}
+                        >
+                            Login
+                        </button>
 
-                </form>
-
-
+                        <div className="flex flex-wrap justify-between items-center  text-sm">
+                            <Link
+                                to="/forgot-password"
+                                className="text-[#1c45a4] hover:underline font-semibold"
+                            >
+                                Forgot Password?
+                            </Link>
+                            <div className="lg:hidden flex gap-1 text-[#1c45a4]">
+                                <p>Don’t have an account?</p>
+                                <Link to="/sign-up" className="font-bold hover:underline">
+                                    Sign Up
+                                </Link>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-
         </section>
+
     )
 }
 

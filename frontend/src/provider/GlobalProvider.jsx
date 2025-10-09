@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createContext, useContext } from "react";
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SumarryApi';
@@ -9,11 +9,13 @@ import { setUserDetails } from '../store/userSlice';
 export const GlobalContext = createContext(null)
 export const useGlobalContext = () => useContext(GlobalContext)
 
+export let setLoginGlobal = () => { }
 
 const GlobalProvider = ({ children }) => {
 
 
     const user = useSelector(state => state?.user)
+    const [isLogin, setIsLogin] = useState(localStorage.getItem("log") === "true")
     const dispatch = useDispatch()
 
     const fetchUserDetails = async () => {
@@ -34,14 +36,20 @@ const GlobalProvider = ({ children }) => {
     }
 
     useEffect(() => {
+        setLoginGlobal = setIsLogin
+    }, [setIsLogin])
+
+    useEffect(() => {
         fetchUserDetails()
     }, [])
 
-    console.log("user from global.jsx",user)
-
 
     return (
-        <GlobalContext.Provider value={{ fetchUserDetails }}>
+        <GlobalContext.Provider
+            value={{
+                fetchUserDetails,
+                isLogin
+            }}>
 
             {
                 children

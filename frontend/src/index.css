@@ -7,3 +7,19 @@
     --breakpoint-ipad_pro: 1020px;
     --breakpoint-lg_md: 950px;
 }
+
+@keyframes gradient {
+
+    0%,
+    100% {
+        background-position: left top;
+    }
+
+    50% {
+        background-position: right bottom;
+    }
+}
+
+.animate-gradient {
+    animation: gradient 8s ease infinite;
+}

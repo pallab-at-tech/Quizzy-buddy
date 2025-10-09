@@ -1,17 +1,16 @@
 import { useEffect } from 'react'
 import './App.css'
-import Footer from './components/Footer'
 import Header from './components/Header'
 import { Outlet } from 'react-router-dom'
-import Home from './pages/Home'
 import fetchUserDetails from './utils/FetchUserDetails'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setUserDetails } from './store/userSlice'
+import { useGlobalContext } from './provider/GlobalProvider'
 
 function App() {
 
   const dispatch = useDispatch()
-  const user = useSelector(state => state.user)
+  const { isLogin } = useGlobalContext()
 
 
   const fetchUser = async () => {
@@ -23,23 +22,18 @@ function App() {
     fetchUser()
   }, [])
 
-  
-  
-
+  if (isLogin === null) return null
 
   return (
     <>
 
       {
-        user?._id && <Header />
+       isLogin && <Header />
       }
 
       {
-        <Outlet/>
+        <Outlet />
       }
-
-      {/* <Home /> */}
-      {/* <Footer/> */}
 
     </>
   )

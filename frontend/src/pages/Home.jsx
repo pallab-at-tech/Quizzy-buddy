@@ -9,29 +9,34 @@ import i1 from "../assets/i1.png"
 import i2 from "../assets/i2.png"
 import i3 from "../assets/i3.png"
 import i4 from "../assets/i4.png"
+import { useGlobalContext } from '../provider/GlobalProvider';
 
 const Home = () => {
 
     const user = useSelector(state => state.user)
+    const {isLogin} = useGlobalContext()
 
     console.log("From home page user", user)
 
+    if (isLogin === null) return null;
+
     return (
         <section className='w-full'>
-{/* to-[#1546ba] */}
+            
             {
-                !user?._id ? (
-                    <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#dee8ff] to-[#3066e4] text-[#010e49]'>
+                !isLogin ? (
+                    <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
 
                         {/* Header Section */}
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>
+
                             <div className='text-xl font-bold '>
                                 <Link to="/">Quizzy Buddy</Link>
                             </div>
 
                             {/* Centered Navigation Links - Hidden on small screens */}
                             <nav className='hidden lg:flex'>
-                                <ul className='flex items-center gap-6 font-semibold'>
+                                <ul className='flex items-center gap-x-6 font-semibold'>
                                     <li><Link to="/host" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Host a Quiz</Link></li>
                                     <li><Link to="/participate" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Participate</Link></li>
                                     <li><Link to="/practice" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Practice</Link></li>
@@ -45,7 +50,7 @@ const Home = () => {
                                 <Link to="/sign-in" className='font-semibold transition-colors hover:text-[#031461] sm:block hidden'>
                                     Sign In
                                 </Link>
-                                <Link to="/sign-in" className={`rounded-lg bg-[#010e49] px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-[#031461] sm:hidden block`}>
+                                <Link to="/sign-in" className={`rounded-lg bg-[#010e49] px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-[#031461] sm:hidden block relative z-50`}>
                                     Sign In
                                 </Link>
                                 <Link to="/sign-up" className={`rounded-lg bg-[#010e49] px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-[#031461] sm:block hidden`}>

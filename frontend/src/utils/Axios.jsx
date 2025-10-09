@@ -1,9 +1,10 @@
 import axios from 'axios'
 import SummaryApi, { baseURL } from '../common/SumarryApi'
+import { setLoginGlobal } from '../provider/GlobalProvider'
 
 const Axios = axios.create({
-    baseURL : baseURL,
-    withCredentials : true
+    baseURL: baseURL,
+    withCredentials: true
 })
 
 // sending access token in the header
@@ -44,7 +45,13 @@ Axios.interceptors.response.use(
                 }
 
                 localStorage.clear();
+                localStorage.setItem("log", "false")
+                setLoginGlobal(false)
                 window.location.href = "/sign-in";
+            }
+            else {
+                localStorage.setItem("log", "false")
+                setLoginGlobal(false)
             }
 
         }
@@ -64,6 +71,8 @@ const refreshAccessToken = async (refreshToken) => {
 
         const accessToken = response.data.data.accessToken
         localStorage.setItem('accesstoken', accessToken)
+        localStorage.setItem("log", "false")
+        setLoginGlobal(false)
         return accessToken
     } catch (error) {
         console.log(error);

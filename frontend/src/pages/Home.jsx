@@ -21,7 +21,7 @@ const Home = () => {
 {/* to-[#1546ba] */}
             {
                 !user?._id ? (
-                    <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#d3e0ff] to-[#255ad6] text-[#010e49]'>
+                    <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#dee8ff] to-[#3066e4] text-[#010e49]'>
 
                         {/* Header Section */}
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>

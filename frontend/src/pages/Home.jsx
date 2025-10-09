@@ -21,11 +21,11 @@ const Home = () => {
 
             {
                 !user?._id ? (
-                    <div className='flex min-h-screen relative flex-col bg-gradient-to-b from-[#c5d4f7] to-[#1546ba] text-[#010e49]'>
+                    <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#c5d4f7] to-[#1546ba] text-[#010e49]'>
 
                         {/* Header Section */}
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>
-                            <div className='text-xl font-bold'>
+                            <div className='text-xl font-bold '>
                                 <Link to="/">Quizzy Buddy</Link>
                             </div>
 
@@ -56,7 +56,7 @@ const Home = () => {
                         </header>
 
                         {/* Main Section  */}
-                        <main className='relative flex flex-grow flex-col items-center justify-center p-4 text-center'>
+                        <main className='relative flex flex-grow flex-col items-center justify-center p-4 text-center -mt-[90px] sm:-mt-0'>
 
                             {/* Decorative background images */}
                             <div className='pointer-events-none absolute top-1/2 left-[10%] hidden -translate-y-1/2 rotate-[358deg] scale-x-[-1] opacity-40  custom-lg:block'>

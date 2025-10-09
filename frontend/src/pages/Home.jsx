@@ -21,77 +21,68 @@ const Home = () => {
 
             {
                 !user?._id ? (
-                    <div className='min-h-screen lg:block grid grid-rows-[100px_150px_1fr]  bg-gradient-to-b from-[#c5d4f7] to-[#1546ba]'>
+                    <div className='flex min-h-screen relative flex-col bg-gradient-to-b from-[#c5d4f7] to-[#1546ba] text-[#010e49]'>
 
-                        <div>
-                            <ul className='grid md:grid-cols-[1fr_200px_200px] grid-cols-3 py-6'>
-                                <li>Logo</li>
-                                <li>
-                                    <Link to={"/sign-up"} className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign Up</Link>
-                                </li>
-                                <li>
-                                    <Link to={"/sign-in"} className='px-4 py-2 text-white text-base rounded-4xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[16px] transition-all duration-150 cursor-pointer'>Sign in</Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className='md:flex grid grid-cols-2 grid-rows-2 place-items-center items-center justify-around mt-8 mb-12 text-base text-[#010e49] font-bold'>
-
-                            <div className='flex gap-1 items-center'>
-                                <div className='text-[#df6f00] '>
-                                    <IoStar size={20} />
-                                </div>
-                                <p>host your Quiz</p>
+                        {/* Header Section */}
+                        <header className='flex w-full items-center justify-between p-4 sm:p-6'>
+                            <div className='text-xl font-bold'>
+                                <Link to="/">Quizzy Buddy</Link>
                             </div>
 
-                            <div className='flex gap-1 items-center'>
-                                <div className='text-[#df6f00] '>
-                                    <IoStar size={20} />
-                                </div>
-                                <p>Particiapte Quiz</p>
+                            {/* Centered Navigation Links - Hidden on small screens */}
+                            <nav className='hidden lg:flex'>
+                                <ul className='flex items-center gap-6 font-semibold'>
+                                    <li><Link to="/host" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Host a Quiz</Link></li>
+                                    <li><Link to="/participate" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Participate</Link></li>
+                                    <li><Link to="/practice" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Practice</Link></li>
+                                    <li><Link to="/learn" className='flex items-center gap-1.5 hover:text-[#df6f00] transition-colors'><IoStar className='text-[#df6f00]' /> Earn Knowledge</Link></li>
+                                </ul>
+                            </nav>
+
+
+                            {/* Auth Buttons - Hidden on small screens */}
+                            <div className='flex items-center gap-4'>
+                                <Link to="/sign-in" className='font-semibold transition-colors hover:text-[#031461] sm:block hidden'>
+                                    Sign In
+                                </Link>
+                                <Link to="/sign-in" className={`rounded-lg bg-[#010e49] px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-[#031461] sm:hidden block`}>
+                                    Sign In
+                                </Link>
+                                <Link to="/sign-up" className={`rounded-lg bg-[#010e49] px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:bg-[#031461] sm:block hidden`}>
+                                    Sign Up
+                                </Link>
                             </div>
 
-                            <div className='flex gap-1 items-center'>
-                                <div className='text-[#df6f00] '>
-                                    <IoStar size={20} />
-                                </div>
-                                <p>Practice Quiz</p>
+                        </header>
+
+                        {/* Main Section  */}
+                        <main className='relative flex flex-grow flex-col items-center justify-center p-4 text-center'>
+
+                            {/* Decorative background images */}
+                            <div className='pointer-events-none absolute top-1/2 left-[10%] hidden -translate-y-1/2 rotate-[358deg] scale-x-[-1] opacity-40  custom-lg:block'>
+                                <img src={backimg2} alt="" className='h-auto w-64' />
+                            </div>
+                            <div className='pointer-events-none absolute top-1/2 right-[10%] hidden -translate-y-1/2 rotate-[10deg] opacity-40 custom-lg:block'>
+                                <img src={backimg1} alt="" className='h-auto w-64' />
                             </div>
 
-                            <div className='flex gap-1 items-center'>
-                                <div className='text-[#df6f00] '>
-                                    <IoStar size={20} />
-                                </div>
-                                <p>Earn knowledge</p>
-                            </div>
-
-                        </div>
-
-                        <div>
-
-                            <div className='w-full flex items-center flex-col text-[#000415]'>
-                                <h1 className='font-bold md:text-[80px] text-[45px] top-[20px] right-6 relative md:top-[50px] md:right-[55px]'>Welcome to ,</h1>
-                                <div className='md:text-[80px] text-[45px] font-bold flex items-center'>Quizzy budd <p className='md:text-[110px] font-semibold'>y</p> </div>
-                                <h1 className='relative md:top-[-33px] md:right-[-60px] text-[#06187e] font-semibold md:text-lg text-sm'>
-                                    "Where Challenge. Learn. Repeat."
+                            {/* Hero Text Content */}
+                            <div className='z-10 flex flex-col items-center'>
+                                <h1 className='text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl'>
+                                    Welcome to <span className='block'>Quizzy Buddy</span>
                                 </h1>
-                                <button className='px-3 py-3 lg:mt-0 md:mt-4 mt-6 text-white text-base rounded-2xl font-semibold bg-[#010e49] hover:bg-[#031461] hover:scale-105 hover:px-[13px] transition-all duration-150 cursor-pointer flex items-center gap-1'>
-                                    <PiShootingStarFill size={20} />
-                                    <Link to={"/sign-up"}>start journey</Link>
-                                </button>
-
+                                <p className='mt-4 max-w-md font-semibold text-[#06187e] md:text-xl'>
+                                    "Where Challenge, Learn, Repeat."
+                                </p>
+                                <Link
+                                    to="/sign-up"
+                                    className='mt-8 inline-flex items-center gap-2 rounded-xl bg-[#010e49] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-transform hover:scale-105'
+                                >
+                                    <PiShootingStarFill />
+                                    Start Journey
+                                </Link>
                             </div>
-
-                            <div className='absolute lg:block hidden top-[48%] right-[10%] opacity-[40%] rotate-[10deg]'>
-                                <img src={backimg1} alt="" className='h-[300px]' />
-                            </div>
-
-                            <div className='absolute lg:block hidden top-[48%] left-[13%] scale-x-[-1] opacity-[40%] rotate-[358deg]'>
-                                <img src={backimg2} alt="" className='h-[300px]' />
-                            </div>
-
-                        </div>
-
+                        </main>
                     </div>
                 ) : (
                     <div className='bg-[#fcfcfc] min-h-screen lg:pr-[100px]'>

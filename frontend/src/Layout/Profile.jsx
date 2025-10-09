@@ -12,7 +12,6 @@ const Profile = () => {
   return (
     <div className='pt-6 px-4 bg-[#f9f8f8] pb-0 mb-0'>
 
-
       <div className='rounded-t-xl shadow-lg min-h-[180px] max-h-[180px] overflow-hidden relative'>
 
         <div className='m-5 p-2 cursor-pointer bg-[#ffff] text-blue-600 w-fit rounded-full absolute right-0 top-0'>
@@ -70,10 +69,6 @@ const Profile = () => {
 
 
       </div>
-
-
-
-
 
     </div>
   )

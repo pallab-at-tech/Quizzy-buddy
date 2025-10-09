@@ -1,14 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import avatar from "../assets/avatar.png"
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import SummaryApi from '../common/SumarryApi'
+import Axios from '../utils/Axios'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { setLogOut } from '../store/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 
 const Dashboard = () => {
 
   const user = useSelector(state => state.user)
   const dashboardURL = `/dashboard/${user?.name?.split(' ')?.join("-")}-${user?._id}`
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [logoutLoading, setLogoutLoading] = useState(false)
+
+  const handleLogOut = async () => {
+    try {
+      setLogoutLoading(true)
+
+      const response = await Axios({
+        ...SummaryApi.logOut
+      })
+
+      const { data: responseData } = response
+
+      if (responseData.success) {
+          dispatch(setLogOut())
+          localStorage.clear()
+          toast.success(responseData?.message)
+          setLogoutLoading(false)
+          navigate("/")
+      }
+
+    } catch (error) {
+      setLogoutLoading(false)
+      console.log("handle logout", error)
+    }
+  }
 
   return (
     <section className='bg-[#fcfcfc] grid grid-cols-[20%_1fr]'>
@@ -65,7 +99,7 @@ const Dashboard = () => {
         </div>
 
         <div className='mt-10 flex justify-center'>
-          <p className='border-2 border-blue-600 transition-all duration-150 hover:bg-blue-600 hover:text-white w-[40%] text-center py-1.5 rounded-md font-semibold cursor-pointer'>Logout</p>
+          <p onClick={handleLogOut} className={`border-2 border-blue-600 transition-all duration-150 hover:bg-blue-600 hover:text-white w-[40%] text-center py-1.5 rounded-md font-semibold ${logoutLoading ? "cursor-not-allowed" : "cursor-pointer"}`}>Logout</p>
         </div>
 
       </div>

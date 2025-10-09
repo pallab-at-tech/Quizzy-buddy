@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme {
+    --breakpoint-custom-sm: 640px;
+    --breakpoint-ipad-mini: 700px;
+    --breakpoint-custom-lg: 1400px;
+    --breakpoint-ipad_pro: 1020px;
+    --breakpoint-lg_md: 950px;
+}

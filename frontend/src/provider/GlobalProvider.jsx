@@ -13,8 +13,6 @@ export let setLoginGlobal = () => { }
 
 const GlobalProvider = ({ children }) => {
 
-
-    const user = useSelector(state => state?.user)
     const [isLogin, setIsLogin] = useState(localStorage.getItem("log") === "true")
     const dispatch = useDispatch()
 
@@ -28,12 +26,30 @@ const GlobalProvider = ({ children }) => {
 
             if (responseData?.success) {
                 dispatch(setUserDetails(responseData?.data))
+                localStorage.setItem('log', 'true')
+                setIsLogin(true)
+            }
+            else {
+                localStorage.setItem('log', 'false')
+                setIsLogin(false)
             }
 
         } catch (error) {
+            localStorage.setItem('log', 'false')
+            setIsLogin(false)
             console.log("error from user details from global provider", error)
         }
     }
+
+    const loginUser = () => {
+        localStorage.setItem("log", "true");
+        setIsLogin(true);
+    };
+
+    const logoutUser = () => {
+        localStorage.removeItem("log");
+        setIsLogin(false);
+    };
 
     useEffect(() => {
         setLoginGlobal = setIsLogin
@@ -48,7 +64,9 @@ const GlobalProvider = ({ children }) => {
         <GlobalContext.Provider
             value={{
                 fetchUserDetails,
-                isLogin
+                isLogin,
+                loginUser,
+                logoutUser
             }}>
 
             {

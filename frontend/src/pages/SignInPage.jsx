@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SumarryApi'
 import toast from 'react-hot-toast'
+import { useGlobalContext } from '../provider/GlobalProvider'
 
 const SignInPage = () => {
 
@@ -12,6 +13,8 @@ const SignInPage = () => {
     })
     const [signInLoading, setSignInLoading] = useState(false)
     const valid = Object.values(data).every(el => el)
+
+    const {loginUser} = useGlobalContext()
 
     const navigate = useNavigate()
 
@@ -50,7 +53,7 @@ const SignInPage = () => {
                 localStorage.setItem('accesstoken', response.data.data.accessToken)
                 localStorage.setItem('refreshToken', response.data.data.refreshToken)
 
-                localStorage.setItem('login', true)
+                loginUser()
 
                 setData({
                     email: "",
@@ -58,7 +61,6 @@ const SignInPage = () => {
                 })
 
                 setSignInLoading(false)
-
                 navigate("/")
             }
 
@@ -69,7 +71,6 @@ const SignInPage = () => {
             setSignInLoading(false)
         }
     }
-
 
     return (
         <section className="min-h-screen grid lg:grid-cols-[35%_1fr] bg-[#e8ecf8] overflow-hidden">

@@ -9,12 +9,14 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { setLogOut } from '../store/userSlice'
 import { useNavigate } from 'react-router-dom'
+import { useGlobalContext } from '../provider/GlobalProvider'
 
 
 const Dashboard = () => {
 
   const user = useSelector(state => state.user)
   const dashboardURL = `/dashboard/${user?.name?.split(' ')?.join("-")}-${user?._id}`
+  const { logoutUser } = useGlobalContext()
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -31,11 +33,12 @@ const Dashboard = () => {
       const { data: responseData } = response
 
       if (responseData.success) {
-          dispatch(setLogOut())
-          localStorage.clear()
-          toast.success(responseData?.message)
-          setLogoutLoading(false)
-          navigate("/")
+        dispatch(setLogOut())
+        localStorage.clear()
+        toast.success(responseData?.message)
+        setLogoutLoading(false)
+        logoutUser()
+        navigate("/")
       }
 
     } catch (error) {

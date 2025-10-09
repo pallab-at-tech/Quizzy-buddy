@@ -71,7 +71,7 @@ const refreshAccessToken = async (refreshToken) => {
 
         const accessToken = response.data.data.accessToken
         localStorage.setItem('accesstoken', accessToken)
-        localStorage.setItem("log", "false")
+        localStorage.setItem("log", "true")
         setLoginGlobal(false)
         return accessToken
     } catch (error) {

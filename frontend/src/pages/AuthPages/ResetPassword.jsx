@@ -10,7 +10,8 @@ const ResetPassword = () => {
         newPassword: "",
         confirmPassword: ""
     })
-    
+
+    const [loading, setLoading] = useState(false)
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -36,6 +37,8 @@ const ResetPassword = () => {
 
         try {
 
+            setLoading(true)
+
             const response = await Axios({
                 ...SummaryApi.reset_password,
                 data: {
@@ -47,6 +50,7 @@ const ResetPassword = () => {
 
             if (response.data.error) {
                 toast.error(response?.data?.message)
+                setLoading(false)
             }
 
             if (response.data.success) {
@@ -58,8 +62,10 @@ const ResetPassword = () => {
                 })
 
                 navigate("/sign-in")
+                setLoading(false)
             }
         } catch (error) {
+            setLoading(false)
             toast.error(
                 error?.response?.data?.message
             )
@@ -73,27 +79,61 @@ const ResetPassword = () => {
     }, [])
 
     return (
-        <div className='min-w-screen max-w-screen min-h-screen max-h-screen flex flex-col items-center justify-center w-full h-full bg-[#e1dede] overflow-hidden'>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e1dede] to-[#e7e8ee] px-4">
+            <form
+                className="flex flex-col items-center gap-5 bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center"
+                onSubmit={handleOnSubmit}
+            >
+                <h1 className="text-2xl md:text-3xl font-bold text-[#000727] mb-2">
+                    Reset your password
+                </h1>
+                <p className="text-gray-600 text-sm md:text-base mb-4">
+                    Please enter your new password below and confirm it.
+                </p>
 
-            <form className='flex flex-col items-center justify-center h-full w-full gap-1' onSubmit={handleOnSubmit}>
-
-                <h1 className='md:text-3xl text-2xl font-bold text-[#000727] my-2'>Reset your password ...</h1>
-
-                <div className='group'>
-                    <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>New password : </p>
-                    <input type="text" name='newPassword' value={data.newPassword} onChange={handleOnChange} required className='bg-[#b2b8de] md:w-[320px] w-[250px]  h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
+                {/* New Password Field */}
+                <div className="w-full text-left">
+                    <label className="block font-semibold text-[#000727] mb-1">
+                        New Password:
+                    </label>
+                    <input
+                        type="password"
+                        name="newPassword"
+                        value={data.newPassword}
+                        onChange={handleOnChange}
+                        required
+                        placeholder="Enter new password..."
+                        className="bg-[#edf0ff] border border-[#b2b8de] rounded-lg w-full h-10 text-base outline-none px-3 text-[#100f0f] focus:ring-2 focus:ring-[#1c45a4] transition-all duration-200"
+                    />
                 </div>
 
-                <div className='group'>
-                    <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Confirm Password : </p>
-                    <input type="text" name='confirmPassword' value={data.confirmPassword} onChange={handleOnChange} required className='bg-[#b2b8de] rounded md:w-[320px] w-[250px] h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
+                {/* Confirm Password Field */}
+                <div className="w-full text-left">
+                    <label className="block font-semibold text-[#000727] mb-1">
+                        Confirm Password:
+                    </label>
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        value={data.confirmPassword}
+                        onChange={handleOnChange}
+                        required
+                        placeholder="Confirm new password..."
+                        className="bg-[#edf0ff] border border-[#b2b8de] rounded-lg w-full h-10 text-base outline-none px-3 text-[#100f0f] focus:ring-2 focus:ring-[#1c45a4] transition-all duration-200"
+                    />
                 </div>
 
-                <button className={`p-2  md:w-[320px] w-[250px] bg-[#1c45a4] text-[#d1cece]  mt-2 rounded  font-semibold cursor-pointer`}>Submit</button>
+                {/* Submit Button */}
+                <button
+                    type="submit"
+                    className={`w-full h-11 mt-3 ${loading ? "bg-[#90a3c2] cursor-not-allowed" : "bg-[#1c45a4] hover:bg-[#193e93] cursor-pointer"} text-white font-semibold rounded-lg shadow-md transition-all duration-300`}
+                >
+                    Submit
+                </button>
 
             </form>
-
         </div>
+
     )
 }
 

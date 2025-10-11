@@ -2,13 +2,15 @@ import { useState } from 'react'
 import SummaryApi from '../../common/SumarryApi'
 import Axios from '../../utils/Axios'
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const ForgotPassword = () => {
-    
+
     const [data, setData] = useState({
         email: ""
     })
+
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     const handleOnChange = (e) => {
@@ -28,6 +30,7 @@ const ForgotPassword = () => {
 
         try {
 
+            setLoading(true)
             const response = await Axios({
                 ...SummaryApi.forgot_password,
                 data: data
@@ -35,6 +38,7 @@ const ForgotPassword = () => {
 
             if (response.data.error) {
                 toast.error(response?.data?.message)
+                setLoading(false)
             }
 
             if (response.data.success) {
@@ -49,9 +53,11 @@ const ForgotPassword = () => {
                         email: data.email
                     }
                 })
+                setLoading(false)
             }
 
         } catch (error) {
+            setLoading(false)
             toast.error(
                 error?.response?.data?.message
             )
@@ -60,18 +66,42 @@ const ForgotPassword = () => {
 
 
     return (
-        <div className='min-w-screen max-w-screen min-h-screen max-h-screen flex flex-col items-center justify-center w-full h-full bg-[#e1dede] overflow-hidden'>
+        <div className="min-w-screen min-h-screen flex items-center justify-center bg-gradient-to-br from-[#dfe4ea] to-[#e7e8ee]">
+            <div className="bg-white shadow-xl border-2 border-gray-300 rounded-2xl p-6 sm:p-8 w-[90%] max-w-md text-center">
 
-            <div className='md:px-0 px-8'>
-                <p className=' md:text-xl text-lg font-semibold  text-[#000727] '>Forgot your password ?!</p>
-                <p className=' md:text-xl text-lg font-semibold  text-[#000727] break-words'>Don't worry just enter your email below , </p>
+                <h1 className="text-2xl font-bold text-[#000727] mb-2">Forgot your password?</h1>
+                <p className="text-[#333] text-sm sm:text-base mb-6 px-1.5">
+                    Don’t worry — just enter your registered email below and we’ll send you instructions to reset your password.
+                </p>
 
-                <form className='md:mt-4 mt-3 flex md:gap-4 gap-2 items-center flex-wrap' onSubmit={handleOnSubmit}>
-                    <input type="email" name='email' onChange={handleOnChange} required placeholder='Enter your email...' className='bg-[#b2b8de] rounded md:w-[320px] w-[250px]  h-8 text-base outline-none p-2 mt-1 text-[#100f0f]' />
-                    <button className={` h-8 md:w-[80px] w-[60px] bg-[#1c45a4] text-[#d1cece]  rounded font-semibold cursor-pointer`}>submit</button>
+                <form
+                    className="flex flex-col gap-4"
+                    onSubmit={handleOnSubmit}
+                >
+                    <input
+                        type="email"
+                        name="email"
+                        onChange={handleOnChange}
+                        required
+                        placeholder="Enter your email..."
+                        className="bg-[#edf0ff] border border-[#b2b8de] rounded-lg w-full h-10 text-base outline-none px-3 text-[#100f0f] focus:ring-2 focus:ring-[#1c45a4] transition-all duration-200"
+                    />
+                    <button
+                        type="submit"
+                        className={`h-10 ${loading || !data.email ? "bg-[#5d7abd] hover:bg-[#5d7abd] cursor-not-allowed": "bg-[#1c45a4] hover:bg-[#163682] cursor-pointer"}  text-white font-semibold rounded-lg transition-all duration-300 shadow-md`}
+                    >
+                        Submit
+                    </button>
                 </form>
-            </div>
 
+                <p className="text-sm text-gray-600 mt-6">
+                    Remember your password?{" "}
+                    
+                    <Link to={"/sign-in"} className='className="text-[#1c45a4] font-semibold hover:underline"'>
+                        Go back to login
+                    </Link>
+                </p>
+            </div>
         </div>
     )
 }

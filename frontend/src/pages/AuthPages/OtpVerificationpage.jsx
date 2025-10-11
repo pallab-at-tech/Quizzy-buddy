@@ -12,6 +12,8 @@ const OtpVerificationpage = () => {
     const location = useLocation()
     const navigate = useNavigate()
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         inputRef.current[0].focus()
     }, [])
@@ -20,6 +22,8 @@ const OtpVerificationpage = () => {
         e.preventDefault()
 
         try {
+
+            setLoading(true)
 
             const response = await Axios({
                 ...SummaryApi.otp_verification,
@@ -31,6 +35,7 @@ const OtpVerificationpage = () => {
 
             if (response.data.error) {
                 toast.error(response?.data?.message)
+                setLoading(false)
             }
 
             if (response.data.success) {
@@ -43,8 +48,10 @@ const OtpVerificationpage = () => {
                         email: location?.state?.email
                     }
                 })
+                setLoading(false)
             }
         } catch (error) {
+            setLoading(false)
             toast.error(
                 error?.response?.data?.message
             )
@@ -58,53 +65,55 @@ const OtpVerificationpage = () => {
     }, [])
 
     return (
-        <div className='min-w-screen max-w-screen min-h-screen max-h-screen flex flex-col items-center justify-center w-full h-full bg-[#e1dede] overflow-hidden'>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e1dede] to-[#e7e8ee] px-4">
+            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-md text-center">
 
-            <div className='md:px-0 px-8'>
-                <p className=' md:text-xl text-lg font-semibold  text-[#000727] '>Enter OTP :</p>
+                <h2 className="text-2xl font-bold text-[#000727] mb-2">Enter OTP</h2>
+                <p className="text-gray-600 mb-6 text-sm md:text-base">
+                    Please enter the 6-digit code sent to your registered email.
+                </p>
 
-                <form className='mt-2' onSubmit={handleOnSubmit}>
+                <form onSubmit={handleOnSubmit}>
+                    <div className="flex justify-center gap-3 md:gap-4">
+                        {data.map((element, index) => (
+                            <input
+                                key={index}
+                                type="text"
+                                value={data[index]}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    const newData = [...data];
+                                    newData[index] = value;
+                                    setData(newData);
 
-                    <div className='flex flex-row gap-4'>
-                        {
-                            data.map((element, index) => {
-                                return (
-                                    <input type="text"
-                                        key={index}
-                                        value={data[index]}
-                                        onChange={(e) => {
-
-                                            const value = e.target.value
-                                            const newData = [...data]
-                                            newData[index] = value
-                                            setData(newData)
-
-                                            if (value && index < 5) {
-                                                inputRef.current[index + 1].focus()
-                                            }
-
-                                        }}
-                                        ref={(ref) => {
-                                            inputRef.current[index] = ref
-                                        }}
-                                        required
-                                        maxLength={1}
-                                        className='bg-[#b2b8de] rounded text-[#000727] md:h-12 md:w-12 h-10 w-10 outline-none text-center'
-                                    />
-                                )
-                            })
-                        }
-
+                                    if (value && index < 5) {
+                                        inputRef.current[index + 1].focus();
+                                    }
+                                }}
+                                ref={(ref) => {
+                                    inputRef.current[index] = ref;
+                                }}
+                                required
+                                maxLength={1}
+                                className="bg-[#edf0ff] border border-[#b2b8de] rounded-lg text-[#000727] md:h-13 md:w-13 h-[37px] w-[37px] text-xl font-semibold text-center outline-none focus:ring-2 focus:ring-[#1c45a4] transition-all duration-200"
+                            />
+                        ))}
                     </div>
 
-
-                    <button disabled={!valid} className={`p-1.5 mt-6 h-10 w-full   ${valid ? "bg-[#1c45a4] hover:bg-[#193e93] text-[#d1dcfb]" : "bg-[#4c79b4] hover:bg-[#2c6abc]  text-[#d1dcfb]"} w-[90%] mt-2 rounded  font-semibold`}>Submit</button>
-
-
+                    <button
+                        disabled={!valid}
+                        className={`mt-8 w-full h-11 rounded-lg font-semibold text-white transition-all duration-300 shadow-md ${valid && !loading
+                                ? "bg-[#1c45a4] hover:bg-[#193e93] cursor-pointer"
+                                : "bg-[#90a3c2] cursor-not-allowed"
+                            }`}
+                    >
+                        Submit
+                    </button>
                 </form>
-            </div>
 
+            </div>
         </div>
+
     )
 }
 

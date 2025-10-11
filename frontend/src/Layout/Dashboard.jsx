@@ -47,10 +47,11 @@ const Dashboard = () => {
     }
   }
 
-  return (
-    <section className='bg-[#fcfcfc] grid grid-cols-[20%_1fr]'>
 
-      <div className='hidden lg:block bg-[#fcfcfc] min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] border-r border-[#c8c3c3] shadow-md p-6'>
+  return (
+    <section className='bg-[#fcfcfc] grid custom-lg:grid-cols-[20%_1fr]'>
+
+      <div className='hidden custom-lg:block bg-[#fcfcfc] pl-6 pr-6 ipad-mini:pl-[45px] ipad-mini:pr-[45px] custom-lg:pl-6 custom-lg:pr-6 min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] border-r border-[#c8c3c3] shadow-md p-6'>
 
         {/* profile */}
         <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>
@@ -65,7 +66,6 @@ const Dashboard = () => {
           </div>
 
         </Link>
-
 
         <div className=''>
           <p className='text-[11px] mt-6 mb-1 text-[rgb(236,236,244)] bg-blue-600 w-fit py-1 px-2 rounded'>For Users</p>
@@ -101,8 +101,8 @@ const Dashboard = () => {
 
         </div>
 
-        <div className='mt-10 flex justify-center'>
-          <p onClick={handleLogOut} className={`border-2 border-blue-600 transition-all duration-150 hover:bg-blue-600 hover:text-white w-[40%] text-center py-1.5 rounded-md font-semibold ${logoutLoading ? "cursor-not-allowed" : "cursor-pointer"}`}>Logout</p>
+        <div className='mt-10 flex justify-center pl-2'>
+          <p onClick={handleLogOut} className={`border-2 border-blue-600 transition-all duration-150 hover:bg-blue-600 hover:text-white w-[30%] text-center py-1.5 rounded-md font-semibold ${logoutLoading ? "cursor-not-allowed" : "cursor-pointer"}`}>Logout</p>
         </div>
 
       </div>

@@ -8,6 +8,7 @@ import ResetPassword from '../pages/ResetPassword';
 import Dashboard from '../Layout/Dashboard';
 import Profile from '../Layout/Profile';
 import Home from '../pages/Home';
+import MobileDashboard from '../Layout/MobileDashboard';
 
 
 
@@ -22,12 +23,16 @@ const router = createBrowserRouter([
                 element : <Home/>
             },
             {
-                path: "/dashboard/:user",
+                path: "/dashboard",
                 element: <Dashboard />,
 
                 children: [
                     {
-                        index: true,
+                        index : true,
+                        element : <MobileDashboard/>
+                    },
+                    {
+                        path : ":user",
                         element: <Profile />
                     },
                 ]

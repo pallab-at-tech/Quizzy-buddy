@@ -1,12 +1,11 @@
-import React from 'react'
 import { useState } from 'react'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SumarryApi'
+import SummaryApi from '../../common/SumarryApi'
+import Axios from '../../utils/Axios'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
 const ForgotPassword = () => {
-
+    
     const [data, setData] = useState({
         email: ""
     })
@@ -45,9 +44,9 @@ const ForgotPassword = () => {
                     email: ""
                 })
 
-                navigate("/otp-verfication",{
-                    state : {
-                        email : data.email
+                navigate("/otp-verfication", {
+                    state: {
+                        email: data.email
                     }
                 })
             }
@@ -58,7 +57,6 @@ const ForgotPassword = () => {
             )
         }
     }
-
 
 
     return (

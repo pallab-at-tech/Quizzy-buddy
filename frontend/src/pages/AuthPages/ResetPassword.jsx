@@ -1,10 +1,8 @@
-import React from 'react'
-import { useState } from 'react'
-import toast, { LoaderIcon } from 'react-hot-toast'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SumarryApi'
+import { useState, useEffect } from 'react'
+import Axios from '../../utils/Axios'
+import toast from 'react-hot-toast'
+import SummaryApi from '../../common/SumarryApi'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
 
 const ResetPassword = () => {
 
@@ -12,9 +10,9 @@ const ResetPassword = () => {
         newPassword: "",
         confirmPassword: ""
     })
+    
     const location = useLocation()
     const navigate = useNavigate()
-
 
     const handleOnChange = (e) => {
         const { name, value } = e.target
@@ -61,8 +59,6 @@ const ResetPassword = () => {
 
                 navigate("/sign-in")
             }
-
-
         } catch (error) {
             toast.error(
                 error?.response?.data?.message
@@ -70,11 +66,11 @@ const ResetPassword = () => {
         }
     }
 
-    useEffect(()=>{
-        if(!location?.state){
+    useEffect(() => {
+        if (!location?.state) {
             navigate("/sign-in")
         }
-    },[])
+    }, [])
 
     return (
         <div className='min-w-screen max-w-screen min-h-screen max-h-screen flex flex-col items-center justify-center w-full h-full bg-[#e1dede] overflow-hidden'>

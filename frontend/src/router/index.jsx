@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App';
-import SignInPage from '../pages/SignInPage';
-import SignUpPage from '../pages/SignUpPage';
-import ForgotPassword from '../pages/ForgotPassword';
-import OtpVerificationpage from '../pages/OtpVerificationpage';
-import ResetPassword from '../pages/ResetPassword';
+import SignInPage from '../pages/AuthPages/SignInPage';
+import SignUpPage from '../pages/AuthPages/SignUpPage';
+import ForgotPassword from '../pages/AuthPages/ForgotPassword';
+import OtpVerificationpage from '../pages/AuthPages/OtpVerificationpage';
+import ResetPassword from '../pages/AuthPages/ResetPassword';
 import Dashboard from '../Layout/Dashboard';
 import Profile from '../Layout/Profile';
 import Home from '../pages/Home';

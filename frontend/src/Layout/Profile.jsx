@@ -8,8 +8,6 @@ const Profile = () => {
 
   const user = useSelector(state => state.user)
 
-  // console.log("user",user)
-
   return (
     <div className='pt-3 px-3  bg-[#f9f8f8] pb-0 mb-0'>
 

@@ -1,9 +1,8 @@
-import React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SumarryApi'
 import toast from 'react-hot-toast'
+import SummaryApi from '../../common/SumarryApi'
+import Axios from '../../utils/Axios'
 
 const OtpVerificationpage = () => {
 
@@ -19,7 +18,6 @@ const OtpVerificationpage = () => {
 
     const handleOnSubmit = async (e) => {
         e.preventDefault()
-
 
         try {
 
@@ -46,7 +44,6 @@ const OtpVerificationpage = () => {
                     }
                 })
             }
-
         } catch (error) {
             toast.error(
                 error?.response?.data?.message
@@ -65,7 +62,6 @@ const OtpVerificationpage = () => {
 
             <div className='md:px-0 px-8'>
                 <p className=' md:text-xl text-lg font-semibold  text-[#000727] '>Enter OTP :</p>
-
 
                 <form className='mt-2' onSubmit={handleOnSubmit}>
 
@@ -106,9 +102,6 @@ const OtpVerificationpage = () => {
 
 
                 </form>
-
-
-
             </div>
 
         </div>

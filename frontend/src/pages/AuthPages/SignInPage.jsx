@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Axios from '../utils/Axios'
-import SummaryApi from '../common/SumarryApi'
+import Axios from '../../utils/Axios'
+import SummaryApi from '../../common/SumarryApi'
 import toast from 'react-hot-toast'
-import { useGlobalContext } from '../provider/GlobalProvider'
+import { useGlobalContext } from '../../provider/GlobalProvider'
 
 const SignInPage = () => {
 
@@ -14,7 +14,7 @@ const SignInPage = () => {
     const [signInLoading, setSignInLoading] = useState(false)
     const valid = Object.values(data).every(el => el)
 
-    const {loginUser} = useGlobalContext()
+    const { loginUser } = useGlobalContext()
 
     const navigate = useNavigate()
 
@@ -156,7 +156,6 @@ const SignInPage = () => {
                 </div>
             </div>
         </section>
-
     )
 }
 

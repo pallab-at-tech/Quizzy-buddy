@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import SummaryApi from '../common/SumarryApi'
-import Axios from '../utils/Axios'
+import SummaryApi from '../../common/SumarryApi'
+import Axios from '../../utils/Axios'
 
 const SignUpPage = () => {
+
     const [data, setData] = useState({
         name: "",
         email: "",
@@ -74,7 +75,6 @@ const SignUpPage = () => {
             setSignUpLoading(false)
         }
     }
-
 
     return (
         <section className="min-h-screen grid lg:grid-cols-[2fr_1fr] bg-[#e8ecf8] overflow-hidden">
@@ -183,7 +183,6 @@ const SignUpPage = () => {
             </div>
 
         </section>
-
     )
 }
 

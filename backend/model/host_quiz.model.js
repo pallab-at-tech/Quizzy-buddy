@@ -116,7 +116,7 @@ const hostSchema = new mongoose.Schema({
     },
     set_negetive_marks: {
         type: Number,
-        default: -1
+        default: 0
     },
     quiz_submission_data: {
         type: [submitData],

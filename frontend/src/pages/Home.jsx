@@ -120,6 +120,7 @@ const Home = () => {
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
+                                    {/* daily quiz section */}
                                     <Link className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
                                         <div className='flex flex-col relative z-10'>
@@ -134,6 +135,7 @@ const Home = () => {
                                         </div>
                                     </Link>
 
+                                    {/* join quiz section */}
                                     <Link className='grid lg:grid-cols-[30%_70%]  bg-[#10b107] pt-2 pl-3 rounded-xl overflow-hidden relative  md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
@@ -150,7 +152,8 @@ const Home = () => {
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
-                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#0073ffd9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    {/* host section */}
+                                    <Link to={"/host-quiz"} className='grid lg:grid-cols-[30%_70%]  bg-[#0073ffd9] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold text-xl'>Host</h1>
@@ -164,6 +167,7 @@ const Home = () => {
                                         </div>
                                     </Link>
 
+                                    {/* explore section */}
                                     <Link className='grid lg:grid-cols-[30%_70%]  bg-[#79b716] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Explore</h1>

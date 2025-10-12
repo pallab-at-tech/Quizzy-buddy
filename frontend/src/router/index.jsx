@@ -9,6 +9,10 @@ import Dashboard from '../Layout/Dashboard';
 import Profile from '../Layout/Profile';
 import Home from '../pages/Home';
 import MobileDashboard from '../Layout/MobileDashboard';
+import HostQuizPage from '../pages/QuizPages/HostQuizPage';
+import { FaEdit, FaRobot } from "react-icons/fa";
+import CreateQuizManual from '../pages/QuizPages/CreateQuizManual';
+import { Link } from 'react-router-dom';
 
 
 
@@ -19,8 +23,8 @@ const router = createBrowserRouter([
 
         children: [
             {
-                index : true,
-                element : <Home/>
+                index: true,
+                element: <Home />
             },
             {
                 path: "/dashboard",
@@ -28,13 +32,63 @@ const router = createBrowserRouter([
 
                 children: [
                     {
-                        index : true,
-                        element : <MobileDashboard/>
+                        index: true,
+                        element: <MobileDashboard />
                     },
                     {
-                        path : ":user",
+                        path: ":user",
                         element: <Profile />
                     },
+                ]
+            },
+            {
+                path: "/host-quiz",
+                element: <HostQuizPage />,
+                children: [
+                    {
+                        index: true,
+                        element: <div className="px-8 py-10 bg-gray-50 h-full">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-2">
+                                ⚙️ Quiz Setup
+                            </h1>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {/* Manual Quiz Card */}
+                                <Link to={"/host-quiz/create-quiz"} className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-blue-400 transition-all duration-300 cursor-pointer">
+                                    <div className="flex items-center gap-4 mb-3">
+                                        <div className="p-3 bg-blue-100 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                            <FaEdit size={26} />
+                                        </div>
+                                        <h2 className="text-xl font-semibold text-gray-800 group-hover:text-blue-600">
+                                            Create Quiz Manually
+                                        </h2>
+                                    </div>
+                                    <p className="text-gray-500 leading-relaxed">
+                                        Build your quiz from scratch — add questions, options, correct answers, and assign marks as you like.
+                                    </p>
+                                </Link>
+
+                                {/* AI Assistance Quiz Card */}
+                                <Link className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-400 transition-all duration-300 cursor-pointer">
+                                    <div className="flex items-center gap-4 mb-3">
+                                        <div className="p-3 bg-purple-100 text-purple-600 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                                            <FaRobot size={26} />
+                                        </div>
+                                        <h2 className="text-xl font-semibold text-gray-800 group-hover:text-purple-600">
+                                            Create with AI Assistance
+                                        </h2>
+                                    </div>
+                                    <p className="text-gray-500 leading-relaxed">
+                                        Let AI automatically generate quiz questions, suggest correct answers, and balance difficulty levels intelligently.
+                                    </p>
+                                </Link>
+                            </div>
+                        </div>
+                    },
+                    {
+                        path : "create-quiz",
+                        element : <CreateQuizManual/>
+                    }
                 ]
             }
 

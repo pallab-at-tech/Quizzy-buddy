@@ -35,8 +35,8 @@ const Profile = () => {
         <div className=''>
 
           <div>
-            <h1 className='font-bold text-xl'>{user?.name}</h1>
-            <h2 className='relative bottom-1 text-base text-[#2c2c2c]'>userName</h2>
+            <h1 className='font-bold text-2xl'>{user?.name}</h1>
+            <h2 className='relative bottom-1 text-[13px] text-[#676767] font-semibold'>{user?.nanoId}</h2>
           </div>
 
           <div className='flex items-center gap-1 pt-2 pb-1'>

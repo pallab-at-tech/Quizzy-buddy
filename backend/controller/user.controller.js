@@ -1,5 +1,6 @@
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import {customAlphabet} from "nanoid"
 import sendEmail from '../utils/sendEmail.js'
 import verifyEmailTemplate from '../utils/verifyEmailTemplate.js'
 import userModel from '../model/user.model.js'
@@ -7,6 +8,8 @@ import generatedAccessToken from '../utils/generatedAccessToken.js'
 import generateRefreshToken from '../utils/generateRefreshToken.js'
 import generateOTP from '../utils/generateOTP.js'
 import sendOtpTemplate from '../utils/sendOtpTemplate.js'
+
+const nanoIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",6)
 
 
 export const userRegisterController = async (request, response) => {
@@ -36,10 +39,14 @@ export const userRegisterController = async (request, response) => {
         const salt = await bcryptjs.genSalt(10)
         const hashPassword = await bcryptjs.hash(password, salt)
 
+        const uniqueId = nanoIdentity()
+        const firstName = name.trim().split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
+
         const payload = {
             name,
             email,
-            password: hashPassword
+            password: hashPassword,
+            nanoId : `${firstName}-${uniqueId}`
         }
 
         const newUser = new userModel(payload)

@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
         required: [true, "provided email"],
         unique: true
     },
+    nanoId: {
+        type: String,
+        required: true
+    },
     password: {
         type: String,
         required: [true, "provided password"]
@@ -35,14 +39,34 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-    curr_participant_info: {
-        type: Array,
-        default: []
-    },
-    old_participant_info: {
-        type: Array,
-        default: []
-    },
+    curr_participant_info: [
+        {
+            quiz_id: {
+                type: mongoose.Schema.ObjectId,
+                ref: "host"
+            },
+            joindedAt: {
+                type: Date,
+                required: true
+            }
+        }
+    ],
+    old_participant_info: [
+        {
+            quiz_id: {
+                type: mongoose.Schema.ObjectId,
+                ref: "host"
+            },
+            participated_at: {
+                type: Date,
+                required: true
+            },
+            score: {
+                type: Number,
+                default: 0
+            }
+        }
+    ],
     participate_count: {
         type: Number,
         default: 0

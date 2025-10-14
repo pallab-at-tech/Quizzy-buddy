@@ -26,7 +26,6 @@ function App() {
 
   return (
     <>
-
       {
        isLogin && <Header />
       }
@@ -34,7 +33,6 @@ function App() {
       {
         <Outlet />
       }
-
     </>
   )
 }

@@ -14,7 +14,12 @@ import { useGlobalContext } from '../provider/GlobalProvider';
 const Home = () => {
 
     const user = useSelector(state => state.user)
-    const {isLogin} = useGlobalContext()
+    const { isLogin } = useGlobalContext()
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = 'auto'; };
+    }, []);
 
     console.log("From home page user", user)
 
@@ -22,7 +27,7 @@ const Home = () => {
 
     return (
         <section className='w-full'>
-            
+
             {
                 !isLogin ? (
                     <div className='flex min-h-screen flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
@@ -90,11 +95,11 @@ const Home = () => {
                         </main>
                     </div>
                 ) : (
-                    <div className='bg-[#fcfcfc] min-h-screen lg:pr-[100px]'>
+                    <div className='bg-[#fcfcfc] h-[calc(100vh-50px)] lg:pr-[100px] '>
 
                         <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-16 '>
 
-                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[22%] px-3'>
+                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[22%] px-3 '>
                                 <div>
                                     <div className='md:text-5xl text-3xl font-bold flex flex-wrap gap-2.5'>
                                         <p className='text-[#1633ff]'>Challenge</p>
@@ -113,7 +118,6 @@ const Home = () => {
                                         <p className='font-semibold text-xl lg:block hidden'>LeaderBoard</p>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div className='flex flex-col justify-center  w-full gap-4  px-3 '>
@@ -188,8 +192,6 @@ const Home = () => {
                     </div>
                 )
             }
-
-
 
         </section>
     )

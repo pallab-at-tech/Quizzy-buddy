@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme {
     --breakpoint-custom-sm: 640px;
     --breakpoint-ipad-mini: 700px;
@@ -23,3 +24,53 @@
 .animate-gradient {
     animation: gradient 8s ease infinite;
 }
+
+/* scroll-bar hidden */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* loading */
+.fileLoader {
+  width: 55px;
+  height: 40px;
+  --g: radial-gradient(farthest-side,#28282800 calc(95% - 3px),#3e3d3d calc(100% - 3px) 98%,#22222200 101%) no-repeat;
+  background: var(--g), var(--g), var(--g);
+  background-size: 14px 14px;
+  animation: l9 1s infinite alternate;
+}
+@keyframes l9 {
+  0% {
+    background-position: 0 50%, 50% 50%, 100% 50%;
+  }
+  20% {
+    background-position: 0 0, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0 100%, 50% 0, 100% 50%;
+  }
+  60% {
+    background-position: 0 50%, 50% 100%, 100% 0;
+  }
+  80% {
+    background-position: 0 50%, 50% 50%, 100% 100%;
+  }
+  100% {
+    background-position: 0 50%, 50% 50%, 100% 50%;
+  }
+}
+
+.thin_scrollbar {
+  overflow-y: auto; 
+  scrollbar-width: thin;         
+}
+
+.thin_scrollbar::-webkit-scrollbar {
+  width: 8px; 
+}
+

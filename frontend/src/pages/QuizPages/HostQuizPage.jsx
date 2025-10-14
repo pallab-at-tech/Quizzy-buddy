@@ -9,6 +9,7 @@ const HostQuizPage = () => {
     const [minDateTime, setMinDateTime] = useState("");
 
     const [data, setData] = useState({
+        host_id : user?.nanoId,
         quiz_start: "",
         quiz_expire_per_Q: "",
         set_negetive_marks: 0

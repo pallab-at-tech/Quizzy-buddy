@@ -14,9 +14,9 @@ const Header = () => {
   return (
     <header className='min-h-[70px] sticky z-50 top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid custom-lg:grid-cols-[60%_1fr_1fr_1fr] md:grid-cols-[50%_1fr_1fr_1fr] grid-cols-[40%_1fr_1fr] items-center '>
 
-      <Link to={"/"}>logo</Link>
+      <Link to={"/"} className='w-fit'>logo</Link>
 
-      <div className='md:block hidden'>Contribute Quiz</div>
+      <div className='md:block hidden w-fit'>Contribute Quiz</div>
 
       <div className='flex items-center gap-4 lg:border-x border-[#d2d2d2] w-fit md:px-6 px-3'>
 
@@ -34,7 +34,7 @@ const Header = () => {
 
       </div>
 
-      <Link>about us</Link>
+      <Link className='w-fit'>about us</Link>
 
     </header>
   )

@@ -9,7 +9,7 @@ const CreateQuizManual = () => {
     const { data } = useOutletContext();
 
     const [questions, setQuestions] = useState([
-        { question: '', options: ['', ''], correct: '', marks: '', image: '' },
+        { question: '', options: ['', ''], correct: '', marks: '', image: '', inputBox: false },
     ]);
 
     const [uploadLoading, setUploadLoading] = useState(new Set())
@@ -18,7 +18,7 @@ const CreateQuizManual = () => {
     const addQuestion = () => {
         setQuestions((prev) => [
             ...prev,
-            { question: '', options: ['', ''], correct: '', marks: '', image: '' },
+            { question: '', options: ['', ''], correct: '', marks: '', image: '', inputBox: false },
         ]);
     };
 
@@ -212,48 +212,112 @@ const CreateQuizManual = () => {
                                 value={q.question}
                                 onChange={(e) => handleChange(i, 'question', e.target.value)}
                                 placeholder="Enter your question here..."
-                                className="w-full max-h-[150px] p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400 mb-3"
+                                className="w-full min-h-[70px] max-h-[150px] p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400 mb-3"
                             />
 
-                            {/* Options */}
-                            <div className="grid grid-cols-2 gap-3 mb-3">
-                                {q.options.map((opt, j) => (
+                            {/* option choose for text answer or input box */}
+                            <div className="flex items-center gap-6 mb-3">
+                                <label className="flex items-center gap-2 cursor-pointer">
                                     <input
-                                        key={j}
-                                        type="text"
-                                        value={opt}
-                                        onChange={(e) => handleOptionChange(i, j, e.target.value)}
-                                        placeholder={`Option ${j + 1}`}
-                                        className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400"
+                                        type="radio"
+                                        name={`questionType-${i}`}
+                                        value="mcq"
+                                        checked={!q.inputBox}
+                                        onChange={() => {
+                                            setQuestions((prev) => {
+                                                const updated = [...prev]
+                                                updated[i].inputBox = false
+                                                return updated
+                                            })
+                                        }}
+                                        className="h-4 w-4 text-blue-600"
                                     />
-                                ))}
+                                    <span className="text-sm font-medium text-gray-700">Multiple Choice</span>
+                                </label>
+
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name={`questionType-${i}`}
+                                        value="text"
+                                        checked={q.inputBox}
+                                        onChange={() => {
+                                            setQuestions((prev) => {
+                                                const updated = [...prev]
+                                                updated[i].inputBox = true
+                                                return updated
+                                            })
+                                        }}
+                                        className="h-4 w-4 text-blue-600"
+                                    />
+                                    <span className="text-sm font-medium text-gray-700">Text Answer</span>
+                                </label>
                             </div>
 
-                            {/* options add or remove */}
-                            <div className='flex gap-6 justify-end pb-4'>
-                                <span onClick={() => addMoreOption(i)} className={`text-green-600 font-semibold cursor-pointer`}>Add option</span>
-                                <span onClick={() => removeMoreOption(i)} className={`text-red-600 font-semibold cursor-pointer ${q.options.length < 2 ? "hidden" : "block"}`}>Remove option</span>
-                            </div>
+                            {
+                                q.inputBox ? (
+                                    <div className=" border border-blue-200 rounded-lg p-4 mb-4">
+                                        <h1 className="text-sm text-blue-800 font-medium mb-2">
+                                            💡 You may leave this field empty — our AI will automatically analyze the correct answer.
+                                        </h1>
+
+                                        <textarea
+                                            name={`correct-${i}`}
+                                            id={`correct-${i}`}
+                                            placeholder="Enter the correct answer..."
+                                            className="w-full min-h-[70px] max-h-[150px] p-3 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400 transition"
+                                        />
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Options */}
+                                        <div className="grid grid-cols-2 gap-3 mb-3">
+                                            {q.options.map((opt, j) => (
+                                                <input
+                                                    key={j}
+                                                    type="text"
+                                                    value={opt}
+                                                    onChange={(e) => handleOptionChange(i, j, e.target.value)}
+                                                    placeholder={`Option ${j + 1}`}
+                                                    className="w-full p-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400"
+                                                />
+                                            ))}
+                                        </div>
+
+                                        {/* options add or remove */}
+                                        <div className='flex gap-6 justify-end pb-4'>
+                                            <span onClick={() => addMoreOption(i)} className={`text-green-600 font-semibold cursor-pointer`}>Add option</span>
+                                            <span onClick={() => removeMoreOption(i)} className={`text-red-600 font-semibold cursor-pointer ${q.options.length < 2 ? "hidden" : "block"}`}>Remove option</span>
+                                        </div>
+                                    </>
+                                )
+                            }
+
 
                             {/* Correct Answer + Marks */}
                             <div className="flex items-center justify-between">
-                                <label className="text-sm text-gray-600">
-                                    Correct Answer:
-                                    <select
-                                        value={q.correct}
-                                        onChange={(e) =>
-                                            handleChange(i, 'correct', e.target.value)
-                                        }
-                                        className="ml-2 p-1 border border-gray-300 rounded-md"
-                                    >
-                                        <option value="">Select</option>
-                                        {q.options.map((_, idx) => (
-                                            <option key={idx} value={idx}>
-                                                Option {idx + 1}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
+
+                                {
+                                    !q.inputBox && (
+                                        <label className="text-sm text-gray-600">
+                                            Correct Answer:
+                                            <select
+                                                value={q.correct}
+                                                onChange={(e) =>
+                                                    handleChange(i, 'correct', e.target.value)
+                                                }
+                                                className="ml-2 p-1 border border-gray-300 rounded-md"
+                                            >
+                                                <option value="">Select</option>
+                                                {q.options.map((_, idx) => (
+                                                    <option key={idx} value={idx}>
+                                                        Option {idx + 1}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                    )
+                                }
 
                                 <label className="text-sm text-gray-600">
                                     Marks:

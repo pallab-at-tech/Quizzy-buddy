@@ -4,6 +4,8 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SumarryApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserDetails } from '../store/userSlice';
+import { io } from 'socket.io-client'
+import toast from 'react-hot-toast';
 
 
 export const GlobalContext = createContext(null)
@@ -15,6 +17,9 @@ const GlobalProvider = ({ children }) => {
 
     const [isLogin, setIsLogin] = useState(localStorage.getItem("log") === "true")
     const dispatch = useDispatch()
+    const user = useSelector(state => state?.user)
+
+    const [socketConnection, setSocketConnection] = useState(null)
 
     const fetchUserDetails = async () => {
         try {
@@ -60,13 +65,41 @@ const GlobalProvider = ({ children }) => {
     }, [])
 
 
+    // socket configure
+    useEffect(() => {
+        if (user?._id && localStorage.getItem("accesstoken")) {
+
+            const token = localStorage.getItem("accesstoken")
+
+            const socket = io(import.meta.env.VITE_BACKEND_API_URL,
+                { auth: { token: token } }
+            )
+
+            socket.once("session_expired", (data) => {
+                toast.error(data?.message)
+                localStorage.clear()
+                window.location.href = "/"
+            })
+
+            setSocketConnection(socket)
+            socket.emit("join_room", user?._id)
+
+            return () => {
+                socket.off('session_expired')
+                socket.disconnect()
+            }
+        }
+    }, [user?._id, dispatch])
+
+
     return (
         <GlobalContext.Provider
             value={{
                 fetchUserDetails,
                 isLogin,
                 loginUser,
-                logoutUser
+                logoutUser,
+                socketConnection
             }}>
 
             {

@@ -53,24 +53,16 @@ const quizQuestionSchema = new mongoose.Schema({
         default: 5
     },
     inputBox: {
-        type: String,
-        default: ""
+        type: Boolean,
+        default: false
     },
-    option: [
-        {
-            label: {
-                type: String,
-                default: ""
-            },
-            text: {
-                type: String,
-                default: ""
-            }
-        }
-    ],
+    options : {
+        type : Array,
+        default : []
+    },
     correct_option: {
         type: String,
-        required: true
+        default : ""
     }
 },
     {
@@ -92,23 +84,33 @@ const hostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    user_id: [
+    user_ids: [
         {
             type: mongoose.Schema.ObjectId,
             ref: "user"
         }
     ],
-    quiz_data: {
-        type: [quizQuestionSchema],
-        default: []
-    },
+    quiz_data: [
+        {
+            type : mongoose.Schema.ObjectId,
+            ref : "question"
+        }
+    ],
     quiz_start: {
         type: Date,
         required: true
     },
-    quiz_expire_per_Q: {
+    quiz_end: {
         type: Date,
-        default: null
+        required: true
+    },
+    quiz_expire_per_Q: {
+        type: String,
+        default: ""
+    },
+    strict: {
+        type: Boolean,
+        default: false
     },
     total_marks: {
         type: Number,
@@ -127,9 +129,9 @@ const hostSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const quizHostModel = new mongoose.model("host", hostSchema)
-const questionModel = new mongoose.model("question", quizQuestionSchema)
-const submitDataModel = new mongoose.model("submit", submitData)
+const quizHostModel = mongoose.model("host", hostSchema)
+const questionModel = mongoose.model("question", quizQuestionSchema)
+const submitDataModel = mongoose.model("submit", submitData)
 
 export {
     quizHostModel,

@@ -9,6 +9,7 @@ dotenv.config()
 import { app, server } from "./socket/index.js"
 import connectDB from './config/connectDB.js'
 import userRouter from './router/user.route.js'
+import hostRouter from './router/host.route.js'
 
 
 app.use(cors({
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 // api end point
 
 app.use("/api", userRouter)
+app.use("/api/host",hostRouter)
 
 
 const PORT = 8080 || process.env.PORT

@@ -35,6 +35,7 @@ const onlineUser = new Map()
 
 io.on('connection', (socket) => {
 
+    // join in a socket room
     socket.on("join_room", (userId) => {
 
         socket.join(userId.toString())
@@ -44,9 +45,10 @@ io.on('connection', (socket) => {
         console.log("User connected:", `${socket.id} -- ${userId}`);
     })
 
+  
 
 
-
+    // disconnect user
     socket.on("disconnect", () => {
 
         const userId = onlineUser.get(socket.id)

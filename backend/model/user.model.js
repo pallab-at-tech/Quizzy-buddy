@@ -67,6 +67,26 @@ const userSchema = new mongoose.Schema({
             }
         }
     ],
+    host_info: [
+        {
+            quiz_id: {
+                type: mongoose.Schema.ObjectId,
+                ref: "host"
+            },
+            createdAt: {
+                type: Date,
+                default: null
+            },
+            endDate : {
+                type : Date,
+                default : null
+            },
+            startDate : {
+                type : Date,
+                default : null
+            }
+        }
+    ],
     participate_count: {
         type: Number,
         default: 0
@@ -75,7 +95,6 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     }
-
 }, {
     timestamps: true
 })

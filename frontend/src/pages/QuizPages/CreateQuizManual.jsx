@@ -6,9 +6,8 @@ import toast from 'react-hot-toast'
 import uploadFile from '../../utils/uploadFile';
 import Axios from '../../utils/Axios';
 import SummaryApi from '../../common/SumarryApi';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch } from 'react-redux';
 import { FiCopy, FiCheck } from "react-icons/fi";
-import { useDispatch } from 'react-redux';
 import { setHostDetails } from '../../store/userSlice';
 
 const CreateQuizManual = () => {
@@ -163,9 +162,8 @@ const CreateQuizManual = () => {
         }
     }
 
-    // console.log("question set", quizData)
+    // console.log("question set", questions)
     // console.log("external data",data)
-
 
     return (
         <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">
@@ -266,7 +264,6 @@ const CreateQuizManual = () => {
                                     </div>
                                 )
                             }
-
 
                             {/* Question Text */}
                             <textarea
@@ -481,7 +478,6 @@ const CreateQuizManual = () => {
                     </section>
                 )
             }
-
 
         </section>
     );

@@ -13,6 +13,7 @@ import HostQuizPage from '../pages/QuizPages/HostQuizPage';
 import { FaEdit, FaRobot } from "react-icons/fa";
 import CreateQuizManual from '../pages/QuizPages/CreateQuizManual';
 import { Link } from 'react-router-dom';
+import CreateQuizAi from '../pages/QuizPages/CreateQuizAi';
 
 
 
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
                                 </Link>
 
                                 {/* AI Assistance Quiz Card */}
-                                <Link className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-400 transition-all duration-300 cursor-pointer">
+                                <Link to={"/host-quiz/create-ai-quiz"} className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-400 transition-all duration-300 cursor-pointer">
                                     <div className="flex items-center gap-4 mb-3">
                                         <div className="p-3 bg-purple-100 text-purple-600 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
                                             <FaRobot size={26} />
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
                     {
                         path : "create-quiz",
                         element : <CreateQuizManual/>
+                    },
+                    {
+                        path : "create-ai-quiz",
+                        element : <CreateQuizAi/> 
                     }
                 ]
             }

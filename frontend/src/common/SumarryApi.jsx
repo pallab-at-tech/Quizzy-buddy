@@ -13,26 +13,30 @@ const SummaryApi = {
         url: "/api/refresh-token",
         method: "post"
     },
-    forgot_password : {
-        url : "/api/forgot-password",
-        method : "put"
+    forgot_password: {
+        url: "/api/forgot-password",
+        method: "put"
     },
-    otp_verification : {
-        url : "/api/verify-forgot-password",
-        method : "put"
+    otp_verification: {
+        url: "/api/verify-forgot-password",
+        method: "put"
     },
-    reset_password : {
-        url : "/api/reset-password",
-        method : "put"
+    reset_password: {
+        url: "/api/reset-password",
+        method: "put"
     },
-    user_Details : {
-        url : "/api/user-details",
-        method : "get"
+    user_Details: {
+        url: "/api/user-details",
+        method: "get"
     },
-    logOut : {
-        url : "/api/logout",
-        meyhod : "get"
-    }
+    logOut: {
+        url: "/api/logout",
+        meyhod: "get"
+    },
+    create_quiz: {
+        url: "/api/host/create-quiz",
+        method: "post"
+    },
 }
 
 export default SummaryApi

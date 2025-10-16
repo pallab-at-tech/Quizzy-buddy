@@ -9,9 +9,10 @@ const HostQuizPage = () => {
     const [minDateTime, setMinDateTime] = useState("");
 
     const [data, setData] = useState({
-        host_id : user?.nanoId,
+        host_id: user?.nanoId,
         quiz_start: "",
         quiz_expire_per_Q: "",
+        time_sec_min: "Seconds",
         set_negetive_marks: 0
     })
 
@@ -106,6 +107,14 @@ const HostQuizPage = () => {
                             />
                             <select
                                 className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+                                onChange={(e) => {
+                                    setData((prev) => {
+                                        return {
+                                            ...prev,
+                                            time_sec_min: e.target.value
+                                        }
+                                    })
+                                }}
                             >
                                 <option value="seconds">Seconds</option>
                                 <option value="minutes">Minutes</option>

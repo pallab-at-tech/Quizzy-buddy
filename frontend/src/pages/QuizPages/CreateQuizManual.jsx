@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { FaImage, FaPlusCircle } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import toast from 'react-hot-toast'
 import uploadFile from '../../utils/uploadFile';
+import Axios from '../../utils/Axios';
+import SummaryApi from '../../common/SumarryApi';
+import { useSelector } from 'react-redux';
+import { FiCopy, FiCheck } from "react-icons/fi";
+import { useDispatch } from 'react-redux';
+import { setHostDetails } from '../../store/userSlice';
 
 const CreateQuizManual = () => {
     const { data } = useOutletContext();
@@ -11,8 +17,21 @@ const CreateQuizManual = () => {
     const [questions, setQuestions] = useState([
         { question: '', options: ['', ''], correct: '', marks: '', image: '', inputBox: false },
     ]);
+    const user = useSelector(state => state?.user)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const [copied, setCopied] = useState(false);
+    const [quizData, setQuizData] = useState(null)
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(quizData.data.join_code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
 
     const [uploadLoading, setUploadLoading] = useState(new Set())
+    const [submitLoading, setSubmitLoading] = useState(false)
 
     // Add new question
     const addQuestion = () => {
@@ -106,9 +125,51 @@ const CreateQuizManual = () => {
         }
     }
 
+    const handleSubmitQuiz = async () => {
+        try {
+            setSubmitLoading(true)
+
+            const response = await Axios({
+                ...SummaryApi.create_quiz,
+                data: {
+                    host_user_nanoId: user?.nanoId,
+                    time_sec_min: data?.time_sec_min || "Seconds",
+                    quiz_data: questions,
+                    quiz_start: data?.quiz_start || "",
+                    quiz_expire_per_Q: data?.quiz_expire_per_Q || "",
+                    set_negetive_marks: data?.set_negetive_marks || 0,
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData?.success) {
+                toast.success(responseData?.message)
+                setQuizData(responseData)
+                dispatch(setHostDetails({
+                    data : responseData?.host_info
+                }))
+            }
+            else {
+                toast.error(responseData?.message || "Some error occued!")
+            }
+
+            setSubmitLoading(false)
+
+        } catch (error) {
+            toast.error(error.response.data.message || "Some error occued!")
+            setSubmitLoading(false)
+            console.log("create quiz error", error)
+        }
+    }
+
+    // console.log("question set", quizData)
+    // console.log("external data",data)
+
 
     return (
         <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">
+
             <div className="max-w-3xl mx-auto">
 
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">
@@ -135,8 +196,8 @@ const CreateQuizManual = () => {
                                 : 'Not Set'}
                         </p>
                     </div>
-                    <div
-                        className="mr-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-md cursor-pointer transition"
+                    <div onClick={() => handleSubmitQuiz()}
+                        className={`mr-4 ${submitLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"} text-white font-semibold px-4 py-2 rounded-md transition`}
                     >
                         Submit
                     </div>
@@ -349,6 +410,79 @@ const CreateQuizManual = () => {
                     </button>
                 </div>
             </div>
+
+            {
+                quizData && (
+                    <section className="fixed inset-0 flex items-center justify-center bg-[#98b9e08f] backdrop-blur-[5px]">
+
+                        <div className="bg-white shadow-xl rounded-2xl p-6 w-[90%] max-w-[500px]">
+
+                            {/* Title */}
+                            <h1 className="text-2xl font-bold text-center text-blue-600 mb-4">
+                                🎉 Quiz Created Successfully!
+                            </h1>
+
+                            {/* Details */}
+                            <div className="space-y-2 text-gray-800 px-5 text-[16px]">
+
+                                <div className="flex flex-col">
+
+                                    <div className='flex items-center  gap-2'>
+                                        <span className="font-semibold">Join Code:</span>
+                                        <span className="font-mono text-blue-600 bg-blue-100 px-2 py-1 rounded-md">
+                                            {quizData.data.join_code}
+                                        </span>
+
+                                        <button
+                                            onClick={handleCopy}
+                                            className="text-gray-600 hover:text-blue-600 transition"
+                                            title="Copy to clipboard"
+                                        >
+                                            {copied ? <FiCheck size={18} /> : <FiCopy size={18} className='cursor-pointer'/>}
+                                        </button>
+
+                                        {copied && (
+                                            <span className="text-sm text-green-600 font-medium">Copied!</span>
+                                        )}
+                                    </div>
+                                    <p>
+                                        <span className="font-semibold">Total Marks:</span>{" "}
+                                        {quizData.data.total_marks}
+                                    </p>
+                                </div>
+
+                                <div className='flex flex-col items-center justify-center-safe bg-blue-200 rounded-md p-2 mt-3 font-semibold text-blue-900 text-sm'>
+                                    <div>
+                                        <p>
+                                            <span className="font-semibold">Start Time :</span>{" "}
+                                            {quizData.data.start_time}
+                                        </p>
+                                        <p>
+                                            <span className="font-semibold">End Time :</span>{" "}
+                                            {quizData.data.end_time}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="mt-6 text-center">
+                                <button
+                                    onClick={()=>{
+                                        setQuizData(null)
+                                        navigate("/host-quiz")
+                                    }}
+                                    className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
+
+
         </section>
     );
 };

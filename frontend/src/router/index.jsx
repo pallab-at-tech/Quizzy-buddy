@@ -5,16 +5,16 @@ import SignUpPage from '../pages/AuthPages/SignUpPage';
 import ForgotPassword from '../pages/AuthPages/ForgotPassword';
 import OtpVerificationpage from '../pages/AuthPages/OtpVerificationpage';
 import ResetPassword from '../pages/AuthPages/ResetPassword';
-import Dashboard from '../Layout/Dashboard';
+import Dashboard from '../Layout/main/Dashboard';
 import Profile from '../Layout/Profile';
 import Home from '../pages/Home';
-import MobileDashboard from '../Layout/MobileDashboard';
+import MobileDashboard from '../Layout/main/MobileDashboard';
 import HostQuizPage from '../pages/QuizPages/HostQuizPage';
 import { FaEdit, FaRobot } from "react-icons/fa";
 import CreateQuizManual from '../pages/QuizPages/CreateQuizManual';
 import { Link } from 'react-router-dom';
 import CreateQuizAi from '../pages/QuizPages/CreateQuizAi';
-
+import OrganizerPannel from '../Layout/Organizer/OrganizerPannel';
 
 
 const router = createBrowserRouter([
@@ -40,6 +40,10 @@ const router = createBrowserRouter([
                         path: ":user",
                         element: <Profile />
                     },
+                    {
+                        path : "organizer-pannel",
+                        element : <OrganizerPannel/>
+                    }
                 ]
             },
             {

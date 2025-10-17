@@ -10,7 +10,6 @@ const Header = () => {
   const user = useSelector(state => state.user)
   const dashboardURL = `/dashboard/${user?.name?.split(' ')?.join("-")}-${user?._id}`
 
-
   return (
     <header className='min-h-[70px] sticky z-50 top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid custom-lg:grid-cols-[60%_1fr_1fr_1fr] md:grid-cols-[50%_1fr_1fr_1fr] grid-cols-[40%_1fr_1fr] items-center '>
 

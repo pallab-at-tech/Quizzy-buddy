@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import avatar from "../assets/avatar.png"
+import avatar from "../../assets/avatar.png"
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import SummaryApi from '../common/SumarryApi'
-import Axios from '../utils/Axios'
+import SummaryApi from '../../common/SumarryApi'
+import Axios from '../../utils/Axios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import { setLogOut } from '../store/userSlice'
+import { setLogOut } from '../../store/userSlice'
 import { useNavigate } from 'react-router-dom'
-import { useGlobalContext } from '../provider/GlobalProvider'
+import { useGlobalContext } from '../../provider/GlobalProvider'
 
 
 const Dashboard = () => {
@@ -95,7 +95,7 @@ const Dashboard = () => {
         <div className=''>
           <p className='text-[11px] mt-6 mb-1 text-[rgb(236,236,244)] bg-blue-600 w-fit py-1 px-2 rounded'>For Organizers</p>
 
-          <Link className='block hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md font-semibold'>
+          <Link to={`/dashboard/organizer-pannel`} className='block hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md font-semibold'>
             <p className='pl-2'>Organizer Pannel</p>
           </Link>
 

@@ -69,9 +69,13 @@ const userSchema = new mongoose.Schema({
     ],
     host_info: [
         {
-            quiz_id: {
+            _id: {
                 type: mongoose.Schema.ObjectId,
                 ref: "host"
+            },
+            quiz_id : {
+                type : String,
+                default : ""
             },
             createdAt: {
                 type: Date,

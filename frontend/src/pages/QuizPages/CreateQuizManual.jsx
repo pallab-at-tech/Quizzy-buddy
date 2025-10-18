@@ -16,6 +16,7 @@ const CreateQuizManual = () => {
     const [questions, setQuestions] = useState([
         { question: '', options: ['', ''], correct: '', marks: '', image: '', inputBox: false },
     ]);
+
     const user = useSelector(state => state?.user)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -163,7 +164,7 @@ const CreateQuizManual = () => {
     }
 
     // console.log("question set", questions)
-    // console.log("external data",data)
+    // console.log("external data",quizData)
 
     return (
         <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">
@@ -215,7 +216,7 @@ const CreateQuizManual = () => {
                                 {questions.length > 1 && (
                                     <button
                                         onClick={() => removeQuestion(i)}
-                                        className="text-red-500 hover:text-red-700 transition"
+                                        className="text-red-500 hover:text-red-700 transition cursor-pointer"
                                         title="Remove question"
                                     >
                                         <MdDelete size={20} />
@@ -350,7 +351,6 @@ const CreateQuizManual = () => {
                                     </>
                                 )
                             }
-
 
                             {/* Correct Answer + Marks */}
                             <div className="flex items-center justify-between">

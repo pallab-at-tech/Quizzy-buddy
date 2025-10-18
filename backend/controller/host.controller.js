@@ -1,6 +1,10 @@
 import crypto from 'crypto'
 import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 import userModel from '../model/user.model.js'
+import { customAlphabet } from "nanoid"
+
+
+const hostIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 10)
 
 export const createQuizController = async (request, response) => {
     try {
@@ -79,6 +83,9 @@ export const createQuizController = async (request, response) => {
 
         const endDate = new Date(startDate.getTime() + totalTime * 1000)
 
+        // generate unique host id
+        const nano_id = hostIdentity()
+
 
         const payload = {
             host_user_id: userId,
@@ -89,7 +96,8 @@ export const createQuizController = async (request, response) => {
             quiz_expire_per_Q: `${quiz_expire_per_Q}|${time_sec_min}`,
             set_negetive_marks: set_negetive_marks,
             total_marks: 0,
-            quiz_data: []
+            quiz_data: [],
+            nano_id: nano_id
         }
 
         // create question model
@@ -114,7 +122,8 @@ export const createQuizController = async (request, response) => {
         // fill user host details
         const user = await userModel.findById(userId)
         user.host_info.push({
-            quiz_id: hostModel._id,
+            _id: hostModel._id,
+            quiz_id: hostModel.nano_id,
             createdAt: hostModel.createdAt,
             endDate: endDate,
             startDate: startDate
@@ -125,7 +134,8 @@ export const createQuizController = async (request, response) => {
         return response.json({
             message: "Quiz created successfully",
             data: {
-                host_id: hostModel._id,
+                _id: hostModel._id,
+                host_id: nano_id,
                 join_code: join_code,
                 total_marks: payload.total_marks,
                 start_time: new Date(quiz_start).toLocaleDateString(undefined, {
@@ -144,11 +154,52 @@ export const createQuizController = async (request, response) => {
                 })
             },
             host_info: {
-                quiz_id: hostModel._id,
+                _id: hostModel._id,
+                quiz_id: hostModel.nano_id,
                 createdAt: hostModel.createdAt,
                 endDate: endDate,
                 startDate: startDate
             },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const fetchHostPlusQuizDetails = async (request, response) => {
+    try {
+
+        const { hostId } = request.body || {}
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "Host Id Required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId).populate("quiz_data")
+
+        if (userId !== host.host_user_id.toString()) {
+            return response.status(400).json({
+                message: "Illegal Access",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "Host details",
+            data: host,
             error: false,
             success: true
         })

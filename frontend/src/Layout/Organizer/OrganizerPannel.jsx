@@ -7,10 +7,14 @@ import {
 import { FaRegHourglassHalf } from "react-icons/fa6";
 import { MdPending, MdOutlineDoneAll, MdPlayCircle } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { Link, Outlet } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 
 const OrganizerPannel = () => {
 
   const host_info = useSelector((state) => state.user).host_info || [];
+  const params = useParams()
 
   // Format date/time
   const formatDateTime = (dateString) => {
@@ -49,81 +53,94 @@ const OrganizerPannel = () => {
     return `${Math.round(diff)} min`;
   };
 
+
   return (
     <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 p-8 scrollbar-hide">
-      <div className="max-w-7xl mx-auto">
-        <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-2 border-b-gray-300 pb-4">
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-3 sm:mb-0">
-            Organizer Dashboard
-          </h1>
-          <p className="text-gray-500 text-sm">
-            Manage and monitor your hosted quizzes in real time
-          </p>
-        </header>
 
-        {host_info.length === 0 ? (
-          <p className="text-gray-500 text-center mt-24 text-lg">
-            No hosted quizzes found. Start hosting to see them here 🎯
-          </p>
+      {
+        params?.quizId ? (
+          <Outlet />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {host_info.map((item) => {
-              const status = getStatus(item.startDate, item.endDate);
+          <div className="max-w-7xl mx-auto">
 
-              return (
-                <div
-                  key={item._id}
-                  className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group"
-                >
-                  {/* Card Header */}
-                  <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-white text-sm font-medium">
-                      <FaIdBadge className="opacity-90" />
-                      <span>{item.quiz_id}</span>
-                    </div>
-                    <span
-                      className={`flex items-center gap-1 text-xs px-3 py-1 rounded-full font-medium border ${status.color}`}
+            <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-2 border-b-gray-300 pb-4">
+              <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-3 sm:mb-0">
+                Organizer Dashboard
+              </h1>
+              <p className="text-gray-500 text-sm">
+                Manage and monitor your hosted quizzes in real time
+              </p>
+            </header>
+
+            {host_info.length === 0 ? (
+              <p className="text-gray-500 text-center mt-24 text-lg">
+                No hosted quizzes found. Start hosting to see them here 🎯
+              </p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {host_info.map((item) => {
+                  const status = getStatus(item.startDate, item.endDate);
+
+                  return (
+                    <Link
+                      to={`/dashboard/organizer-pannel/${item?._id}`}
+                      state={{hostId : item._id}}
+                      key={item._id}
+                      className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group"
                     >
-                      {status.icon}
-                      {status.label}
-                    </span>
-                  </div>
+                      {/* Card Header */}
+                      <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-white text-sm font-medium">
+                          <FaIdBadge className="opacity-90" />
+                          <span>{item.quiz_id}</span>
+                        </div>
+                        <span
+                          className={`flex items-center gap-1 text-xs px-3 py-1 rounded-full font-medium border ${status.color}`}
+                        >
+                          {status.icon}
+                          {status.label}
+                        </span>
+                      </div>
 
-                  {/* Card Body */}
-                  <div className="p-5 space-y-3 text-sm text-gray-700">
-                    <div className="flex items-center">
-                      <FaCalendarAlt className="text-indigo-500 mr-2" />
-                      <span>
-                        <strong>Start:</strong> {formatDateTime(item.startDate)}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaClock className="text-green-500 mr-2" />
-                      <span>
-                        <strong>End:</strong> {formatDateTime(item.endDate)}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <FaRegHourglassHalf className="text-orange-500 mr-2" />
-                      <span>
-                        <strong>Duration:</strong>{" "}
-                        {getDuration(item.startDate, item.endDate)}
-                      </span>
-                    </div>
+                      {/* Card Body */}
+                      <div className="p-5 space-y-3 text-sm text-gray-700">
+                        <div className="flex items-center">
+                          <FaCalendarAlt className="text-indigo-500 mr-2" />
+                          <span>
+                            <strong>Start:</strong> {formatDateTime(item.startDate)}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <FaClock className="text-green-500 mr-2" />
+                          <span>
+                            <strong>End:</strong> {formatDateTime(item.endDate)}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <FaRegHourglassHalf className="text-orange-500 mr-2" />
+                          <span>
+                            <strong>Duration:</strong>{" "}
+                            {getDuration(item.startDate, item.endDate)}
+                          </span>
+                        </div>
 
-                    <p className="text-gray-500 text-xs border-t border-gray-200 pt-3">
-                      Created on: {formatDateTime(item.createdAt)}
-                    </p>
-                  </div>
+                        <p className="text-gray-500 text-xs border-t border-gray-200 pt-3">
+                          Created on: {formatDateTime(item.createdAt)}
+                        </p>
+                      </div>
 
-                  {/* Hover Accent Line */}
-                  <div className="absolute bottom-0 left-0 h-1 w-0 bg-indigo-500 group-hover:w-full transition-all duration-500"></div>
-                </div>
-              );
-            })}
+                      {/* Hover Accent Line */}
+                      <div className="absolute bottom-0 left-0 h-1 w-0 bg-indigo-500 group-hover:w-full transition-all duration-500"></div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+
           </div>
-        )}
-      </div>
+        )
+      }
+
     </section>
   );
 };

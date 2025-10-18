@@ -37,6 +37,10 @@ const SummaryApi = {
         url: "/api/host/create-quiz",
         method: "post"
     },
+    fetch_hostDetails: {
+        url: "/api/host/get-host-details",
+        method: "post"
+    }
 }
 
 export default SummaryApi

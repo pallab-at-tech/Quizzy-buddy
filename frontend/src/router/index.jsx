@@ -15,6 +15,7 @@ import CreateQuizManual from '../pages/QuizPages/CreateQuizManual';
 import { Link } from 'react-router-dom';
 import CreateQuizAi from '../pages/QuizPages/CreateQuizAi';
 import OrganizerPannel from '../Layout/Organizer/OrganizerPannel';
+import HostPage from '../Layout/Organizer/HostPage';
 
 
 const router = createBrowserRouter([
@@ -41,9 +42,15 @@ const router = createBrowserRouter([
                         element: <Profile />
                     },
                     {
-                        path : "organizer-pannel",
-                        element : <OrganizerPannel/>
-                    }
+                        path: "organizer-pannel",
+                        element: <OrganizerPannel />,
+                        children : [
+                            {
+                                path : ":quizId",
+                                element : <HostPage/>
+                            }
+                        ]
+                    },
                 ]
             },
             {
@@ -91,12 +98,12 @@ const router = createBrowserRouter([
                         </div>
                     },
                     {
-                        path : "create-quiz",
-                        element : <CreateQuizManual/>
+                        path: "create-quiz",
+                        element: <CreateQuizManual />
                     },
                     {
-                        path : "create-ai-quiz",
-                        element : <CreateQuizAi/> 
+                        path: "create-ai-quiz",
+                        element: <CreateQuizAi />
                     }
                 ]
             }

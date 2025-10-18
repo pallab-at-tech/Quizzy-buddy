@@ -225,6 +225,8 @@ const CreateQuizAi = () => {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  // console.log("quiz data ai",quizData)
+
 
   return (
     <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">

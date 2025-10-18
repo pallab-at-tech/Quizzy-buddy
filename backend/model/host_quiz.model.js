@@ -84,6 +84,10 @@ const hostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    nano_id : {
+        type : String,
+        required : true
+    },
     user_ids: [
         {
             type: mongoose.Schema.ObjectId,

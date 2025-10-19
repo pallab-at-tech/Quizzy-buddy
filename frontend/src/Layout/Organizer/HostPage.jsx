@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiCopy, FiCheck, FiClock, FiCalendar, FiUser, FiHash } from "react-icons/fi";
+import { FiCopy, FiCheck, FiClock, FiCalendar, FiUser, FiHash, FiPlay, FiStopCircle } from "react-icons/fi";
 import { FaClipboardQuestion } from "react-icons/fa6";
 import { FaEdit, FaImage, FaPlusCircle, FaSave, FaTimes } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -19,8 +19,8 @@ const HostPage = () => {
     const [editedData, setEditedData] = useState(null)
 
     const [uploadLoading, setUploadLoading] = useState(new Set())
-
     const [imageLoadFailed, setImageLoadFailed] = useState(new Set())
+    const [editLoading, setEditLoading] = useState(false)
 
     // function of fetch host details
     const fetchHostDetails = async () => {
@@ -70,7 +70,6 @@ const HostPage = () => {
 
     //  Remove question
     const removeQuestion = (index) => {
-        // setQuestions(questions.filter((_, i) => i !== index));
         setEditedData(editedData.filter((_, i) => index !== i))
     };
 
@@ -159,8 +158,37 @@ const HostPage = () => {
     }
 
     // handle edit question set.
-    const handelEditQuestion = () => {
+    const handelEditQuestion = async () => {
+        try {
+            setEditLoading(true)
 
+            const response = await Axios({
+                ...SummaryApi.saved_changes,
+                data: {
+                    editedData: editedData,
+                    hostId: location?.hostId
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData.success) {
+                toast.success(responseData.message)
+                if (editedData) {
+                    setEditedData(responseData.savedData.quiz_data)
+                }
+                setData(responseData.savedData)
+            }
+            else {
+                toast.error(responseData.message)
+            }
+
+            setEditLoading(false)
+        } catch (error) {
+            setEditLoading(false)
+            toast.error(error?.response?.data.message || "Some error occured , try later!")
+            console.log("handelEditQuestion error", error)
+        }
     }
 
     // fetch host details for every render.
@@ -168,7 +196,7 @@ const HostPage = () => {
         fetchHostDetails();
     }, []);
 
-    console.log("host data", editedData)
+    // console.log("host data", data)
 
     return (
         <section className="pt-0 pb-6 px-4">
@@ -229,6 +257,49 @@ const HostPage = () => {
                     </div>
                 </div>
 
+                {/* Instant Controls */}
+                <div className="flex items-center justify-center gap-10 mt-6">
+                    {(() => {
+                        const now = new Date();
+                        const quizStart = new Date(data?.quiz_start);
+                        const quizEnd = new Date(data?.quiz_end);
+
+                        const hasStarted = now >= quizStart;
+                        const hasEnded = now >= quizEnd;
+
+                        const canStart = !hasStarted;
+                        const canEnd = hasStarted && !hasEnded;
+
+                        return (
+                            <>
+                                {/* Start Now Button */}
+                                <button
+                                    disabled={!canStart}
+                                    className={`flex items-center gap-2 ${canStart
+                                            ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                                            : "bg-blue-300 cursor-not-allowed"
+                                        } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
+                                >
+                                    <FiPlay />
+                                    Start Now
+                                </button>
+
+                                {/* End Now Button */}
+                                <button
+                                    disabled={!canEnd}
+                                    className={`flex items-center gap-2 ${canEnd
+                                            ? "bg-red-600 hover:bg-red-700 cursor-pointer"
+                                            : "bg-red-300 cursor-not-allowed"
+                                        } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
+                                >
+                                    <FiStopCircle />
+                                    End Now
+                                </button>
+                            </>
+                        );
+                    })()}
+                </div>
+
                 <div className="border-t border-dashed border-gray-400 my-4"></div>
 
                 {/* Created At */}
@@ -254,7 +325,6 @@ const HostPage = () => {
 
                         <button
                             onClick={() => {
-                                handelEditQuestion()
                                 setEditing(true)
                                 setEditedData(data?.quiz_data || [])
                             }}
@@ -493,6 +563,7 @@ const HostPage = () => {
                                 <div className="flex items-center justify-start gap-4 mt-6">
                                     {/* Discard Button */}
                                     <button
+                                        disabled={editLoading}
                                         onClick={() => {
                                             setEditedData(null)
                                             setEditing(false)
@@ -506,12 +577,13 @@ const HostPage = () => {
 
                                     {/* Save Button */}
                                     <button
-                                        // onClick={onSave}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white 
-                                        rounded-md hover:bg-blue-700 transition font-medium shadow-sm cursor-pointer"
+                                        disabled={editLoading}
+                                        onClick={() => handelEditQuestion()}
+                                        className={`flex items-center gap-2 px-4 py-2 ${editLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}
+                                        text-white  rounded-md  transition font-medium shadow-sm`}
                                     >
                                         <FaSave size={14} />
-                                        Save Changes
+                                        {editLoading ? "Saving..." : "Save Changes"}
                                     </button>
                                 </div>
                             </div>

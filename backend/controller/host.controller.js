@@ -212,3 +212,97 @@ export const fetchHostPlusQuizDetails = async (request, response) => {
         })
     }
 }
+
+export const saveChangesHostDetailsByHost = async (request, response) => {
+    try {
+
+        const { editedData, hostId } = request.body || {}
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "Host Id Required!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!editedData || !Array.isArray(editedData) || editedData.length === 0) {
+            return response.status(400).json({
+                message: "No Changes Found!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId).populate("quiz_data").select("quiz_data _id host_user_id")
+
+        if (!host) {
+            return response.status(400).json({
+                message: "Host model not found!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        if (host.host_user_id.toString() !== userId) {
+            return response.status(400).json({
+                message: "Access denied!",
+                error: true,
+                success: false
+            })
+        }
+
+        await Promise.all(
+            editedData.map(async (d) => {
+
+                if (!d) return
+
+                // if new question then create new question model
+                if (!d?._id) {
+                    let options = []
+                    if (d && !d.inputBox) {
+                        options = d.options.filter((a) => a.trim())
+                    }
+                    const question = await questionModel.create({
+                        question: d.question || "",
+                        image: d.image || "",
+                        marks: d.marks || "",
+                        inputBox: d.inputBox || false,
+                        options: options || [],
+                        correct_option: d.correct_option || ""
+                    })
+                    host.quiz_data = [question._id, ...host.quiz_data]
+                } 
+                // existing question update
+                else {
+                    await questionModel.findByIdAndUpdate(d._id, {
+                        question: d.question,
+                        image: d.image,
+                        marks: d.marks,
+                        inputBox: d.inputBox,
+                        options: d.options,
+                        correct_option: d.correct_option
+                    })
+                }
+            })
+        )
+
+        await host.save()
+        const savedData = await quizHostModel.findById(host._id).populate("quiz_data")
+
+        return response.json({
+            message: "Saved changes",
+            savedData: savedData,
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}

@@ -40,6 +40,10 @@ const SummaryApi = {
     fetch_hostDetails: {
         url: "/api/host/get-host-details",
         method: "post"
+    },
+    saved_changes : {
+        url : "/api/host/saved-changes",
+        method : "post"
     }
 }
 

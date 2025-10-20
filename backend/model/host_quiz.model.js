@@ -56,13 +56,13 @@ const quizQuestionSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    options : {
-        type : Array,
-        default : []
+    options: {
+        type: Array,
+        default: []
     },
     correct_option: {
         type: String,
-        default : ""
+        default: ""
     }
 },
     {
@@ -84,9 +84,9 @@ const hostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    nano_id : {
-        type : String,
-        required : true
+    nano_id: {
+        type: String,
+        required: true
     },
     user_ids: [
         {
@@ -96,8 +96,8 @@ const hostSchema = new mongoose.Schema({
     ],
     quiz_data: [
         {
-            type : mongoose.Schema.ObjectId,
-            ref : "question"
+            type: mongoose.Schema.ObjectId,
+            ref: "question"
         }
     ],
     quiz_start: {
@@ -113,8 +113,26 @@ const hostSchema = new mongoose.Schema({
         default: ""
     },
     strict: {
-        type: Boolean,
-        default: false
+        type: {
+            enabled: {
+                type: Boolean,
+                default: false
+            },
+            time: {
+                type: Number,
+                default: 0
+            },
+            unit: {
+                type: String,
+                enum: ["min", "sec"],
+                default: 'sec'
+            }
+        },
+        default: {
+            enabled: false,
+            time: 0,
+            unit: "sec"
+        }
     },
     total_marks: {
         type: Number,

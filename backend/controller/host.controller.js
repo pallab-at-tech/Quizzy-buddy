@@ -8,8 +8,8 @@ const hostIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 
 export const createQuizController = async (request, response) => {
     try {
-        const { host_user_nanoId, time_sec_min, quiz_data = [], quiz_start,
-            quiz_expire_per_Q, set_negetive_marks = 0, strict = false
+        const { host_user_nanoId, quiz_data = [], quiz_start,
+            quiz_end, set_negetive_marks = 0
         } = request.body || {}
 
         const userId = request.userId
@@ -22,7 +22,7 @@ export const createQuizController = async (request, response) => {
             })
         }
 
-        if (!quiz_start) {
+        if (!quiz_start.trim()) {
             return response.status(400).json({
                 message: "Quiz start time required!",
                 error: true,
@@ -30,9 +30,9 @@ export const createQuizController = async (request, response) => {
             })
         }
 
-        if (!quiz_expire_per_Q) {
+        if (!quiz_end.trim()) {
             return response.status(400).json({
-                message: "Quiz time required!",
+                message: "Quiz end time required!",
                 error: true,
                 success: false
             })
@@ -68,32 +68,15 @@ export const createQuizController = async (request, response) => {
         // generate random & unique token
         const join_code = crypto.randomBytes(12).toString('hex')
 
-        // end date compute
-        const startDate = new Date(quiz_start)
-        const perQuestionTime = parseInt(quiz_expire_per_Q, 10)
-
-        let totalTime;
-
-        if (time_sec_min === "minutes") {
-            totalTime = filteredData.length * perQuestionTime * 60
-        }
-        else {
-            totalTime = filteredData.length * perQuestionTime
-        }
-
-        const endDate = new Date(startDate.getTime() + totalTime * 1000)
-
         // generate unique host id
         const nano_id = hostIdentity()
-
 
         const payload = {
             host_user_id: userId,
             host_user_nanoId: host_user_nanoId,
             provide_join_code: join_code,
             quiz_start: quiz_start,
-            quiz_end: endDate,
-            quiz_expire_per_Q: `${quiz_expire_per_Q}|${time_sec_min}`,
+            quiz_end: quiz_end,
             set_negetive_marks: set_negetive_marks,
             total_marks: 0,
             quiz_data: [],
@@ -125,8 +108,8 @@ export const createQuizController = async (request, response) => {
             _id: hostModel._id,
             quiz_id: hostModel.nano_id,
             createdAt: hostModel.createdAt,
-            endDate: endDate,
-            startDate: startDate
+            endDate: quiz_end,
+            startDate: quiz_start
         })
         user.host_count += 1
         await user.save()
@@ -145,7 +128,7 @@ export const createQuizController = async (request, response) => {
                     hour: '2-digit',
                     minute: '2-digit',
                 }),
-                end_time: new Date(endDate).toLocaleDateString(undefined, {
+                end_time: new Date(quiz_end).toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
@@ -157,8 +140,8 @@ export const createQuizController = async (request, response) => {
                 _id: hostModel._id,
                 quiz_id: hostModel.nano_id,
                 createdAt: hostModel.createdAt,
-                endDate: endDate,
-                startDate: startDate
+                endDate: quiz_end,
+                startDate: quiz_start
             },
             error: false,
             success: true
@@ -273,7 +256,7 @@ export const saveChangesHostDetailsByHost = async (request, response) => {
                         correct_option: d.correct_option || ""
                     })
                     host.quiz_data = [question._id, ...host.quiz_data]
-                } 
+                }
                 // existing question update
                 else {
                     await questionModel.findByIdAndUpdate(d._id, {
@@ -294,6 +277,182 @@ export const saveChangesHostDetailsByHost = async (request, response) => {
         return response.json({
             message: "Saved changes",
             savedData: savedData,
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const hostOtherDetails = async (request, response) => {
+    try {
+        const { hostId, strict, time, unit, set_negetive_marks } = request.body || {}
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "Host Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId)
+
+        if (!host) {
+            return response.status(400).json({
+                message: "Host Model not Found!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (userId !== host.host_user_id.toString()) {
+            return response.status(400).json({
+                message: "Access Denied!",
+                error: true,
+                success: false
+            })
+        }
+
+        const now = new Date();
+        if (now >= new Date(host.quiz_start)) {
+            return response.status(400).json({
+                message: "You cannot edit quiz settings after the quiz has started!",
+                error: true,
+                success: false,
+            });
+        }
+
+
+        if (strict) {
+            host.strict.enabled = true
+            host.strict.time = time
+            host.strict.unit = unit
+        }
+        else {
+            host.strict.enabled = false
+            host.strict.time = 0
+            host.strict.unit = "sec"
+        }
+
+        host.set_negetive_marks = Number(set_negetive_marks) || 0
+
+        await host.save()
+
+        return response.json({
+            message: "Quiz details updated.",
+            data: {
+                strict: strict,
+                time: time,
+                unit: unit,
+                set_negetive_marks: Number(set_negetive_marks) || 0
+            },
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const hostTimeUpdate = async (request, response) => {
+    try {
+
+        const { hostId, quiz_start, quiz_end } = request.body || {}
+
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "Host Id Required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId)
+
+        if (!host) {
+            return response.status(400).json({
+                message: "Host model not found!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        if (host.host_user_id.toString() !== userId) {
+            return response.status(400).json({
+                message: "Access denied!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!quiz_start.trim()) {
+            return response.status(400).json({
+                message: "Quiz start time can't be null",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!quiz_end.trim()) {
+            return response.status(400).json({
+                message: "Quiz end time can't be null",
+                error: true,
+                success: false
+            })
+        }
+
+        const now = new Date()
+
+        if (now >= new Date(quiz_start)) {
+            return response.status(400).json({
+                message: "past Time can't be selected at quiz start field!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        if (now >= new Date(quiz_end)) {
+            return response.status(400).json({
+                message: "past Time can't be selected at quiz end field!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        if (new Date(quiz_end) <= new Date(quiz_start)) {
+            return response.status(400).json({
+                message: "start time can't be earlier than the end time!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        host.quiz_start = quiz_start
+        host.quiz_end = quiz_end
+
+        await host.save()
+
+        return response.json({
+            message: "Host time updated",
+            data: {
+                quiz_start: quiz_start,
+                quiz_end: quiz_end,
+            },
             error: false,
             success: true
         })

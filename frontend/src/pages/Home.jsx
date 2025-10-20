@@ -1,27 +1,59 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoStar } from "react-icons/io5";
 import backimg1 from "../assets/q2-edit.png"
 import backimg2 from "../assets/q3-edit.png"
 import { PiShootingStarFill } from "react-icons/pi";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import i1 from "../assets/i1.png"
 import i2 from "../assets/i2.png"
 import i3 from "../assets/i3.png"
 import i4 from "../assets/i4.png"
 import { useGlobalContext } from '../provider/GlobalProvider';
+import toast from 'react-hot-toast';
 
 const Home = () => {
 
     const user = useSelector(state => state.user)
-    const { isLogin } = useGlobalContext()
+    const { isLogin, socketConnection } = useGlobalContext()
+    const navigate = useNavigate()
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => { document.body.style.overflow = 'auto'; };
     }, []);
 
-    console.log("From home page user", user)
+    const [joinedQuiz, setJoinedQuiz] = useState(false)
+    const [quizCode, setQuizCode] = useState("")
+    const [quizJoinLoader, setQuizJoinLoader] = useState(false)
+
+    const handleJoinedQuiz = () => {
+        setQuizJoinLoader(true)
+        try {
+
+            socketConnection.once("joinedQuiz_success", (data) => {
+                toast.success(data?.message)
+                navigate(`/joined/${data?.hostId}`)
+                setQuizJoinLoader(false)
+            })
+
+            socketConnection.once("joinedQuiz_error", (data) => {
+                toast.error(data?.message)
+                setQuizJoinLoader(false)
+            })
+
+            socketConnection.emit("joined_quiz", {
+                joined_code: quizCode,
+                name: user?.name
+            })
+
+        } catch (error) {
+            setQuizJoinLoader(false)
+            console.log("handleJoinedQuiz error", error)
+        }
+    }
+
+    // console.log("From home page user", user)
 
     if (isLogin === null) return null;
 
@@ -140,7 +172,7 @@ const Home = () => {
                                     </Link>
 
                                     {/* join quiz section */}
-                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#10b107] pt-2 pl-3 rounded-xl overflow-hidden relative  md:min-h-[130px] min-h-[100px]'>
+                                    <div onClick={() => setJoinedQuiz(true)} className='grid lg:grid-cols-[30%_70%] cursor-pointer  bg-[#10b107] pt-2 pl-3 rounded-xl overflow-hidden relative  md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
                                             <div className='text-sm md:font-semibold font-medium'>
@@ -151,7 +183,7 @@ const Home = () => {
                                         <div className='absolute bottom-0 top-0 right-0 z-0'>
                                             <img src={i2} alt="" className='md:h-[240px] h-[150px] transform scale-x-[-1]' />
                                         </div>
-                                    </Link>
+                                    </div>
                                 </div>
 
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
@@ -192,6 +224,65 @@ const Home = () => {
                     </div>
                 )
             }
+
+            {joinedQuiz && (
+                <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+
+                    <div className="bg-white rounded-2xl shadow-lg w-[90%] max-w-md p-6 relative">
+
+                        {/* Close button */}
+                        <button
+                            onClick={() => setJoinedQuiz(false)}
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
+                        >
+                            <i className="ri-close-line text-2xl"></i>
+                        </button>
+
+                        {/* Header */}
+                        <div className="text-2xl font-semibold text-gray-800 mb-5 flex items-center gap-2">
+                            <i className="ri-key-line text-blue-600"></i>
+                            Join Quiz
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-gray-600 text-sm mb-6">
+                            Enter the <span className="font-medium text-blue-600">Join Code</span> provided by your quiz host to participate.
+                        </p>
+
+                        {/* Input Field */}
+                        <div className="mb-6">
+                            <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-400">
+                                <i className="ri-hashtag text-gray-400 text-xl pl-3"></i>
+                                <input
+                                    type="text"
+                                    placeholder="Enter join code..."
+                                    value={quizCode}
+                                    onChange={(e) => setQuizCode(e.target.value)}
+                                    className="flex-1 px-3 py-2 outline-none text-gray-800 placeholder-gray-400"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="flex justify-end gap-4">
+                            <button
+                                onClick={() => setJoinedQuiz(false)}
+                                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                disabled={quizJoinLoader}
+                                onClick={() => handleJoinedQuiz()}
+                                className={`px-5 py-2 ${quizJoinLoader ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}  text-white rounded-lg  transition flex items-center gap-2`}
+                            >
+                                <i className="text-lg"></i>
+                                Join
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            )}
 
         </section>
     )

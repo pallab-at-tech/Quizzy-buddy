@@ -465,3 +465,35 @@ export const hostTimeUpdate = async (request, response) => {
         })
     }
 }
+
+export const joinedQuizController = async (request, response) => {
+    try {
+        const { joined_code } = request.body || {}
+        const userId = request.userId
+
+        if(!joined_code.trim()){
+            return response.status(400).json({
+                message : "Joined code not found!",
+                error : true,
+                success : false
+            })
+        }
+
+        const host = await quizHostModel.findOne({provide_join_code : joined_code})
+
+        if(!host){
+            return response.status(400).json({
+                message : "Joined code not exist!",
+                error : true,
+                success : false
+            })
+        }
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}

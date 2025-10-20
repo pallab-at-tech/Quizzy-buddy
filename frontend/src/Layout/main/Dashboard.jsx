@@ -73,15 +73,15 @@ const Dashboard = () => {
           <div className='flex flex-col  gap-1.5 font-semibold'>
 
             <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
-              <p className='pl-2'>Registration/Application</p>
+              <p className='pl-2'>Dashboard Overview</p>
             </Link>
 
             <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
-              <p className='pl-2'>My rounds</p>
+              <p className='pl-2'>My Quizzes</p>
             </Link>
 
             <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
-              <p className='pl-2'>Bookmark</p>
+              <p className='pl-2'>Leaderboard</p>
             </Link>
 
             <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>

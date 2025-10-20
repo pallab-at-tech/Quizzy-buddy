@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import CreateQuizAi from '../pages/QuizPages/CreateQuizAi';
 import OrganizerPannel from '../Layout/Organizer/OrganizerPannel';
 import HostPage from '../Layout/Organizer/HostPage';
+import QuizJoined from '../pages/Users/QuizJoined';
 
 
 const router = createBrowserRouter([
@@ -106,8 +107,11 @@ const router = createBrowserRouter([
                         element: <CreateQuizAi />
                     }
                 ]
+            },
+            {
+                path : "/joined/:hostId",
+                element : <QuizJoined/>
             }
-
         ]
     },
     {

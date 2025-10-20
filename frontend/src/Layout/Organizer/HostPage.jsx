@@ -346,14 +346,14 @@ const HostPage = () => {
         })
     }, [data])
 
-    // console.log("hihihihi", data)
+    console.log("hihihihi", data)
 
 
     return (
         <section className="pt-0 pb-6 px-4">
 
             {/* host details */}
-            <div className="bg-white shadow-md rounded-lg p-8">
+            <div className="bg-white shadow-md rounded-lg p-8 mb-6">
 
                 <h1 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <FiUser className="text-blue-600" />
@@ -528,6 +528,41 @@ const HostPage = () => {
                     <strong>Created At:</strong> {formatDateTime(data?.createdAt)}
                 </div>
             </div>
+
+            {/* Submission Board */}
+            <div className="bg-white shadow-md rounded-lg p-8 my-6 relative">
+
+                {/* Full details button */}
+                <button
+                    className="absolute top-3 right-6 text-lg text-blue-600 cursor-pointer font-medium hover:text-blue-700 underline transition"
+                >
+                    Full Details
+                </button>
+
+                {/* Heading */}
+                <div className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span className="inline-block w-2 h-6 bg-blue-600 rounded"></span>
+                    Submission Board
+                </div>
+
+                {/* Stats */}
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+
+                    {/* Joined */}
+                    <div className="flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
+                        <p className="text-gray-600 font-medium text-sm">Joined</p>
+                        <h2 className="text-3xl font-semibold text-blue-700 mt-1">{data?.user_ids?.length || 0}</h2>
+                    </div>
+
+                    {/* Submitted */}
+                    <div className="flex flex-col items-center justify-center bg-green-50 border border-green-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
+                        <p className="text-gray-600 font-medium text-sm">Submitted</p>
+                        <h2 className="text-2xl font-semibold text-green-700 mt-1">{data?.quiz_submission_data?.length === 0 ? "N/A" : data?.quiz_submission_data?.length || "N/A"}</h2>
+                    </div>
+
+                </div>
+            </div>
+
 
             {/* Question section */}
             <div className="bg-white shadow-md rounded-lg p-8 my-6">

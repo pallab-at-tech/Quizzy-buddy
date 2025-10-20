@@ -189,10 +189,9 @@ const CreateQuizAi = () => {
         ...SummaryApi.create_quiz,
         data: {
           host_user_nanoId: user?.nanoId,
-          time_sec_min: data?.time_sec_min || "Seconds",
           quiz_data: questions,
           quiz_start: data?.quiz_start || "",
-          quiz_expire_per_Q: data?.quiz_expire_per_Q || "",
+          quiz_end : data?.quiz_end || "",
           set_negetive_marks: data?.set_negetive_marks || 0,
         }
       })
@@ -224,8 +223,6 @@ const CreateQuizAi = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
-
-  // console.log("quiz data ai",quizData)
 
 
   return (

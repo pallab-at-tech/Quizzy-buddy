@@ -133,10 +133,9 @@ const CreateQuizManual = () => {
                 ...SummaryApi.create_quiz,
                 data: {
                     host_user_nanoId: user?.nanoId,
-                    time_sec_min: data?.time_sec_min || "Seconds",
                     quiz_data: questions,
                     quiz_start: data?.quiz_start || "",
-                    quiz_expire_per_Q: data?.quiz_expire_per_Q || "",
+                    quiz_end : data?.quiz_end || "",
                     set_negetive_marks: data?.set_negetive_marks || 0,
                 }
             })
@@ -163,8 +162,6 @@ const CreateQuizManual = () => {
         }
     }
 
-    // console.log("question set", questions)
-    // console.log("external data",quizData)
 
     return (
         <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">

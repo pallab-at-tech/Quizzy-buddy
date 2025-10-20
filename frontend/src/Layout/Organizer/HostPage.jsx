@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiCopy, FiCheck, FiClock, FiCalendar, FiUser, FiHash, FiPlay, FiStopCircle } from "react-icons/fi";
 import { FaClipboardQuestion } from "react-icons/fa6";
 import { FaEdit, FaImage, FaPlusCircle, FaSave, FaTimes } from "react-icons/fa";
+import { FaCheckCircle, FaExclamationTriangle, FaMinusCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 import SummaryApi from "../../common/SumarryApi";
@@ -21,6 +22,31 @@ const HostPage = () => {
     const [uploadLoading, setUploadLoading] = useState(new Set())
     const [imageLoadFailed, setImageLoadFailed] = useState(new Set())
     const [editLoading, setEditLoading] = useState(false)
+
+    const [hostDetailsUpdate, setHostDetailsUpdate] = useState({
+        data: {
+            strict: data?.strict?.enabled || false,
+            time: data?.strict?.time || 1,
+            unit: data?.strict?.unit || "sec",
+            set_negetive_marks: data?.set_negetive_marks || 0
+        },
+        updateData: {
+            strict: data?.strict?.enabled || false,
+            time: data?.strict?.time || 1,
+            unit: data?.strict?.unit || "sec",
+            set_negetive_marks: data?.set_negetive_marks || 0
+        },
+        loading: false
+    })
+    const [hostDetailsLoading, setHostDetailsLoading] = useState(false)
+
+    const [timeData, setTimeData] = useState({
+        quiz_start: data?.quiz_start,
+        quiz_end: data?.quiz_end
+    })
+    const [timeDetailsLoading, setTimeDetailsLoading] = useState(false)
+    const [timeUpdateLoading, setTimeUpdateLoading] = useState(false)
+
 
     // function of fetch host details
     const fetchHostDetails = async () => {
@@ -56,6 +82,15 @@ const HostPage = () => {
                 timeStyle: "short",
             }) || "N/A"
         );
+    };
+
+    // adjust normal date into local time date formate
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        // Adjust for timezone offset so it shows correctly in local time
+        const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
     };
 
 
@@ -191,19 +226,136 @@ const HostPage = () => {
         }
     }
 
+    const handleSubmitOtherDetails = async () => {
+        try {
+            setHostDetailsLoading(true)
+
+            const response = await Axios({
+                ...SummaryApi.host_details_update,
+                data: {
+                    hostId: location?.hostId,
+                    strict: hostDetailsUpdate.updateData.strict,
+                    time: hostDetailsUpdate.updateData.time,
+                    unit: hostDetailsUpdate.updateData.unit,
+                    set_negetive_marks: hostDetailsUpdate.updateData.set_negetive_marks
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData.success) {
+                toast.success(responseData.message)
+                setHostDetailsUpdate((prev) => {
+                    return {
+                        ...prev,
+                        loading: false,
+                        data: responseData.data
+                    }
+                })
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        set_negetive_marks: responseData?.data?.set_negetive_marks,
+                        strict: {
+                            enabled: responseData?.data?.strict || false,
+                            time: responseData?.data?.time || 0,
+                            unit: responseData?.data?.unit || "sec"
+                        }
+                    }
+                })
+            }
+            else {
+                toast.error(responseData.message)
+            }
+
+            setHostDetailsLoading(false)
+
+        } catch (error) {
+            toast.error(error?.response?.data.message || "Some error occured , try later!")
+            setHostDetailsLoading(false)
+            console.log("handleOtherDetails error", error)
+        }
+    }
+
+    const handleUpdateTimeDetails = async () => {
+
+        try {
+            setTimeUpdateLoading(true)
+
+            const response = await Axios({
+                ...SummaryApi.host_time_update,
+                data: {
+                    hostId: location?.hostId,
+                    quiz_start: timeData?.quiz_start,
+                    quiz_end: timeData?.quiz_end
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData.success) {
+                toast.success(responseData.message)
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        quiz_start: responseData?.data?.quiz_start,
+                        quiz_end: responseData?.data?.quiz_end
+                    }
+                })
+                setTimeDetailsLoading(false)
+            }
+            else {
+                toast.error(responseData.message)
+            }
+
+            setTimeUpdateLoading(false)
+
+        } catch (error) {
+            toast.error(error?.response?.data.message || "Some error occured , try later!")
+            setTimeUpdateLoading(false)
+            console.log("handleUpdateTimeDetails error", error)
+        }
+    }
+
     // fetch host details for every render.
     useEffect(() => {
         fetchHostDetails();
     }, []);
 
-    // console.log("host data", data)
+    // set hostDetailsUpdate and timeDetails data
+    useEffect(() => {
+        if (!data) return
+        setHostDetailsUpdate({
+            data: {
+                strict: data?.strict?.enabled || false,
+                time: data?.strict?.time || 1,
+                unit: data?.strict?.unit || "sec",
+                set_negetive_marks: data?.set_negetive_marks || 0
+            },
+            updateData: {
+                strict: data?.strict?.enabled || false,
+                time: data?.strict?.time || 1,
+                unit: data?.strict?.unit || "sec",
+                set_negetive_marks: data?.set_negetive_marks || 0
+            },
+            loading: false
+        })
+        setTimeData({
+            quiz_start: data?.quiz_start,
+            quiz_end: data?.quiz_end
+        })
+    }, [data])
+
+    // console.log("hihihihi", data)
+
 
     return (
         <section className="pt-0 pb-6 px-4">
 
             {/* host details */}
             <div className="bg-white shadow-md rounded-lg p-8">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+
+                <h1 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <FiUser className="text-blue-600" />
                     Host Dashboard
                 </h1>
@@ -219,7 +371,7 @@ const HostPage = () => {
                 {/* Join Code */}
                 <div className="flex items-center flex-wrap gap-2 border border-gray-300 bg-blue-50 px-3 py-2 rounded-md mb-4">
                     <span className="font-semibold">Join Code:</span>
-                    <span className="font-mono bg-white border border-gray-200 px-2 py-1 rounded-md">
+                    <span className="font-mono bg-blue-100 text-blue-600 border border-blue-300 px-2 py-1 rounded-md">
                         {data?.provide_join_code}
                     </span>
 
@@ -237,23 +389,91 @@ const HostPage = () => {
                 </div>
 
                 {/* Quiz Timing */}
-                <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-5">
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-5 mt-5">
+
                     <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2">
                             <FiCalendar className="text-blue-500" />
                             <strong>Start:</strong> {formatDateTime(data?.quiz_start)}
                         </div>
-                        <div className="flex items-center gap-2">
-                            <FiCalendar className="text-red-500" />
-                            <strong>End:</strong> {formatDateTime(data?.quiz_end)}
+                        <div className="flex items-center gap-5">
+                            <div className="flex items-center gap-2">
+                                <FiCalendar className="text-red-500" />
+                                <strong>End:</strong> {formatDateTime(data?.quiz_end)}
+                            </div>
+                            <div>
+                                <button
+                                    onClick={() => setTimeDetailsLoading(true)}
+                                    className="rounded-md  transition font-medium w-fit cursor-pointer flex items-center gap-2 px-3 py-1.5 border border-blue-500 text-blue-600  hover:bg-blue-50"
+                                >
+                                    <FaEdit size={16} />
+                                    Edit
+                                </button>
+                            </div>
                         </div>
                     </div>
+
                     <div className="flex items-center gap-2 text-gray-700">
                         <FiClock className="text-green-500" />
                         <strong>Duration:</strong>{" "}
                         {(new Date(data?.quiz_end) - new Date(data?.quiz_start)) /
                             (1000 * 60)}{" "}
                         min
+                    </div>
+                </div>
+
+                {/* marks info and strict mode */}
+                <div className="bg-white shadow-md rounded-lg p-6 relative">
+
+                    {/* Row 1: Marks Info */}
+                    <div className="flex flex-wrap items-center justify-between gap-6 mb-3">
+                        <div className="flex items-center gap-2 text-gray-800">
+                            <FaCheckCircle className="text-green-600" />
+                            <span className="font-semibold">Total Marks : </span>
+                            <span className="">{data?.total_marks ?? 0}</span>
+                        </div>
+
+                        <div className="flex items-center gap-5">
+                            <div className="flex items-center gap-2 text-gray-800">
+                                <FaMinusCircle className="text-red-500" />
+                                <span className="font-semibold">Negative Marks : </span>
+                                <span className="">{data?.set_negetive_marks ?? 0}</span>
+                            </div>
+
+                            {/* edit button */}
+                            <div className="">
+                                <button onClick={() => setHostDetailsUpdate((prev) => { return { ...prev, loading: true } })} className="rounded-md  transition font-medium w-fit cursor-pointer flex items-center gap-2 px-3 py-1.5 border border-blue-500 text-blue-600  hover:bg-blue-50">
+                                    <FaEdit size={16} />
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Row 2: Strict Time */}
+                    <div className="flex flex-col items-start gap-3">
+
+                        <div className="flex items-center gap-1.5 text-gray-800">
+                            <FaExclamationTriangle
+                                className={`${hostDetailsUpdate.data.strict ? "text-blue-600" : "text-gray-400"}`}
+                            />
+                            <span className="font-semibold">Strict Mode :</span>
+                            <span
+                                className={`px-2 py-0.5 rounded-md text-sm ${hostDetailsUpdate.data.strict ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"
+                                    }`}
+                            >
+                                {hostDetailsUpdate.data.strict ? "Enabled" : "Disabled"}
+                            </span>
+                            <div className="text-gray-900">
+                                {hostDetailsUpdate.data.strict && <span className="text-gray-400 select-none">( {"Time per Question : "} {hostDetailsUpdate.data.time} {hostDetailsUpdate.data.unit} )</span>}
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="text-sm text-gray-600 leading-relaxed ">
+                            In strict mode, each question has a fixed time limit — once that time expires,
+                            the participant cannot return to or modify their answer for that question.
+                        </div>
                     </div>
                 </div>
 
@@ -276,8 +496,8 @@ const HostPage = () => {
                                 <button
                                     disabled={!canStart}
                                     className={`flex items-center gap-2 ${canStart
-                                            ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                                            : "bg-blue-300 cursor-not-allowed"
+                                        ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                                        : "bg-blue-300 cursor-not-allowed"
                                         } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
                                 >
                                     <FiPlay />
@@ -288,8 +508,8 @@ const HostPage = () => {
                                 <button
                                     disabled={!canEnd}
                                     className={`flex items-center gap-2 ${canEnd
-                                            ? "bg-red-600 hover:bg-red-700 cursor-pointer"
-                                            : "bg-red-300 cursor-not-allowed"
+                                        ? "bg-red-600 hover:bg-red-700 cursor-pointer"
+                                        : "bg-red-300 cursor-not-allowed"
                                         } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
                                 >
                                     <FiStopCircle />
@@ -659,6 +879,254 @@ const HostPage = () => {
                     }
                 </div>
             </div>
+
+            {
+                hostDetailsUpdate.loading && (
+                    <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+                        <div className="bg-white w-[90%] max-w-md rounded-2xl shadow-lg p-6 space-y-5 border border-gray-200">
+
+                            {/* Header */}
+                            <div className="text-xl font-semibold text-gray-800 flex items-center justify-between">
+                                <span>Update Quiz Settings</span>
+                                <button
+                                    onClick={() => {
+                                        setHostDetailsUpdate((prev) => {
+                                            return {
+                                                ...prev,
+                                                loading: false,
+                                                updateData: prev.data
+                                            }
+                                        })
+                                    }}
+                                    className="text-gray-500 hover:text-red-500 text-lg cursor-pointer"
+                                    title="Close"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Strict Mode */}
+                            <div className="space-y-2">
+                                <label className="font-medium text-gray-700">Strict Mode</label>
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={hostDetailsUpdate.updateData.strict}
+                                        onChange={(e) =>
+                                            setHostDetailsUpdate(prev => ({
+                                                ...prev,
+                                                updateData: { ...prev.updateData, strict: e.target.checked }
+                                            }))
+                                        }
+                                        className="w-4 h-4 accent-blue-600"
+                                    />
+                                    <span className="text-sm text-gray-600">
+                                        Enable strict mode (restrict tab switching & timed per question)
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Time and Unit */}
+                            {hostDetailsUpdate.updateData.strict && (
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="flex-1">
+                                        <label className="block font-medium text-gray-700 mb-1">Time per Question</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={hostDetailsUpdate.updateData.time}
+                                            onChange={(e) => {
+                                                if (Number(e.target.value) < 1) {
+                                                    toast.error("Time can't be zero or negative")
+                                                    e.target.value = 1
+                                                    return
+                                                }
+                                                setHostDetailsUpdate(prev => ({
+                                                    ...prev,
+                                                    updateData: { ...prev.updateData, time: e.target.value }
+                                                }))
+                                            }}
+                                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block font-medium text-gray-700 mb-1">Unit</label>
+                                        <select
+                                            value={hostDetailsUpdate.updateData.unit}
+                                            onChange={(e) =>
+                                                setHostDetailsUpdate(prev => ({
+                                                    ...prev,
+                                                    updateData: { ...prev.updateData, unit: e.target.value }
+                                                }))
+                                            }
+                                            className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                                        >
+                                            <option value="sec">Seconds</option>
+                                            <option value="min">Minutes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Negative Marks */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">Negative Marks</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={hostDetailsUpdate.updateData.set_negetive_marks}
+                                    onChange={(e) => {
+                                        setHostDetailsUpdate(prev => ({
+                                            ...prev,
+                                            updateData: { ...prev.updateData, set_negetive_marks: Math.abs(e.target.value) }
+                                        }))
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                                />
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex items-center justify-end gap-4 pt-4 border-t">
+                                <button
+                                    disabled={hostDetailsLoading}
+                                    onClick={() => {
+                                        setHostDetailsUpdate((prev) => {
+                                            return {
+                                                ...prev,
+                                                loading: false,
+                                                updateData: prev.data
+                                            }
+                                        })
+                                    }}
+                                    className="px-4 py-2 rounded-md text-gray-700 hover:bg-gray-200 transition cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    disabled={hostDetailsLoading}
+                                    onClick={() => {
+                                        handleSubmitOtherDetails()
+                                    }}
+                                    className={`px-5 py-2 rounded-md ${hostDetailsLoading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"} text-white transition`}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+
+                        </div>
+                    </section>
+                )
+            }
+
+            {
+                timeDetailsLoading && (
+                    <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+                        <div className="bg-white w-[90%] max-w-md rounded-2xl shadow-lg p-6 space-y-5 border border-gray-200">
+
+                            {/* Header */}
+                            <div className="text-xl font-semibold text-gray-800 flex items-center justify-between">
+                                <span>Update Quiz Timing</span>
+                                <button
+                                    disabled={timeUpdateLoading}
+                                    onClick={() => {
+                                        setTimeDetailsLoading(false)
+                                        setTimeData({
+                                            quiz_start: data?.quiz_start,
+                                            quiz_end: data?.quiz_end
+                                        })
+                                    }}
+                                    className="text-gray-500 hover:text-red-500 text-lg cursor-pointer"
+                                    title="Close"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Quiz Start Time */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">Quiz Start Time</label>
+                                <input
+                                    type="datetime-local"
+                                    value={formatDateForInput(timeData.quiz_start)}
+                                    onChange={(e) => {
+                                        const now = new Date()
+
+                                        if (now >= new Date(e.target.value)) {
+                                            toast.error("past Time can't be selected!")
+                                            return
+                                        }
+
+                                        setTimeData((prev) => {
+                                            return {
+                                                ...prev,
+                                                quiz_start: e.target.value
+                                            }
+                                        })
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                                />
+                            </div>
+
+                            {/* Quiz End Time */}
+                            <div>
+                                <label className="block font-medium text-gray-700 mb-1">Quiz End Time</label>
+                                <input
+                                    type="datetime-local"
+                                    value={formatDateForInput(timeData.quiz_end)}
+                                    onChange={(e) => {
+                                        const now = new Date()
+
+                                        if (now >= new Date(e.target.value)) {
+                                            toast.error("past Time can't be selected!")
+                                            return
+                                        }
+
+                                        setTimeData((prev) => {
+                                            return {
+                                                ...prev,
+                                                quiz_end: e.target.value
+                                            }
+                                        })
+                                    }}
+                                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                                />
+                            </div>
+
+                            {/* Info */}
+                            <div className="text-sm text-gray-600">
+                                ⚡ Make sure the start time is earlier than the end time.
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="flex items-center justify-end gap-4 pt-4 border-t">
+                                <button
+                                    disabled={timeUpdateLoading}
+                                    onClick={() => {
+                                        setTimeDetailsLoading(false)
+                                        setTimeData({
+                                            quiz_start: data?.quiz_start,
+                                            quiz_end: data?.quiz_end
+                                        })
+
+                                    }}
+                                    className="px-4 py-2 rounded-md text-gray-700 hover:bg-gray-200 transition cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    disabled={timeUpdateLoading}
+                                    onClick={() => handleUpdateTimeDetails()}
+                                    className={`px-5 py-2 rounded-md ${timeUpdateLoading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}  text-white  transition`}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
 
         </section>
     );

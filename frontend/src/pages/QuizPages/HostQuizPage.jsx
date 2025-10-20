@@ -11,8 +11,7 @@ const HostQuizPage = () => {
     const [data, setData] = useState({
         host_id: user?.nanoId,
         quiz_start: "",
-        quiz_expire_per_Q: "",
-        time_sec_min: "Seconds",
+        quiz_end: "",
         set_negetive_marks: 0
     })
 
@@ -20,19 +19,35 @@ const HostQuizPage = () => {
         const selected = new Date(e.target.value);
         const now = new Date();
 
+        const name = e.target.name
+
+        if (data.quiz_end.trim() && data.quiz_start.trim()) {
+
+            if (new Date(data.quiz_start) <= new Date(data.quiz_end)) {
+                toast.error("Quiz start time must be less than Quiz end time.")
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        [name]: ""
+                    }
+                })
+                return
+            }
+        }
+
         if (selected < now) {
             toast.error("You cannot select past date or time!")
             setData((prev) => {
                 return {
                     ...prev,
-                    quiz_start: ""
+                    [name]: ""
                 }
             })
         } else {
             setData((prev) => {
                 return {
                     ...prev,
-                    quiz_start: e.target.value
+                    [name]: e.target.value
                 }
             })
         }
@@ -73,6 +88,7 @@ const HostQuizPage = () => {
                     <label className="flex flex-col text-gray-600 text-sm">
                         Start Date & Time
                         <input
+                            name='quiz_start'
                             type="datetime-local"
                             min={minDateTime}
                             value={data.quiz_start}
@@ -81,7 +97,19 @@ const HostQuizPage = () => {
                         />
                     </label>
 
-                    <div className="flex flex-col text-gray-600 text-sm">
+                    <label className="flex flex-col text-gray-600 text-sm">
+                        End Date & Time
+                        <input
+                            name='quiz_end'
+                            type="datetime-local"
+                            min={minDateTime}
+                            value={data.quiz_end}
+                            onChange={handleDateTimeChange}
+                            className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400"
+                        />
+                    </label>
+
+                    {/* <div className="flex flex-col text-gray-600 text-sm">
                         Time per Question
                         <div className="mt-1 flex items-center gap-2">
                             <input
@@ -120,7 +148,7 @@ const HostQuizPage = () => {
                                 <option value="minutes">Minutes</option>
                             </select>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Negative Mark */}

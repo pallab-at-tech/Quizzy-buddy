@@ -44,6 +44,14 @@ const SummaryApi = {
     saved_changes : {
         url : "/api/host/saved-changes",
         method : "post"
+    },
+    host_details_update : {
+        url : "/api/host/host-update",
+        method : "post"
+    },
+    host_time_update : {
+        url : "/api/host/host-time-update",
+        method : "post"
     }
 }
 

@@ -53,8 +53,6 @@ const Home = () => {
         }
     }
 
-    // console.log("From home page user", user)
-
     if (isLogin === null) return null;
 
     return (

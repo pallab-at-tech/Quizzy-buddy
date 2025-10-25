@@ -52,6 +52,10 @@ const SummaryApi = {
     host_time_update : {
         url : "/api/host/host-time-update",
         method : "post"
+    },
+    fetch_participants_quiz_details : {
+        url : "/api/host/participants-details",
+        method : "get"
     }
 }
 

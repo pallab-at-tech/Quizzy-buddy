@@ -32,7 +32,7 @@ const Home = () => {
         try {
 
             socketConnection.once("joinedQuiz_success", (data) => {
-                toast.success(data?.message)
+                // toast.success(data?.message)
                 navigate(`/joined/${data?.hostId}`)
                 setQuizJoinLoader(false)
             })

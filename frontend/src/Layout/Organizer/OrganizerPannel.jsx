@@ -4,7 +4,7 @@ import {
   FaClock,
   FaBusinessTime
 } from "react-icons/fa";
-import { FaRegHourglassHalf, FaRegPaste } from "react-icons/fa6";
+import { FaRegHourglassHalf } from "react-icons/fa6";
 import { MdPending, MdOutlineDoneAll, MdPlayCircle } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
@@ -57,7 +57,7 @@ const OrganizerPannel = () => {
   // Get duration (in minutes)
   const getDuration = (start, end) => {
     const diff = (new Date(end) - new Date(start)) / 60000;
-    return `${Math.round(diff)} min`;
+    return `${Math.abs(Math.round(diff))} min`;
   };
 
   // classify past and future quiz details
@@ -103,9 +103,6 @@ const OrganizerPannel = () => {
   }, [host_info])
 
 
-
-  // console.log("host info", classified_data, host_info)
-
   return (
     <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 p-8 scrollbar-hide">
 
@@ -120,14 +117,14 @@ const OrganizerPannel = () => {
                 Organizer Dashboard
               </h1>
               <p className="text-gray-500 text-sm">
-                <Link to={`/host-quiz`} className="font-bold text-lg mr-14 w-fit">
+                <Link to={`/host-quiz`} className="font-bold text-lg mr-14 w-fit border-2 border-gray-400 px-2.5 py-2 rounded-xl hover:bg-[#f1f1f1] transition-colors duration-150">
                   Create Quiz
                 </Link>
               </p>
             </header>
 
             {host_info.length === 0 ? (
-              <p className="text-gray-500 text-center mt-[100px] text-lg">
+              <p className="text-gray-400 text-center mt-[200px] text-[22px] font-semibold select-none">
                 No hosted quizzes found. Start hosting to see them here 🎯
               </p>
             ) : (
@@ -254,7 +251,7 @@ const OrganizerPannel = () => {
                                     <div className="flex items-center">
                                       <FaRegHourglassHalf className="text-orange-500 mr-2" />
                                       <span>
-                                        <strong>Duration : </strong> {getDuration(v.endDate, v.startDate)}
+                                        <strong>Duration : </strong> {getDuration(v.startDate, v.endDate)}
                                       </span>
                                     </div>
                                   </div>
@@ -361,11 +358,9 @@ const OrganizerPannel = () => {
                 </div>
               </div>
             )}
-
           </div>
         )
       }
-
     </section>
   );
 };

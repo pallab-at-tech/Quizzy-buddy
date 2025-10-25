@@ -466,32 +466,66 @@ export const hostTimeUpdate = async (request, response) => {
     }
 }
 
-export const joinedQuizController = async (request, response) => {
+// for participants members fetch details
+export const fetchParticipantsDetailsController = async (request, response) => {
     try {
-        const { joined_code } = request.body || {}
+        const { hostId } = request.query || {}
         const userId = request.userId
 
-        if(!joined_code.trim()){
+        if (!hostId) {
             return response.status(400).json({
-                message : "Joined code not found!",
-                error : true,
-                success : false
+                message: "HostId required!😑",
+                error: true,
+                success: false
             })
         }
 
-        const host = await quizHostModel.findOne({provide_join_code : joined_code})
-
-        if(!host){
+        const host = await quizHostModel.findById(hostId)
+        
+        if (!host) {
             return response.status(400).json({
-                message : "Joined code not exist!",
-                error : true,
-                success : false
+                message: "Quiz not found!😑",
+                error: true,
+                success: false
             })
         }
+
+        if (host.host_user_id.toString() === userId.toString()) {
+            return response.status(400).json({
+                message: "Host can't Participants in quiz!😑",
+                error: true,
+                success: false
+            })
+        }
+
+        const now = new Date()
+
+        if (new Date(host.quiz_start) > now) {
+            return response.status(400).json({
+                message: "Quiz not start yet!😑",
+                error: true,
+                success: false
+            })
+        }
+
+        if (new Date(host.quiz_end) < now) {
+            return response.status(400).json({
+                message: "Quiz already expired!😑",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "Quiz data",
+            data: host,
+            error: false,
+            success: true
+        })
 
     } catch (error) {
         return response.status(500).json({
-            message: error.message || error,
+            message: "Some Error occued!😑" || error.message || error,
             error: true,
             success: false
         })

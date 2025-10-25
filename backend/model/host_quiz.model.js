@@ -108,10 +108,10 @@ const hostSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    quiz_expire_per_Q: {
-        type: String,
-        default: ""
-    },
+    // quiz_expire_per_Q: {
+    //     type: String,
+    //     default: ""
+    // },
     strict: {
         type: {
             enabled: {

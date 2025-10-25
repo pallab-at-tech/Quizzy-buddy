@@ -1,6 +1,6 @@
 import express from 'express'
 import auth from '../middleware/auth.js'
-import { createQuizController, fetchHostPlusQuizDetails, hostOtherDetails, hostTimeUpdate, saveChangesHostDetailsByHost } from '../controller/host.controller.js'
+import { createQuizController, fetchHostPlusQuizDetails, fetchParticipantsDetailsController, hostOtherDetails, hostTimeUpdate, saveChangesHostDetailsByHost } from '../controller/host.controller.js'
 
 const hostRouter = express()
 
@@ -9,5 +9,6 @@ hostRouter.post("/get-host-details", auth, fetchHostPlusQuizDetails)
 hostRouter.post("/saved-changes", auth, saveChangesHostDetailsByHost)
 hostRouter.post("/host-update", auth, hostOtherDetails)
 hostRouter.post("/host-time-update", auth, hostTimeUpdate)
+hostRouter.get("/participants-details", auth, fetchParticipantsDetailsController)
 
 export default hostRouter

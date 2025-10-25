@@ -1,9 +1,153 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import Axios from '../../utils/Axios'
+import SummaryApi from '../../common/SumarryApi'
+import toast from 'react-hot-toast'
+import { MdPlayCircle } from 'react-icons/md'
 
 const QuizJoined = () => {
+
+  const params = useParams()
+  const [data, setData] = useState(null)
+  const [error, setError] = useState("")
+  
+
+  const fetch_quizDetails = async () => {
+
+    if (!params?.hostId) return
+
+    try {
+      const response = await Axios({
+        ...SummaryApi.fetch_participants_quiz_details,
+        params: {
+          hostId: params?.hostId
+        }
+      })
+
+      const { data: responseData } = response
+
+      if (responseData.success) {
+        setData(responseData?.data)
+      }
+
+      if (!responseData.success) {
+        toast.error(responseData?.message)
+        setError(responseData?.message)
+      }
+
+    } catch (error) {
+      toast.error(error.response.data.message || "Some Error occued!")
+      setError(error.response.data.message || "Some Error occued!")
+      console.log("fetch_quizDetails error", error)
+    }
+  }
+
+  useEffect(() => {
+    fetch_quizDetails()
+  }, [])
+
+  const localDateFormate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  }
+
+  const quizStatus = (start, end) => {
+    const now = new Date()
+    const startDate = new Date(start)
+    const endDate = new Date(end)
+
+    if (startDate < now && now < endDate) {
+      return "Ongoing"
+    }
+    else if (startDate > now) {
+      return "Incoming"
+    }
+    else {
+      return "Expired"
+    }
+  }
+
+  const quizDuration = (start, end) => {
+
+    const diff = Math.floor((new Date(end) - new Date(start)) / 1000);
+
+    if (diff > 86400) {
+      const days = (diff / 86400).toFixed(1);
+      return `${days} day${days > 1 ? "s" : ""}`;
+    } else if (diff > 3600) {
+      const hours = (diff / 3600).toFixed(1);
+      return `${hours} hour${hours > 1 ? "s" : ""}`;
+    } else if (diff > 60) {
+      const minutes = (diff / 60).toFixed(1);
+      return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    } else {
+      return `${diff} second${diff > 1 ? "s" : ""}`;
+    }
+  };
+
+
   return (
-    <section className=''>
-        QuizJoined
+    <section className='h-[calc(100vh-70px)] overflow-y-auto p-8 scrollbar-hide'>
+      {
+        data ? (
+          <section className="w-full flex flex-col justify-center items-center bg-gradient-to-br from-[#fff] to-teal-50 p-8">
+
+            {/* Card Container */}
+            <div className={`bg-white ${!data.strict.enabled && "mt-12"} w-full max-w-3xl rounded-3xl shadow-2xl p-10 border border-gray-200 flex flex-col items-center text-center`}>
+
+              {/* Title */}
+              <h1 className="text-4xl font-bold text-gray-800 mb-7">Quiz Details</h1>
+
+              {/* Quiz Info */}
+              <div className="bg-gray-100 rounded-2xl p-4 w-full text-left space-y-3 mb-5 border border-gray-400 pl-5 pr-10">
+
+                <div className='grid grid-cols-2 grid-rows-3 gap-2'>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">Start : </span> {localDateFormate(data?.quiz_start) || "N/A"}
+                  </p>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">End : </span> {localDateFormate(data?.quiz_end) || "N/A"}
+                  </p>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">Duration : </span> {quizDuration(data?.quiz_start, data?.quiz_end)}
+                  </p>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">Status : </span>{" "}
+                    <span className="px-2 py-1 rounded bg-green-100 text-green-700 font-medium">{quizStatus(data?.quiz_start, data?.quiz_end) || "N/A"}</span>
+                  </p>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">Total Questions : </span> {data?.quiz_data?.length || 0}
+                  </p>
+                  <p className="text-gray-700 text-lg">
+                    <span className="font-semibold text-gray-800">Total Marks : </span> {data?.total_marks}
+                  </p>
+                </div>
+              </div>
+
+              {
+                data.strict.enabled && (
+                  <div className='bg-green-100 rounded-2xl p-3 w-full text-left space-y-3 mb-8 border border-green-500 pl-5 pr-10'>
+                    <span className='font-bold'>NOTE : </span><span>Each question has </span> <span className='font-semibold'>{`"${data.strict.time} ${data.strict.unit}"`}</span> <span>{`time limit — once that time expires, the participant cannot return to or modify their answer for that question.`}</span>
+                  </div>
+                )
+              }
+
+              {/* Start Button */}
+              <button className="flex items-center cursor-pointer gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-8 py-3 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-95 transition-all duration-200">
+                <MdPlayCircle className="text-2xl" />
+                Start Quiz
+              </button>
+            </div>
+          </section>
+        ) : (
+          <div className='text-gray-400 text-center mt-[180px] text-[30px] font-semibold select-none'>
+            {`${error}`}
+          </div>
+        )
+      }
     </section>
   )
 }

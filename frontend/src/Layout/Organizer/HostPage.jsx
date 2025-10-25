@@ -346,8 +346,6 @@ const HostPage = () => {
         })
     }, [data])
 
-    console.log("hihihihi", data)
-
 
     return (
         <section className="pt-0 pb-6 px-4">

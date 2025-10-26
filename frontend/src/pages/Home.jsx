@@ -33,7 +33,7 @@ const Home = () => {
 
             socketConnection.once("joinedQuiz_success", (data) => {
                 // toast.success(data?.message)
-                navigate(`/joined/${data?.hostId}`)
+                navigate(`/joined/${data?.hostId}`, {state : {pre_Quiz : true}})
                 setQuizJoinLoader(false)
             })
 

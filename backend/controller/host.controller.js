@@ -480,7 +480,7 @@ export const fetchParticipantsDetailsController = async (request, response) => {
             })
         }
 
-        const host = await quizHostModel.findById(hostId)
+        const host = await quizHostModel.findById(hostId).populate("quiz_data").select("-user_ids -quiz_submission_data")
         
         if (!host) {
             return response.status(400).json({

@@ -17,6 +17,7 @@ import CreateQuizAi from '../pages/QuizPages/CreateQuizAi';
 import OrganizerPannel from '../Layout/Organizer/OrganizerPannel';
 import HostPage from '../Layout/Organizer/HostPage';
 import QuizJoined from '../pages/Users/QuizJoined';
+import StartQuiz from '../pages/Users/StartQuiz';
 
 
 const router = createBrowserRouter([
@@ -110,7 +111,13 @@ const router = createBrowserRouter([
             },
             {
                 path : "/joined/:hostId",
-                element : <QuizJoined/>
+                element : <QuizJoined/>,
+                children : [
+                    {
+                        path : ":userId",
+                        element : <StartQuiz/>
+                    }
+                ]
             }
         ]
     },

@@ -103,6 +103,31 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on("joined_member", async (data) => {
+        try {
+            const {} = data || {}
+
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+        } catch (error) {
+            console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
 
     // disconnect user
     socket.on("disconnect", () => {

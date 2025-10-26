@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, Outlet, useNavigate } from 'react-router-dom'
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SumarryApi'
 import toast from 'react-hot-toast'
 import { MdPlayCircle } from 'react-icons/md'
+import { useSelector } from 'react-redux'
 
 const QuizJoined = () => {
 
   const params = useParams()
   const [data, setData] = useState(null)
   const [error, setError] = useState("")
-  
+
+  const user = useSelector(state => state?.user)
+  const navigate = useNavigate()
+  const [count, setCount] = useState(null)
+
 
   const fetch_quizDetails = async () => {
 
@@ -88,21 +93,57 @@ const QuizJoined = () => {
     }
   };
 
+  const startQuiz = () => {
+
+    setCount(5)
+    let c = 5
+    const timer = setInterval(() => {
+      c--;
+      if (c > 0) {
+        setCount(c)
+      }
+      else {
+        clearInterval(timer)
+        setCount(null)
+        navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true  , data : data} })
+      }
+
+    }, 1000)
+  }
+
+  // console.log("location", data)
 
   return (
-    <section className='h-[calc(100vh-70px)] overflow-y-auto p-8 scrollbar-hide'>
+    <section className='h-[calc(100vh-70px)] overflow-y-auto scrollbar-hide bg-gradient-to-br from-[#f0f0f0] to-cyan-100'>
       {
-        data ? (
-          <section className="w-full flex flex-col justify-center items-center bg-gradient-to-br from-[#fff] to-teal-50 p-8">
+        params.userId ? (
+          <Outlet/>
+        ) : count ? (
+          <section className="fixed inset-0 flex flex-col justify-center items-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200  z-50">
+            <div className="text-center space-y-4">
+              {/* Countdown Number */}
+              <h1 className="text-[8rem] font-extrabold tracking-widest animate-pulse drop-shadow-lg select-none">
+                {count}
+              </h1>
+              {/* Text Below */}
+              <p className="text-2xl font-medium opacity-90">
+                Get ready... Your quiz is about to begin!
+              </p>
+            </div>
+          </section>
+        ) : data ? (
+          <section className="w-full flex flex-col justify-center items-center  p-8">
 
             {/* Card Container */}
-            <div className={`bg-white ${!data.strict.enabled && "mt-12"} w-full max-w-3xl rounded-3xl shadow-2xl p-10 border border-gray-200 flex flex-col items-center text-center`}>
+            <div className={`bg-white ${!data.strict.enabled && "mt-[75px]"} w-full max-w-3xl rounded-3xl shadow-2xl p-10 border border-gray-200 flex flex-col items-center text-center`}>
 
               {/* Title */}
-              <h1 className="text-4xl font-bold text-gray-800 mb-7">Quiz Details</h1>
+              <h1 className="text-4xl font-extrabold mb-8 bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent">
+                Quiz Details
+              </h1>
 
               {/* Quiz Info */}
-              <div className="bg-gray-100 rounded-2xl p-4 w-full text-left space-y-3 mb-5 border border-gray-400 pl-5 pr-10">
+              <div className="bg-gradient-to-br from-purple-100 to-teal-50 rounded-2xl p-4 w-full text-left space-y-3 mb-5 border border-purple-600 pl-5 pr-10">
 
                 <div className='grid grid-cols-2 grid-rows-3 gap-2'>
                   <p className="text-gray-700 text-lg">
@@ -129,21 +170,32 @@ const QuizJoined = () => {
 
               {
                 data.strict.enabled && (
-                  <div className='bg-green-100 rounded-2xl p-3 w-full text-left space-y-3 mb-8 border border-green-500 pl-5 pr-10'>
-                    <span className='font-bold'>NOTE : </span><span>Each question has </span> <span className='font-semibold'>{`"${data.strict.time} ${data.strict.unit}"`}</span> <span>{`time limit — once that time expires, the participant cannot return to or modify their answer for that question.`}</span>
+                  <div className="bg-gradient-to-r from-teal-50 to-purple-50 rounded-2xl p-4 w-full text-left space-y-3 mb-8 border border-teal-500 shadow-sm">
+                    <span className="font-bold text-teal-700">NOTE : </span>
+                    <span>Each question has </span>
+                    <span className="font-semibold text-purple-700">
+                      {`"${data.strict.time} ${data.strict.unit}"`}
+                    </span>
+                    <span>
+                      {` time limit — once that time expires, the participant cannot return to or modify their answer for that question.`}
+                    </span>
                   </div>
                 )
               }
 
               {/* Start Button */}
-              <button className="flex items-center cursor-pointer gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg px-8 py-3 rounded-xl shadow-md hover:shadow-lg hover:scale-[1.03] active:scale-95 transition-all duration-200">
+              <div
+                onClick={() => startQuiz()}
+                state={{ on_Quiz: true }}
+                className="flex items-center w-full justify-center cursor-pointer gap-2 bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 text-white font-semibold text-lg px-10 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all duration-200"
+              >
                 <MdPlayCircle className="text-2xl" />
                 Start Quiz
-              </button>
+              </div>
             </div>
           </section>
         ) : (
-          <div className='text-gray-400 text-center mt-[180px] text-[30px] font-semibold select-none'>
+          <div className='text-gray-400 text-center mt-[240px] text-[30px] font-semibold select-none'>
             {`${error}`}
           </div>
         )

@@ -108,9 +108,11 @@ const OrganizerPannel = () => {
 
       {
         params?.quizId ? (
-          <Outlet />
+          <>
+            <Outlet />
+          </>
         ) : (
-          <div className="max-w-[1160px] mx-auto">
+          <div className="max-w-[1100px] mx-auto">
 
             <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-2 border-b-gray-300 pb-4">
               <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-3 sm:mb-0">

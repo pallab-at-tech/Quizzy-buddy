@@ -132,7 +132,7 @@ const QuizJoined = () => {
             </div>
           </section>
         ) : data ? (
-          <section className="w-full flex flex-col justify-center items-center  p-8">
+          <section className="w-full flex flex-col justify-center items-center  p-8 ">
 
             {/* Card Container */}
             <div className={`bg-white ${!data.strict.enabled && "mt-[75px]"} w-full max-w-3xl rounded-3xl shadow-2xl p-10 border border-gray-200 flex flex-col items-center text-center`}>

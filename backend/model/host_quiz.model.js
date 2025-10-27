@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 
 const submitData = new mongoose.Schema({
-    solved: {
+    total_solved: {
         type: Number,
         default: 0
     },
-    correct: {
+    total_correct: {
         type: Number,
         default: 0
     },
-    total: {
+    total_question: {
         type: Number,
         default: 0
     },
@@ -17,19 +17,35 @@ const submitData = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    total_time: {
+        type: String,
+        default: "0 min"
+    },
     correctedData: [
         {
             questionId: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Schema.ObjectId,
                 ref: "question"
             },
+            haveOptions : {
+                type: Boolean,
+                default: false
+            },
             userAnswer: {
+                type: String,
+                default: ""
+            },
+            correctAnswer: {
                 type: String,
                 default: ""
             },
             isCorrect: {
                 type: Boolean,
                 default: false
+            },
+            marks: {
+                type: Number,
+                default: 0
             }
         }
     ]

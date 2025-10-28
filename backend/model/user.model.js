@@ -39,23 +39,15 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-    curr_participant_info: [
+    participant_info: [
         {
             quiz_id: {
                 type: mongoose.Schema.ObjectId,
                 ref: "host"
             },
-            joindedAt: {
-                type: Date,
-                required: true
-            }
-        }
-    ],
-    old_participant_info: [
-        {
-            quiz_id: {
-                type: mongoose.Schema.ObjectId,
-                ref: "host"
+            quiz_nano_id : {
+                type : String,
+                default : ""
             },
             participated_at: {
                 type: Date,
@@ -63,7 +55,7 @@ const userSchema = new mongoose.Schema({
             },
             score: {
                 type: Number,
-                default: 0
+                default: null
             }
         }
     ],

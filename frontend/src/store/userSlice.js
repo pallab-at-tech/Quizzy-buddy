@@ -7,8 +7,7 @@ const initialValue = {
     email: "",
     avatar: "",
     verify_email: false,
-    curr_participant_info: [],
-    old_participant_info: [],
+    participant_info: [],
     host_info: []
 }
 
@@ -23,8 +22,7 @@ const userSlice = createSlice({
             state.email = action.payload?.email
             state.avatar = action.payload?.avatar
             state.verify_email = action.payload?.verify_email
-            state.curr_participant_info = [...action.payload?.curr_participant_info]
-            state.old_participant_info = [...action.payload?.old_participant_info]
+            state.participant_info = [...action.payload?.participant_info]
             state.host_info = [...action.payload?.host_info]
         },
 
@@ -35,8 +33,7 @@ const userSlice = createSlice({
             state.email = ""
             state.avatar = ""
             state.verify_email = false
-            state.curr_participant_info = []
-            state.old_participant_info = []
+            state.participant_info = []
             state.host_info = []
         },
         setHostDetails: (state, action) => {

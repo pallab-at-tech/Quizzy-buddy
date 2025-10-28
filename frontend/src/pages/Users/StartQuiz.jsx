@@ -167,10 +167,10 @@ const StartQuiz = () => {
                         })
 
                         if (data?.strict?.unit !== "sec") {
-                            return Number(index) === Number(data?.quiz_data.length - 1) ? {...prev, t: 0} : { ...prev, t: data?.strict?.time * 60 }
+                            return Number(index) === Number(data?.quiz_data.length - 1) ? { ...prev, t: 0 } : { ...prev, t: data?.strict?.time * 60 }
                         }
                         else {
-                            return Number(index) === Number(data?.quiz_data.length - 1) ? {...prev, t: 0} : { ...prev, t: data?.strict?.time }
+                            return Number(index) === Number(data?.quiz_data.length - 1) ? { ...prev, t: 0 } : { ...prev, t: data?.strict?.time }
                         }
                     }
                     else {
@@ -207,7 +207,7 @@ const StartQuiz = () => {
         }
     };
 
-    // console.log("data", index)
+    // console.log("data", answer)
     // console.log("Q", timer)
 
     return (
@@ -358,10 +358,24 @@ const StartQuiz = () => {
 
                                     {/* Next Button */}
                                     <button
-                                        className={` ${index >= data?.quiz_data.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all duration-200`}
+                                        className={`${index >= data?.quiz_data.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all duration-200`}
                                         onClick={() => {
                                             if (!data?.quiz_data.length || index >= data?.quiz_data.length - 1) return
-                                            setIndex(index + 1)
+                                            setIndex((prevIdx) => {
+                                                return prevIdx + 1
+                                            })
+
+                                            if (data?.strict?.enabled) {
+                                                setTimer((prev) => {
+
+                                                    if (data?.strict?.unit !== "sec") {
+                                                        return { ...prev, t: data?.strict?.time * 60 }
+                                                    }
+                                                    else {
+                                                        return { ...prev, t: data?.strict?.time }
+                                                    }
+                                                })
+                                            }
                                         }}
                                     >
                                         Next

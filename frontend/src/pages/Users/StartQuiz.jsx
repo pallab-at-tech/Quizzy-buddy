@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaClipboardQuestion } from 'react-icons/fa6'
 import { useLocation } from 'react-router-dom'
 import { BiTimer } from "react-icons/bi";
 import { useGlobalContext } from '../../provider/GlobalProvider';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { setUserFinishQuiz } from '../../store/userSlice';
 
 const StartQuiz = () => {
 
     const location = useLocation()
     const data = location.state?.data
+    const navigate = useNavigate()
+
+    const answerRef = useRef()
+    const timerRef = useRef()
 
     const { socketConnection } = useGlobalContext()
 
     const [index, setIndex] = useState(Number(localStorage.getItem("i")) || 0)
     const [question, setQuestion] = useState(data?.quiz_data[index] || {})
+
+    const [submitLoading, setSubmitLoading] = useState(false)
 
     // store answer and it't all details
     const [answer, setAnswer] = useState(null)
@@ -48,6 +57,16 @@ const StartQuiz = () => {
             console.log("removeDetails error", error)
         }
     }
+
+    // alawys store current state data
+    useEffect(() => {
+        answerRef.current = answer
+    }, [answer])
+
+    // alaways store current time
+    useEffect(()=>{
+        timerRef.current = timer
+    },[timer])
 
     // persist all answer and it't all details , also persist time
     useEffect(() => {
@@ -88,14 +107,27 @@ const StartQuiz = () => {
             }
         }
         else {
-            setTimer({
-                t: 0,
-                total: 0
-            })
-            localStorage.setItem("tim", JSON.stringify({
-                t: 0,
-                total: 0
-            }));
+            if (data?.strict?.enabled) {
+                setTimer((prev) => {
+                    if (data?.strict?.unit !== "sec") {
+                        return { ...prev, t: data?.strict?.time * 60, total: 0 }
+                    }
+                    else {
+                        return { ...prev, t: data?.strict?.time, total: 0 }
+                    }
+                })
+            }
+            else {
+                setTimer({
+                    t: 0,
+                    total: 0
+                })
+                localStorage.setItem("tim", JSON.stringify({
+                    t: 0,
+                    total: 0
+                }));
+            }
+
         }
 
         return () => {
@@ -146,68 +178,59 @@ const StartQuiz = () => {
 
     // change time for unstrict time and strict time
     useEffect(() => {
+        const hasSubmitted = localStorage.getItem("submit");
+        if (hasSubmitted) return;
 
-        const x = localStorage.getItem("submit")
-
-        if (x) {
-            return
-        }
-
-        if (data?.strict?.enabled) {
-            setTimer((prev) => {
-                if (data?.strict?.unit !== "sec") {
-                    return { ...prev, t: data?.strict?.time * 60 }
-                }
-                else {
-                    return { ...prev, t: data?.strict?.time }
-                }
-            })
-        }
-
-        const timer = setInterval(() => {
+        const intervalId = setInterval(() => {
             if (data?.strict?.enabled) {
-
                 setTimer((prev) => {
+                    if (!prev) return prev;
 
-                    if (prev?.t === 0) {
-                        // change index
-                        setIndex((prevIdx) => {
-                            if (prevIdx >= data?.quiz_data.length - 1) {
-                                clearInterval(timer)
-                                localStorage.setItem("submit", JSON.stringify({ submit: true }))
-                                removeDetails()
-                                return prevIdx
-                            }
-                            else {
-                                return prevIdx + 1
-                            }
-                        })
+                    // Countdown timer
+                    if (prev.t <= 0) {
+                        // If last question -> finish
+                        if (index >= data?.quiz_data.length - 1) {
+                            clearInterval(intervalId);
+                            localStorage.setItem("submit", JSON.stringify({ submit: true }));
+                            removeDetails();
+                            handleFinishQuiz();
+                            return prev;
+                        }
 
-                        if (data?.strict?.unit !== "sec") {
-                            return Number(index) === Number(data?.quiz_data.length - 1) ? { ...prev, t: 0 } : { ...prev, t: data?.strict?.time * 60 }
-                        }
-                        else {
-                            return Number(index) === Number(data?.quiz_data.length - 1) ? { ...prev, t: 0 } : { ...prev, t: data?.strict?.time }
-                        }
+                        // Otherwise, move to next question
+                        const nextT = data?.strict?.unit === "sec"
+                            ? data?.strict?.time
+                            : data?.strict?.time * 60;
+
+                        const updatedTime = {
+                            t: nextT,
+                            total: prev.total + (data?.strict?.unit === "sec"
+                                ? data?.strict?.time
+                                : data?.strict?.time * 60),
+                        };
+
+                        localStorage.setItem("tim", JSON.stringify(updatedTime));
+                        setIndex((i) => i + 1);
+                        return updatedTime;
+                    } else {
+                        const updated = { ...prev, t: prev.t - 1 };
+                        localStorage.setItem("tim", JSON.stringify(updated));
+                        return updated;
                     }
-                    else {
-                        const updated = { ...prev, t: prev?.t - 1 }
-                        localStorage.setItem("tim", JSON.stringify(updated))
-                        return updated
-                    }
-                })
-            }
-            else {
+                });
+            } else {
+                // Unstrict → count upward
                 setTimer((prev) => {
-                    const updated = { ...prev, t: prev?.t + 1 }
-                    localStorage.setItem("tim", JSON.stringify(updated))
-                    return updated
-                })
+                    const updated = { ...prev, t: prev.t + 1 };
+                    localStorage.setItem("tim", JSON.stringify(updated));
+                    return updated;
+                });
             }
-        }, 1000)
+        }, 1000);
 
-        return () => clearInterval(timer)
-    }, [])
+        // cleanup
+        return () => clearInterval(intervalId);
+    }, [data, index]);
 
     // format time for unstruct mode
     const formatTime = (totalSeconds) => {
@@ -224,9 +247,49 @@ const StartQuiz = () => {
         }
     };
 
+    const handleFinishQuiz = () => {
+        if (!socketConnection) return
+        if (!timerRef.current) return
+        setSubmitLoading(true)
 
+        const time = data?.strict?.enabled ? (timerRef.current?.t === 0 ? timerRef.current?.total + data?.strict?.time : timerRef.current?.total + (data?.strict?.time - timerRef.current?.t)) : timerRef.current?.t
 
-    // console.log("data", data)
+        try {
+            socketConnection.once("user_submitted", (data) => {
+
+                localStorage.setItem("submit", JSON.stringify({ submit: true }))
+
+                toast.success(data?.message)
+                // manage user state
+                setUserFinishQuiz({
+                    data: data?.data,
+                    participate_count: data?.participate_count
+                })
+                navigate("/")
+                setSubmitLoading(false)
+            })
+
+            socketConnection.once("submit_error", (data) => {
+                toast.error(data?.message)
+                setSubmitLoading(false)
+            })
+
+            const payload = {
+                hostId: data?._id,
+                submitData: answerRef.current?.solved || [] ,
+                total_time: time
+            }
+            console.log("submission data", payload)
+
+            socketConnection.emit("submit_quiz", payload)
+
+        } catch (error) {
+            setSubmitLoading(false)
+            console.log("handleFinishQuiz error", error)
+        }
+    }
+    
+    // console.log("data", answer)
     // console.log("Q", timer)
 
     return (
@@ -353,12 +416,14 @@ const StartQuiz = () => {
 
                                 {/* finish */}
                                 <button
-                                    className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95"
+                                    disabled={submitLoading}
+                                    className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
                                     onClick={() => {
                                         removeDetails()
+                                        handleFinishQuiz()
                                     }}
                                 >
-                                    Finish
+                                    {`${submitLoading ? "Submitting..." : "Finish"}`}
                                 </button>
 
                                 <div className='flex items-center justify-end gap-8'>
@@ -390,10 +455,22 @@ const StartQuiz = () => {
                                                 setTimer((prev) => {
 
                                                     if (data?.strict?.unit !== "sec") {
-                                                        return { ...prev, t: data?.strict?.time * 60 }
+                                                        const updateTime = {
+                                                            ...prev,
+                                                            total: prev.total + (data?.strict?.time * 60 - prev.t),
+                                                            t: data?.strict?.time * 60,
+                                                        }
+                                                        localStorage.setItem("tim", JSON.stringify(updateTime))
+                                                        return updateTime
                                                     }
                                                     else {
-                                                        return { ...prev, t: data?.strict?.time }
+                                                        const updateTime = {
+                                                            ...prev,
+                                                            total: prev.total + (data?.strict?.time - prev.t),
+                                                            t: data?.strict?.time,
+                                                        }
+                                                        localStorage.setItem("tim", JSON.stringify(updateTime))
+                                                        return updateTime
                                                     }
                                                 })
                                             }

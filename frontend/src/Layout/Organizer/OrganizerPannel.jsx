@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { RiTimeZoneLine } from "react-icons/ri";
 
 
+
 const OrganizerPannel = () => {
 
   const host_info = useSelector((state) => state.user).host_info || [];
@@ -102,7 +103,6 @@ const OrganizerPannel = () => {
     classifyPastFuture(host_info)
   }, [host_info])
 
-  // console.log("parms",loc)
 
 
   return (

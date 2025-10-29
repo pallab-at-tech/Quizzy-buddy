@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 
+
 const GetSubmissionFullDetails = () => {
     const data = useLocation().state?.data
     console.log("location", data)

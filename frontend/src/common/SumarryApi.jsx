@@ -56,6 +56,10 @@ const SummaryApi = {
     fetch_participants_quiz_details : {
         url : "/api/host/participants-details",
         method : "get"
+    },
+    check_canParticipate : {
+        url : "/api/host/check-canParticipate",
+        method : "post"
     }
 }
 

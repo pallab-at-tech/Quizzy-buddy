@@ -202,15 +202,15 @@ io.on('connection', (socket) => {
 
                 const ans = {
                     questionId: question._id,
-                    userAnswer: v?.userAnswer || "",
-                    correctAnswer: question.correct_option || "",
+                    userAnswer: String(v.userAnswer ?? "").trim() || "",
+                    correctAnswer: String(question.correct_option || "").trim()  || "",
                     isCorrect: false,
                     marks: 0
                 }
 
                 if (question.inputBox) {
 
-                    if (ans.userAnswer.trim()) {
+                    if (String(ans.userAnswer || "").trim()) {
                         const gemini = await checkIsCorrect(question.question, ans.userAnswer)
                         if (gemini) {
                             if (gemini.isCorrect === "Y") {
@@ -230,7 +230,7 @@ io.on('connection', (socket) => {
                     }
                 }
                 else {
-                    if (ans.userAnswer.trim() && ans.correctAnswer.toString() === ans.userAnswer.toString()) {
+                    if (String(ans.userAnswer || "").trim() && ans.correctAnswer.toString() === ans.userAnswer.toString()) {
                         ans.isCorrect = true
                         ans.marks = question.marks
 
@@ -238,7 +238,7 @@ io.on('connection', (socket) => {
                         get_total_marks += question.marks
                     }
 
-                    if (ans.userAnswer) total_solved += 1
+                    if (String(ans.userAnswer || "").trim()) total_solved += 1
                 }
 
                 payload.correctedData.push(ans)
@@ -256,7 +256,7 @@ io.on('connection', (socket) => {
                 quiz_id: host._id,
                 quiz_nano_id: host.nano_id,
                 participated_at: new Date(),
-                score: null
+                score: null,
             })
 
             user.participate_count += 1
@@ -266,7 +266,8 @@ io.on('connection', (socket) => {
             // send message and data to host
             io.to(host.host_user_id.toString()).emit("host_submitted", {
                 message: `${user.name} Submit Quiz`,
-                data: payload
+                data: payload,
+                hostId : host._id
             })
 
             // send message or data to user
@@ -277,7 +278,8 @@ io.on('connection', (socket) => {
                     quiz_nano_id: host.nano_id,
                     participated_at: new Date(),
                     score: null
-                }
+                },
+                participate_count : user.participate_count
             })
 
         } catch (error) {

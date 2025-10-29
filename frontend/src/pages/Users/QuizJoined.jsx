@@ -7,6 +7,7 @@ import { MdPlayCircle } from 'react-icons/md'
 import { useSelector } from 'react-redux'
 import { useGlobalContext } from '../../provider/GlobalProvider'
 
+
 const QuizJoined = () => {
 
   const params = useParams()
@@ -96,22 +97,39 @@ const QuizJoined = () => {
     }
   };
 
-  const startQuiz = () => {
+  const startQuiz = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.check_canParticipate,
+        data: {
+          hostId: data?._id
+        }
+      })
 
-    setCount(5)
-    let c = 5
-    const timer = setInterval(() => {
-      c--;
-      if (c > 0) {
-        setCount(c)
+      const { data: responseData } = response
+      if (responseData.error || !responseData?.success) {
+        toast.error(responseData?.message)
       }
       else {
-        clearInterval(timer)
-        setCount(null)
-        navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true, data: data } })
-      }
+        setCount(5)
+        let c = 5
+        const timer = setInterval(() => {
+          c--;
+          if (c > 0) {
+            setCount(c)
+          }
+          else {
+            clearInterval(timer)
+            setCount(null)
+            navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true, data: data } })
+          }
 
-    }, 1000)
+        }, 1000)
+      }
+    } catch (error) {
+      console.log("startQuiz error", error)
+      toast.error(error?.response?.data?.message || "Some error occured , try later!")
+    }
   }
 
   // add details from host model
@@ -125,8 +143,6 @@ const QuizJoined = () => {
       console.log("addedDetails error", error)
     }
   }
-
-
 
 
   return (

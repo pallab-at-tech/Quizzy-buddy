@@ -380,7 +380,7 @@ const HostPage = () => {
         if (!socketConnection) return
 
         socketConnection.once("added_userId", (id_data) => {
-            console.log("added_userId", id_data?.hostId, "data?._id", data?._id, "check", id_data?.hostId === data?._id)
+            // console.log("added_userId", id_data?.hostId, "data?._id", data?._id, "check", id_data?.hostId === data?._id)
             if (id_data?.hostId === data?._id) {
                 addInIds(id_data)
             }
@@ -392,9 +392,22 @@ const HostPage = () => {
             }
         })
 
+        socketConnection.once("host_submitted", (submitData) => {
+            console.log("submitData?.hostId", submitData?.hostId, "data?._id", data?._id, "check", submitData?.hostId === data?._id)
+            if (submitData?.hostId === data?._id) {
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        quiz_submission_data : [submitData?.data , ...prev.quiz_submission_data]
+                    }
+                })
+            }
+        })
+
         return () => {
             socketConnection.off("added_userId")
             socketConnection.off("removed_userId")
+            socketConnection.off("host_submitted")
         }
 
     }, [socketConnection, data])
@@ -593,9 +606,11 @@ const HostPage = () => {
                             <button
                                 className="absolute top-3 right-6 text-lg text-blue-600 cursor-pointer font-medium hover:text-blue-700 underline transition"
                                 onClick={() => {
-                                    navigate(`full-details` ,{state : {
-                                        data : data
-                                    }})
+                                    navigate(`full-details`, {
+                                        state: {
+                                            data: data
+                                        }
+                                    })
                                 }}
                             >
                                 Full Details
@@ -619,7 +634,7 @@ const HostPage = () => {
                                 {/* Submitted */}
                                 <div className="flex flex-col items-center justify-center bg-green-50 border border-green-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
                                     <p className="text-gray-600 font-medium text-sm">Submitted</p>
-                                    <h2 className="text-2xl font-semibold text-green-700 mt-1">{data?.quiz_submission_data?.length === 0 ? "N/A" : data?.quiz_submission_data?.length || "N/A"}</h2>
+                                    <h2 className="text-2xl font-semibold text-green-700 mt-1">{data?.quiz_submission_data?.length === 0 ? "N/A" : data?.quiz_submission_data?.length || "N/AA"}</h2>
                                 </div>
 
                             </div>

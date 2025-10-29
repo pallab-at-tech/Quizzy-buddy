@@ -481,7 +481,7 @@ export const fetchParticipantsDetailsController = async (request, response) => {
         }
 
         const host = await quizHostModel.findById(hostId).populate("quiz_data").select("-user_ids -quiz_submission_data")
-        
+
         if (!host) {
             return response.status(400).json({
                 message: "Quiz not found!😑",
@@ -526,6 +526,45 @@ export const fetchParticipantsDetailsController = async (request, response) => {
     } catch (error) {
         return response.status(500).json({
             message: "Some Error occued!😑" || error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const checkingUserCanAttendQuiz = async (request, response) => {
+    try {
+        const { hostId } = request.body || {}
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "HostId required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId).select("quiz_submission_data")
+        const checkIsAlreadySubmit = host.quiz_submission_data.some((u) => u && userId.toString() === u.userDetails.Id.toString())
+
+        if (checkIsAlreadySubmit) {
+            return response.status(400).json({
+                message: "You already have attend Quiz",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message : "Status ok",
+            error : false,
+            success : true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error occued!" || error.message || error,
             error: true,
             success: false
         })

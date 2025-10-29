@@ -123,8 +123,18 @@ const hostSchema = new mongoose.Schema({
     },
     user_ids: [
         {
-            type: mongoose.Schema.ObjectId,
-            ref: "user"
+            user_nanoId : {
+                type : String,
+                default : ""
+            },
+            user_name : {
+                type : String,
+                default : ""
+            },
+            joinedAt : {
+                type : Date,
+                default : null
+            }
         }
     ],
     quiz_data: [

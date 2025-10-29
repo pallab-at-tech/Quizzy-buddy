@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { FaClipboardQuestion } from 'react-icons/fa6'
 import { useLocation } from 'react-router-dom'
 import { BiTimer } from "react-icons/bi";
+import { useGlobalContext } from '../../provider/GlobalProvider';
 
 const StartQuiz = () => {
 
     const location = useLocation()
     const data = location.state?.data
+
+    const { socketConnection } = useGlobalContext()
 
     const [index, setIndex] = useState(Number(localStorage.getItem("i")) || 0)
     const [question, setQuestion] = useState(data?.quiz_data[index] || {})
@@ -31,6 +34,18 @@ const StartQuiz = () => {
 
         return {
             solved: solved || []
+        }
+    }
+
+    // remove details from host model
+    const removeDetails = () => {
+        if (!socketConnection) return
+        try {
+            socketConnection.emit("remove_userId", {
+                hostId: data?._id
+            })
+        } catch (error) {
+            console.log("removeDetails error", error)
         }
     }
 
@@ -87,6 +102,7 @@ const StartQuiz = () => {
             localStorage.removeItem("ans")
             localStorage.removeItem("tim")
             localStorage.removeItem("submit")
+            removeDetails()
         }
 
     }, [])
@@ -159,6 +175,7 @@ const StartQuiz = () => {
                             if (prevIdx >= data?.quiz_data.length - 1) {
                                 clearInterval(timer)
                                 localStorage.setItem("submit", JSON.stringify({ submit: true }))
+                                removeDetails()
                                 return prevIdx
                             }
                             else {
@@ -207,7 +224,9 @@ const StartQuiz = () => {
         }
     };
 
-    // console.log("data", answer)
+
+
+    // console.log("data", data)
     // console.log("Q", timer)
 
     return (
@@ -335,7 +354,9 @@ const StartQuiz = () => {
                                 {/* finish */}
                                 <button
                                     className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95"
-                                // onClick={handleFinish}
+                                    onClick={() => {
+                                        removeDetails()
+                                    }}
                                 >
                                     Finish
                                 </button>

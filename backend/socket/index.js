@@ -216,7 +216,7 @@ io.on('connection', (socket) => {
                             if (gemini.isCorrect === "Y") {
                                 ans.isCorrect = true
                                 ans.marks = question.marks
-                                
+
 
                                 total_correct += 1
                                 get_total_marks += question.marks
@@ -238,7 +238,7 @@ io.on('connection', (socket) => {
                         get_total_marks += question.marks
                     }
 
-                    if(ans.userAnswer) total_solved += 1
+                    if (ans.userAnswer) total_solved += 1
                 }
 
                 payload.correctedData.push(ans)
@@ -261,7 +261,7 @@ io.on('connection', (socket) => {
 
             user.participate_count += 1
 
-            await Promise.all([user.save() , host.save()])
+            await Promise.all([user.save(), host.save()])
 
             // send message and data to host
             io.to(host.host_user_id.toString()).emit("host_submitted", {
@@ -288,6 +288,108 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on("add_userId", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { hostId } = data || {}
+
+            const user = await userModel.findById(userId).select("nanoId name")
+
+            const host = await quizHostModel.findById(hostId)
+
+            const isAlreadyAdded = host.user_ids.some((m) => m.user_nanoId.toString() === user.nanoId.toString())
+
+            if (isAlreadyAdded) {
+                return socket.emit("added_error", {
+                    message: "Details already added"
+                })
+            }
+
+            const now = new Date()
+
+            host.user_ids.push({
+                user_nanoId: user.nanoId,
+                user_name: user.name,
+                joinedAt : now
+            })
+
+            await host.save()
+
+            io.to(host.host_user_id.toString()).emit("added_userId", {
+                message: "Data added",
+                data: {
+                    user_nanoId: user.nanoId,
+                    user_name: user.name,
+                    joinedAt : now
+                },
+                hostId: hostId
+            })
+
+        } catch (error) {
+            console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    socket.on("remove_userId", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { hostId } = data || {}
+
+            const user = await userModel.findById(userId).select("nanoId name")
+
+            const host = await quizHostModel.findByIdAndUpdate(hostId, {
+                $pull: {
+                    user_ids: {
+                        user_nanoId: user.nanoId
+                    }
+                }
+            })
+
+            io.to(host.host_user_id.toString()).emit("removed_userId", {
+                message: "Data removed",
+                data: {
+                    user_nanoId: user.nanoId,
+                    user_name: user.name
+                },
+                hostId: hostId
+            })
+
+        } catch (error) {
+            console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
 
     // disconnect user
     socket.on("disconnect", () => {

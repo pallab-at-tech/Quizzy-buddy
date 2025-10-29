@@ -5,12 +5,15 @@ import SummaryApi from '../../common/SumarryApi'
 import toast from 'react-hot-toast'
 import { MdPlayCircle } from 'react-icons/md'
 import { useSelector } from 'react-redux'
+import { useGlobalContext } from '../../provider/GlobalProvider'
 
 const QuizJoined = () => {
 
   const params = useParams()
   const [data, setData] = useState(null)
   const [error, setError] = useState("")
+
+  const { socketConnection } = useGlobalContext()
 
   const user = useSelector(state => state?.user)
   const navigate = useNavigate()
@@ -105,19 +108,32 @@ const QuizJoined = () => {
       else {
         clearInterval(timer)
         setCount(null)
-        navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true  , data : data} })
+        navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true, data: data } })
       }
 
     }, 1000)
   }
 
-  // console.log("location", data)
+  // add details from host model
+  const addedDetails = () => {
+    if (!socketConnection) return
+    try {
+      socketConnection.emit("add_userId", {
+        hostId: data?._id
+      })
+    } catch (error) {
+      console.log("addedDetails error", error)
+    }
+  }
+
+
+
 
   return (
     <section className='h-[calc(100vh-70px)] overflow-y-auto scrollbar-hide bg-gradient-to-br from-[#f0f0f0] to-cyan-100'>
       {
         params.userId ? (
-          <Outlet/>
+          <Outlet />
         ) : count ? (
           <section className="fixed inset-0 flex flex-col justify-center items-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200  z-50">
             <div className="text-center space-y-4">
@@ -185,7 +201,10 @@ const QuizJoined = () => {
 
               {/* Start Button */}
               <div
-                onClick={() => startQuiz()}
+                onClick={() => {
+                  startQuiz()
+                  addedDetails()
+                }}
                 state={{ on_Quiz: true }}
                 className="flex items-center w-full justify-center cursor-pointer gap-2 bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 text-white font-semibold text-lg px-10 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all duration-200"
               >

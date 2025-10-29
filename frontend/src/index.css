@@ -74,3 +74,19 @@
   width: 8px; 
 }
 
+.custom_scrollBar_forFullDetails {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #1f25528a #f3e8ff; 
+}
+
+.custom_scrollBar_forFullDetails::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom_scrollBar_forFullDetails::-webkit-scrollbar-thumb:hover {
+  background-color: #171b4b30; 
+  transform: scaleX(1.2); 
+}

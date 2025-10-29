@@ -18,6 +18,7 @@ import OrganizerPannel from '../Layout/Organizer/OrganizerPannel';
 import HostPage from '../Layout/Organizer/HostPage';
 import QuizJoined from '../pages/Users/QuizJoined';
 import StartQuiz from '../pages/Users/StartQuiz';
+import GetSubmissionFullDetails from '../Layout/Organizer/GetSubmissionFullDetails';
 
 
 const router = createBrowserRouter([
@@ -49,7 +50,13 @@ const router = createBrowserRouter([
                         children : [
                             {
                                 path : ":quizId",
-                                element : <HostPage/>
+                                element : <HostPage/>,
+                                children : [
+                                    {
+                                        path : "full-details",
+                                        element : <GetSubmissionFullDetails/>
+                                    }
+                                ]
                             }
                         ]
                     },

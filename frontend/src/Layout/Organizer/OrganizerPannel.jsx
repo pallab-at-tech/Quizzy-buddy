@@ -102,6 +102,8 @@ const OrganizerPannel = () => {
     classifyPastFuture(host_info)
   }, [host_info])
 
+  // console.log("parms",loc)
+
 
   return (
     <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 p-8 scrollbar-hide">

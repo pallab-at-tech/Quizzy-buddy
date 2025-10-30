@@ -1,10 +1,12 @@
 import React from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 
 
 const GetSubmissionFullDetails = () => {
-    const data = useLocation().state?.data
-    console.log("location", data)
+
+    const { data } = useOutletContext()
 
     return (
         <section className="p-6 w-full max-w-5xl mx-auto">
@@ -52,14 +54,14 @@ const GetSubmissionFullDetails = () => {
                         </div>
                     ) : (
                         <div className="space-y-4 max-h-[350px] overflow-y-auto custom_scrollBar_forFullDetails pr-1">
-                            {data?.user_ids.map((v, i) => (
+                            {data && data?.user_ids.map((v, i) => (
                                 <div
                                     key={i}
                                     className="flex items-center justify-between bg-[#eff6ffaa] hover:bg-blue-100 p-4 rounded-xl transition-all border border-blue-200 hover:border-blue-300"
                                 >
                                     {/* Joined At */}
                                     <span className="text-[16px] text-gray-600 font-semibold">
-                                        {new Date(v?.data?.joinedAt).toLocaleString(undefined, {
+                                        {new Date(v?.joinedAt).toLocaleString(undefined, {
                                             month: "short",
                                             day: "numeric",
                                             hour: "2-digit",
@@ -70,10 +72,10 @@ const GetSubmissionFullDetails = () => {
                                     {/* User Info */}
                                     <div className="text-right text-[16px] flex items-center gap-0.5">
                                         <h1 className="text-gray-800 font-semibold">
-                                            {v?.data?.user_name}
+                                            {v?.user_name}
                                         </h1>
                                         <h2 className="text-sm text-gray-500">
-                                            ({v?.data?.user_nanoId}) joined
+                                            ({v?.user_nanoId}) joined
                                         </h2>
                                     </div>
                                 </div>

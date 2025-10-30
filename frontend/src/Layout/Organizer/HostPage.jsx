@@ -13,6 +13,7 @@ import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { AiFillDelete } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { manageHostDetails } from "../../store/userSlice";
+import { useParams } from "react-router-dom";
 
 const HostPage = () => {
     const [data, setData] = useState(null);
@@ -20,6 +21,7 @@ const HostPage = () => {
     const navigate = useNavigate()
     const loc = useLocation()
     const dispatch = useDispatch()
+    const params = useParams()
 
     const { socketConnection } = useGlobalContext()
 
@@ -58,6 +60,9 @@ const HostPage = () => {
     const [timeDetailsLoading, setTimeDetailsLoading] = useState(false)
     const [timeUpdateLoading, setTimeUpdateLoading] = useState(false)
 
+    const [instandStartLoading, setInstandStartLoading] = useState(false)
+    const [instantEndLoading, setInstantEndLoading] = useState(false)
+
 
     // function of fetch host details
     const fetchHostDetails = async () => {
@@ -65,7 +70,7 @@ const HostPage = () => {
             const response = await Axios({
                 ...SummaryApi.fetch_hostDetails,
                 data: {
-                    hostId: location?.hostId,
+                    hostId: params?.quizId,
                 },
             });
 
@@ -103,7 +108,6 @@ const HostPage = () => {
         const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
         return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
     };
-
 
     // Add new question
     const addQuestion = () => {
@@ -447,6 +451,69 @@ const HostPage = () => {
         }
     }
 
+    // instand start-now controller
+    const instandStart = () => {
+        if (!socketConnection) return
+        setInstandStartLoading(true)
+        try {
+
+            socketConnection.once("instant_started", (start_data) => {
+                toast.success(start_data?.message)
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        quiz_start: start_data?.startDate
+                    }
+                })
+                setInstandStartLoading(false)
+            })
+
+            socketConnection.once("instant_startErr", (start_data) => {
+                toast.error(start_data?.message)
+                setInstandStartLoading(false)
+            })
+
+            socketConnection.emit("instant_startQuiz", {
+                hostId: data?._id
+            })
+
+        } catch (error) {
+            console.log("instandStart error", error)
+            setInstandStartLoading(false)
+        }
+    }
+
+    // instand end-now controller
+    const instandEnd = () => {
+        if (!socketConnection) return
+        setInstantEndLoading(true)
+        try {
+            socketConnection.once("instand_endedHost", (end_data) => {
+                toast.success(end_data?.message)
+                setData((prev)=>{
+                    return{
+                        ...prev,
+                        quiz_end : end_data?.endDate
+                    }
+                })
+                setInstantEndLoading(false)
+            })
+
+            socketConnection.once("instant_endErr", (end_data) => {
+                toast.error(end_data?.message)
+                setInstantEndLoading(false)
+            })
+
+            socketConnection.emit("instant_endQuiz", {
+                hostId: data?._id
+            })
+
+        } catch (error) {
+            setInstantEndLoading(false)
+            console.log("instandEnd", error)
+        }
+    }
+
     // console.log("data data", data)
 
     return (
@@ -454,7 +521,7 @@ const HostPage = () => {
 
             {
                 loc.pathname.split("/")[loc.pathname.split("/").length - 1] === "full-details" ? (
-                    <Outlet />
+                    <Outlet context={{data: data}}/>
                 ) : (
                     <section>
                         {/* host details */}
@@ -521,8 +588,7 @@ const HostPage = () => {
                                 <div className="flex items-center gap-2 text-gray-700">
                                     <FiClock className="text-green-500" />
                                     <strong>Duration:</strong>{" "}
-                                    {(new Date(data?.quiz_end) - new Date(data?.quiz_start)) /
-                                        (1000 * 60)}{" "}
+                                    {((new Date(data?.quiz_end) - new Date(data?.quiz_start)) /(1000 * 60)).toFixed(2)}{" "}
                                     min
                                 </div>
                             </div>
@@ -599,7 +665,8 @@ const HostPage = () => {
                                         <>
                                             {/* Start Now Button */}
                                             <button
-                                                disabled={!canStart}
+                                                disabled={!canStart || instandStartLoading}
+                                                onClick={() => instandStart()}
                                                 className={`flex items-center gap-2 ${canStart
                                                     ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
                                                     : "bg-blue-300 cursor-not-allowed"
@@ -611,7 +678,8 @@ const HostPage = () => {
 
                                             {/* End Now Button */}
                                             <button
-                                                disabled={!canEnd}
+                                                disabled={!canEnd || instantEndLoading}
+                                                onClick={()=>instandEnd()}
                                                 className={`flex items-center gap-2 ${canEnd
                                                     ? "bg-red-600 hover:bg-red-700 cursor-pointer"
                                                     : "bg-red-300 cursor-not-allowed"
@@ -641,11 +709,7 @@ const HostPage = () => {
                             <button
                                 className="absolute top-3 right-6 text-lg text-blue-600 cursor-pointer font-medium hover:text-blue-700 underline transition"
                                 onClick={() => {
-                                    navigate(`full-details`, {
-                                        state: {
-                                            data: data
-                                        }
-                                    })
+                                    navigate(`full-details`)
                                 }}
                             >
                                 Full Details
@@ -674,7 +738,6 @@ const HostPage = () => {
 
                             </div>
                         </div>
-
 
                         {/* Question section */}
                         <div className="bg-white shadow-md rounded-lg p-8 my-6">

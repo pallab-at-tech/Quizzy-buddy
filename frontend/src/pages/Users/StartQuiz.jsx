@@ -181,7 +181,10 @@ const StartQuiz = () => {
     // change time for unstrict time and strict time
     useEffect(() => {
         const hasSubmitted = localStorage.getItem("submit");
-        if (hasSubmitted) return;
+        if (hasSubmitted) {
+            removeDetails();
+            return;
+        }
 
         const intervalId = setInterval(() => {
             if (data?.strict?.enabled) {
@@ -290,6 +293,15 @@ const StartQuiz = () => {
             console.log("handleFinishQuiz error", error)
         }
     }
+
+    useEffect(() => {
+        if (!socketConnection) return
+        socketConnection.once("instant_endedUser", (end_data) => {
+            toast.error(end_data?.message)
+            navigate(-1)
+        })
+
+    }, [socketConnection])
 
     // console.log("data", answer)
     // console.log("Q", timer)

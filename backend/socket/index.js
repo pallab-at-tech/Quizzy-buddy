@@ -308,9 +308,27 @@ io.on('connection', (socket) => {
 
             const { hostId } = data || {}
 
+            if(!hostId){
+                return socket.emit("added_error", {
+                    message: "Host Id required!"
+                })
+            }
+
             const user = await userModel.findById(userId).select("nanoId name")
 
             const host = await quizHostModel.findById(hostId)
+
+            if(!user){
+                return socket.emit("added_error", {
+                    message: "User not found!"
+                })
+            }
+
+            if(!host){
+                return socket.emit("added_error", {
+                    message: "Quiz not found!"
+                })
+            }
 
             const isAlreadyAdded = host.user_ids.some((m) => m.user_nanoId.toString() === user.nanoId.toString())
 
@@ -425,7 +443,7 @@ io.on('connection', (socket) => {
                 })
             }
 
-            if(host.host_user_id.toString() !== userId.toString()){
+            if (host.host_user_id.toString() !== userId.toString()) {
                 return socket.emit("delete_QuizErr", {
                     message: "Access denied!"
                 })
@@ -433,7 +451,7 @@ io.on('connection', (socket) => {
 
             const now = new Date()
 
-            if(new Date(host.quiz_end) > now && now > new Date(host.quiz_start)){
+            if (new Date(host.quiz_end) > now && now > new Date(host.quiz_start)) {
                 return socket.emit("delete_QuizErr", {
                     message: "Ongoing Quiz can't be deleted!"
                 })
@@ -441,7 +459,7 @@ io.on('connection', (socket) => {
 
             const user = await userModel.findById(userId)
 
-            if(!user){
+            if (!user) {
                 return socket.emit("delete_QuizErr", {
                     message: "User not found!"
                 })
@@ -452,9 +470,9 @@ io.on('connection', (socket) => {
             await quizHostModel.findByIdAndDelete(hostId)
             await user.save()
 
-            return socket.emit("deleted_quizz",{
-                message : "Quiz deleted successfully",
-                hostId : hostId
+            return socket.emit("deleted_quizz", {
+                message: "Quiz deleted successfully",
+                hostId: hostId
             })
 
         } catch (error) {
@@ -463,6 +481,189 @@ io.on('connection', (socket) => {
                 message: "Unknown error occured , try later!"
             })
         }
+    })
+
+    socket.on("instant_startQuiz", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { hostId } = data || {}
+
+            if (!hostId) {
+                return socket.emit("instant_startErr", {
+                    message: "Host Id not found!"
+                })
+            }
+
+            const host = await quizHostModel.findById(hostId)
+
+            if (!host) {
+                return socket.emit("instant_startErr", {
+                    message: "Quiz not found!"
+                })
+            }
+
+            if (host.host_user_id.toString() !== userId.toString()) {
+                return socket.emit("instant_startErr", {
+                    message: "Access denied!"
+                })
+            }
+
+            const now = new Date()
+
+            if (new Date(host.quiz_end) > now && now > new Date(host.quiz_start)) {
+                return socket.emit("instant_startErr", {
+                    message: "Quiz has been already started!"
+                })
+            }
+
+            if (new Date(host.quiz_end) < now) {
+                return socket.emit("instant_startErr", {
+                    message: "Quiz already expired!"
+                })
+            }
+
+            const user = await userModel.findById(userId)
+
+            if (!user) {
+                return socket.emit("instant_startErr", {
+                    message: "User not found!"
+                })
+            }
+
+            const findVal = user.host_info.find((h) => h._id.toString() === hostId.toString())
+            findVal.startDate = now
+
+            host.quiz_start = now
+
+            await Promise.all([user.save(), host.save()])
+
+            socket.emit("instant_started", {
+                message: "Quiz started now",
+                hostId: hostId,
+                startDate : now
+            })
+
+        } catch (error) {
+            console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    socket.on("instant_endQuiz", async (data) => {
+        const token = socket.handshake.auth?.token;
+        if (!token) {
+            return socket.emit("session_expired", { message: "No token found. Please login again." });
+        }
+
+        let payload1;
+        try {
+            payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+        } catch (err) {
+            return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+        }
+
+        const userId = payload1.id;
+
+        const { hostId } = data || {}
+
+        if (!hostId) {
+            return socket.emit("instant_endErr", {
+                message: "Host Id required!"
+            })
+        }
+
+        const host = await quizHostModel.findById(hostId)
+
+        if (!host) {
+            return socket.emit("instant_endErr", {
+                message: "Quiz not found!"
+            })
+        }
+
+        // check is host user or not
+        if (host.host_user_id.toString() !== userId.toString()) {
+            return socket.emit("instant_endErr", {
+                message: "Access denied!"
+            })
+        }
+
+        const now = new Date()
+
+        // basic validation check
+        if (new Date(host.quiz_start) > now) {
+            return socket.emit("instant_endErr", {
+                message: "Quiz not start yet!"
+            })
+        }
+
+        if (new Date(host.quiz_end) < now) {
+            return socket.emit("instant_endErr", {
+                message: "Quiz already have ended!"
+            })
+        }
+
+        // fetch host user details
+        const user = await userModel.findById(userId)
+
+        if (!user) {
+            return socket.emit("instant_endErr", {
+                message: "User not found!"
+            })
+        }
+
+        // update host user's host info
+        const targetVal = user.host_info.find((h) => h._id.toString() === hostId.toString())
+        if (!targetVal) {
+            return socket.emit("instant_endErr", {
+                message: "Some error occured!"
+            })
+        }
+
+        targetVal.endDate = now
+
+        // update quiz model details
+        host.quiz_end = now
+
+        // store user id's before update , so later send notification
+        const curr_participants = host.user_ids || []
+        host.user_ids = []
+
+        await Promise.all([user.save(), host.save()])
+
+        // send message to host
+        io.to(userId.toString()).emit("instand_endedHost", {
+            message: "Quiz now ended!",
+            hostId: hostId,
+            endDate : now
+        })
+
+        // find user _id for current particiapnts
+        const curr_nano = curr_participants.map(v => v.user_nanoId)
+        const curr_users = await userModel.find({ nanoId: { $in: curr_nano } }).select("_id")
+
+        await Promise.all(
+            curr_users.map(u =>
+                io.to(u._id.toString()).emit("instant_endedUser", {
+                    message: "Quiz ended by hoster",
+                    hostId
+                })
+            )
+        );
     })
 
     // disconnect user

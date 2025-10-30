@@ -122,6 +122,7 @@ const QuizJoined = () => {
             clearInterval(timer)
             setCount(null)
             navigate(`/joined/${params.hostId}/${user?._id}`, { state: { on_Quiz: true, data: data } })
+            addedDetails()
           }
 
         }, 1000)
@@ -143,7 +144,6 @@ const QuizJoined = () => {
       console.log("addedDetails error", error)
     }
   }
-
 
   return (
     <section className='h-[calc(100vh-70px)] overflow-y-auto scrollbar-hide bg-gradient-to-br from-[#f0f0f0] to-cyan-100'>
@@ -219,7 +219,6 @@ const QuizJoined = () => {
               <div
                 onClick={() => {
                   startQuiz()
-                  addedDetails()
                 }}
                 state={{ on_Quiz: true }}
                 className="flex items-center w-full justify-center cursor-pointer gap-2 bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 text-white font-semibold text-lg px-10 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all duration-200"

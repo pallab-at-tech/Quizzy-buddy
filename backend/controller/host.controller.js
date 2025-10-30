@@ -450,6 +450,14 @@ export const hostTimeUpdate = async (request, response) => {
             })
         }
 
+        if(new Date(host.quiz_end) < now){
+            return response.status(400).json({
+                message: "Expired Quiz's time can't edit",
+                error: true,
+                sucess: false
+            })
+        }
+
         host.quiz_start = quiz_start
         host.quiz_end = quiz_end
 

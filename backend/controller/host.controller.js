@@ -442,10 +442,41 @@ export const hostTimeUpdate = async (request, response) => {
             })
         }
 
+        if (new Date(host.quiz_end) > now && new Date(host.quiz_start) < now) {
+            return response.status(400).json({
+                message: "Ongoing Quiz's time can't edit",
+                error: true,
+                sucess: false
+            })
+        }
+
         host.quiz_start = quiz_start
         host.quiz_end = quiz_end
 
-        await host.save()
+        const user = await userModel.findById(userId)
+
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        const findValue = user.host_info.find((u) => u._id.toString() === hostId.toString())
+
+        if (!findValue) {
+            return response.status(400).json({
+                message: "Host Quiz not found!",
+                error: true,
+                sucess: false
+            })
+        }
+
+        findValue.startDate = quiz_start
+        findValue.endDate = quiz_end
+
+        await Promise.all([user.save(), host.save()])
 
         return response.json({
             message: "Host time updated",
@@ -557,9 +588,9 @@ export const checkingUserCanAttendQuiz = async (request, response) => {
         }
 
         return response.json({
-            message : "Status ok",
-            error : false,
-            success : true
+            message: "Status ok",
+            error: false,
+            success: true
         })
 
     } catch (error) {

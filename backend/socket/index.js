@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
                 const ans = {
                     questionId: question._id,
                     userAnswer: String(v.userAnswer ?? "").trim() || "",
-                    correctAnswer: String(question.correct_option || "").trim()  || "",
+                    correctAnswer: String(question.correct_option || "").trim() || "",
                     isCorrect: false,
                     marks: 0
                 }
@@ -267,7 +267,7 @@ io.on('connection', (socket) => {
             io.to(host.host_user_id.toString()).emit("host_submitted", {
                 message: `${user.name} Submit Quiz`,
                 data: payload,
-                hostId : host._id
+                hostId: host._id
             })
 
             // send message or data to user
@@ -279,7 +279,7 @@ io.on('connection', (socket) => {
                     participated_at: new Date(),
                     score: null
                 },
-                participate_count : user.participate_count
+                participate_count: user.participate_count
             })
 
         } catch (error) {
@@ -325,7 +325,7 @@ io.on('connection', (socket) => {
             host.user_ids.push({
                 user_nanoId: user.nanoId,
                 user_name: user.name,
-                joinedAt : now
+                joinedAt: now
             })
 
             await host.save()
@@ -335,7 +335,7 @@ io.on('connection', (socket) => {
                 data: {
                     user_nanoId: user.nanoId,
                     user_name: user.name,
-                    joinedAt : now
+                    joinedAt: now
                 },
                 hostId: hostId
             })
@@ -383,6 +383,78 @@ io.on('connection', (socket) => {
                     user_name: user.name
                 },
                 hostId: hostId
+            })
+
+        } catch (error) {
+            console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    socket.on("delete_quiz", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { hostId } = data || {}
+
+            if (!hostId) {
+                return socket.emit("delete_QuizErr", {
+                    message: "Quiz not found!"
+                })
+            }
+
+            const host = await quizHostModel.findById(hostId)
+
+            if (!host) {
+                return socket.emit("delete_QuizErr", {
+                    message: "Quiz not found!"
+                })
+            }
+
+            if(host.host_user_id.toString() !== userId.toString()){
+                return socket.emit("delete_QuizErr", {
+                    message: "Access denied!"
+                })
+            }
+
+            const now = new Date()
+
+            if(new Date(host.quiz_end) > now && now > new Date(host.quiz_start)){
+                return socket.emit("delete_QuizErr", {
+                    message: "Ongoing Quiz can't be deleted!"
+                })
+            }
+
+            const user = await userModel.findById(userId)
+
+            if(!user){
+                return socket.emit("delete_QuizErr", {
+                    message: "User not found!"
+                })
+            }
+
+            user.host_info = user.host_info.filter((h) => h._id.toString() !== hostId.toString())
+
+            await quizHostModel.findByIdAndDelete(hostId)
+            await user.save()
+
+            return socket.emit("deleted_quizz",{
+                message : "Quiz deleted successfully",
+                hostId : hostId
             })
 
         } catch (error) {

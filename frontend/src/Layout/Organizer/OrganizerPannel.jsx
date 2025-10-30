@@ -16,6 +16,7 @@ import { RiTimeZoneLine } from "react-icons/ri";
 const OrganizerPannel = () => {
 
   const host_info = useSelector((state) => state.user).host_info || [];
+  const user = useSelector(state => state.user)
   const params = useParams()
 
   const [classified_data, setClassified_data] = useState({
@@ -103,6 +104,8 @@ const OrganizerPannel = () => {
     classifyPastFuture(host_info)
   }, [host_info])
 
+
+  // console.log("hostInfo",user)
 
 
   return (

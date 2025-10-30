@@ -6,12 +6,14 @@ import { useGlobalContext } from '../../provider/GlobalProvider';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { setUserFinishQuiz } from '../../store/userSlice';
+import { useDispatch } from 'react-redux';
 
 const StartQuiz = () => {
 
     const location = useLocation()
     const data = location.state?.data
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const answerRef = useRef()
     const timerRef = useRef()
@@ -64,9 +66,9 @@ const StartQuiz = () => {
     }, [answer])
 
     // alaways store current time
-    useEffect(()=>{
+    useEffect(() => {
         timerRef.current = timer
-    },[timer])
+    }, [timer])
 
     // persist all answer and it't all details , also persist time
     useEffect(() => {
@@ -261,10 +263,10 @@ const StartQuiz = () => {
 
                 toast.success(data?.message)
                 // manage user state
-                setUserFinishQuiz({
+                dispatch(setUserFinishQuiz({
                     data: data?.data,
                     participate_count: data?.participate_count
-                })
+                }))
                 navigate("/")
                 setSubmitLoading(false)
             })
@@ -276,7 +278,7 @@ const StartQuiz = () => {
 
             const payload = {
                 hostId: data?._id,
-                submitData: answerRef.current?.solved || [] ,
+                submitData: answerRef.current?.solved || [],
                 total_time: time
             }
             console.log("submission data", payload)
@@ -288,7 +290,7 @@ const StartQuiz = () => {
             console.log("handleFinishQuiz error", error)
         }
     }
-    
+
     // console.log("data", answer)
     // console.log("Q", timer)
 

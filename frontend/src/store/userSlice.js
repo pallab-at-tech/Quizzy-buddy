@@ -59,9 +59,13 @@ const userSlice = createSlice({
 
             state.participant_info = [data, ...state.participant_info]
             state.participate_count = participate_count
-        }
+        },
+        manageHostDetails: (state, action) => {
+            const { hostId } = action.payload
+            state.host_info = state.host_info.filter((h)=> h._id !== hostId)
+        },
     }
 })
 
-export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz } = userSlice.actions
+export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz, manageHostDetails } = userSlice.actions
 export default userSlice.reducer

@@ -10,12 +10,16 @@ import uploadFile from "../../utils/uploadFile"
 import toast from "react-hot-toast";
 import { useGlobalContext } from "../../provider/GlobalProvider";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { AiFillDelete } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { manageHostDetails } from "../../store/userSlice";
 
 const HostPage = () => {
     const [data, setData] = useState(null);
     const location = useLocation().state;
     const navigate = useNavigate()
     const loc = useLocation()
+    const dispatch = useDispatch()
 
     const { socketConnection } = useGlobalContext()
 
@@ -44,6 +48,8 @@ const HostPage = () => {
         loading: false
     })
     const [hostDetailsLoading, setHostDetailsLoading] = useState(false)
+    const [deleteLoading, setDeleteLoading] = useState(false)
+    const [deletePanel, setDeletePanel] = useState(false)
 
     const [timeData, setTimeData] = useState({
         quiz_start: data?.quiz_start,
@@ -398,7 +404,7 @@ const HostPage = () => {
                 setData((prev) => {
                     return {
                         ...prev,
-                        quiz_submission_data : [submitData?.data , ...prev.quiz_submission_data]
+                        quiz_submission_data: [submitData?.data, ...prev.quiz_submission_data]
                     }
                 })
             }
@@ -411,6 +417,35 @@ const HostPage = () => {
         }
 
     }, [socketConnection, data])
+
+    const handleDeleteQuiz = () => {
+        if (!socketConnection) return
+        setDeleteLoading(true)
+        try {
+
+            socketConnection.once("deleted_quizz", (D_Data) => {
+                toast.success(D_Data.message)
+                dispatch(manageHostDetails({
+                    hostId: D_Data?.hostId
+                }))
+                navigate(-1)
+                setDeleteLoading(false)
+            })
+
+            socketConnection.once("delete_QuizErr", (D_Data) => {
+                toast.error(D_Data?.message || "Some Error Occured!")
+                setDeleteLoading(false)
+            })
+
+            socketConnection.emit("delete_quiz", {
+                hostId: data?._id
+            })
+
+        } catch (error) {
+            setDeleteLoading(false)
+            console.log("handleDeleteQuiz error", error)
+        }
+    }
 
     // console.log("data data", data)
 
@@ -991,6 +1026,60 @@ const HostPage = () => {
                                 }
                             </div>
                         </div>
+
+                        {/* delete section */}
+                        <div className="bg-white shadow-md rounded-lg p-8 my-6">
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Delete Quiz</h2>
+                            <p className="text-gray-600 mb-6">
+                                Once you delete this quiz, will be permanently removed.
+                                This action cannot be undone.
+                            </p>
+
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => {
+                                        setDeletePanel(true)
+                                    }}
+                                    className="bg-red-600 hover:bg-red-700 cursor-pointer flex items-center gap-2 text-white font-medium px-6 py-3 rounded-lg shadow-md transition-all"
+                                >
+                                    <AiFillDelete size={22} />
+                                    <span>Delete Quiz</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        {
+                            deletePanel && (
+                                <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+                                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
+                                        <h2 className="text-2xl font-semibold text-gray-800 mb-3">Delete Quiz?</h2>
+                                        <p className="text-gray-600 mb-8">
+                                            Are you sure you want to delete this quiz ?
+                                        </p>
+
+                                        <div className="flex items-center justify-center gap-4">
+                                            <button
+                                                onClick={() => {
+                                                    handleDeleteQuiz()
+                                                }}
+                                                className={`bg-red-600 hover:bg-red-700 text-white ${deleteLoading ? "cursor-not-allowed" : "cursor-pointer"} font-medium px-6 py-2 rounded-lg transition-all`}
+                                            >
+                                                Delete
+                                            </button>
+
+                                            <button
+                                                disabled={deleteLoading}
+                                                onClick={() => setDeletePanel(false)}
+                                                className={`bg-gray-200 hover:bg-gray-300 text-gray-800 ${deleteLoading ? "cursor-not-allowed" : "cursor-pointer"} font-medium px-6 py-2 rounded-lg transition-all`}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                            )
+                        }
 
                         {
                             hostDetailsUpdate.loading && (

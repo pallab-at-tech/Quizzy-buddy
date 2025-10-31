@@ -450,7 +450,7 @@ export const hostTimeUpdate = async (request, response) => {
             })
         }
 
-        if(new Date(host.quiz_end) < now){
+        if (new Date(host.quiz_end) < now) {
             return response.status(400).json({
                 message: "Expired Quiz's time can't edit",
                 error: true,
@@ -494,6 +494,61 @@ export const hostTimeUpdate = async (request, response) => {
             },
             error: false,
             success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const fetchQuestionDetails = async (request, response) => {
+    try {
+        const { data = [], hostId } = request.body
+        const userId = request.userId
+
+        if (!data || !Array.isArray(data)) {
+            return response.status(400).json({
+                message: "Data not found!",
+                error: true,
+                success: false
+            })
+        }
+
+        const extractIds = data.map((q) => q.questionId)
+
+        const questions = await questionModel.find({ _id: { $in: extractIds } }).lean()
+
+        const combineData = data.map((item) => {
+
+            const question = questions.find((q) => q._id.toString() === item.questionId.toString())
+
+            return {
+                questionId: item.questionId,
+                question_details: {
+                    question : question.question,
+                    image : question.image,
+                    marks : question.marks,
+                    inputBox : question.inputBox,
+                    options : question.options,
+                    correct_option : question.correct_option
+                },
+                userAnswer: item.userAnswer,
+                correctAnswer: item.correctAnswer,
+                isCorrect: item.isCorrect,
+                marks: item.marks,
+                _id : item._id
+            }
+        })
+
+        return response.json({
+            message : "Question details with user answer",
+            error : false,
+            success : true,
+            data : combineData
         })
 
     } catch (error) {

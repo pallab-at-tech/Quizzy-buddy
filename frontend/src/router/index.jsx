@@ -19,6 +19,7 @@ import HostPage from '../Layout/Organizer/HostPage';
 import QuizJoined from '../pages/Users/QuizJoined';
 import StartQuiz from '../pages/Users/StartQuiz';
 import GetSubmissionFullDetails from '../Layout/Organizer/GetSubmissionFullDetails';
+import ViewMarksDetails from '../Layout/Organizer/ViewMarksDetails';
 
 
 const router = createBrowserRouter([
@@ -47,14 +48,18 @@ const router = createBrowserRouter([
                     {
                         path: "organizer-pannel",
                         element: <OrganizerPannel />,
-                        children : [
+                        children: [
                             {
-                                path : ":quizId",
-                                element : <HostPage/>,
-                                children : [
+                                path: ":quizId",
+                                element: <HostPage />,
+                                children: [
                                     {
-                                        path : "full-details",
-                                        element : <GetSubmissionFullDetails/>
+                                        path: "full-details",
+                                        element: <GetSubmissionFullDetails />,
+                                    },
+                                    {
+                                        path: "view",
+                                        element: <ViewMarksDetails />
                                     }
                                 ]
                             }
@@ -117,12 +122,12 @@ const router = createBrowserRouter([
                 ]
             },
             {
-                path : "/joined/:hostId",
-                element : <QuizJoined/>,
-                children : [
+                path: "/joined/:hostId",
+                element: <QuizJoined />,
+                children: [
                     {
-                        path : ":userId",
-                        element : <StartQuiz/>
+                        path: ":userId",
+                        element: <StartQuiz />
                     }
                 ]
             }

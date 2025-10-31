@@ -23,6 +23,8 @@ const HostPage = () => {
     const dispatch = useDispatch()
     const params = useParams()
 
+    const navigateTo = loc.pathname.split("/")[loc.pathname.split("/").length - 1]
+
     const { socketConnection } = useGlobalContext()
 
     const [copied, setCopied] = useState(false);
@@ -520,7 +522,7 @@ const HostPage = () => {
         <section className="pt-0 pb-6 px-4">
 
             {
-                loc.pathname.split("/")[loc.pathname.split("/").length - 1] === "full-details" ? (
+                navigateTo === "full-details" || navigateTo === "view"  ? (
                     <Outlet context={{data: data}}/>
                 ) : (
                     <section>

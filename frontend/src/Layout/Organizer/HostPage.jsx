@@ -14,6 +14,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { manageHostDetails } from "../../store/userSlice";
 import { useParams } from "react-router-dom";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
 
 const HostPage = () => {
     const [data, setData] = useState(null);
@@ -492,10 +493,10 @@ const HostPage = () => {
         try {
             socketConnection.once("instand_endedHost", (end_data) => {
                 toast.success(end_data?.message)
-                setData((prev)=>{
-                    return{
+                setData((prev) => {
+                    return {
                         ...prev,
-                        quiz_end : end_data?.endDate
+                        quiz_end: end_data?.endDate
                     }
                 })
                 setInstantEndLoading(false)
@@ -522,8 +523,8 @@ const HostPage = () => {
         <section className="pt-0 pb-6 px-4">
 
             {
-                navigateTo === "full-details" || navigateTo === "view"  ? (
-                    <Outlet context={{data: data}}/>
+                navigateTo === "full-details" || navigateTo === "view" ? (
+                    <Outlet context={{ data: data }} />
                 ) : (
                     <section>
                         {/* host details */}
@@ -543,9 +544,9 @@ const HostPage = () => {
                             </div>
 
                             {/* Join Code */}
-                            <div className="flex items-center flex-wrap gap-2 border border-gray-300 bg-blue-50 px-3 py-2 rounded-md mb-4">
+                            <div className="flex items-center flex-wrap gap-2 border-2 border-blue-200 bg-blue-50 px-3 py-2 rounded-lg mb-4">
                                 <span className="font-semibold">Join Code:</span>
-                                <span className="font-mono bg-blue-100 text-blue-600 border border-blue-300 px-2 py-1 rounded-md">
+                                <span className="font-mono  text-blue-600 bg-blue-200  px-2 py-1 rounded-md">
                                     {data?.provide_join_code}
                                 </span>
 
@@ -563,7 +564,7 @@ const HostPage = () => {
                             </div>
 
                             {/* Quiz Timing */}
-                            <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-5 mt-5">
+                            <div className="bg-[#fefefe] p-4 shadow-md rounded-lg border border-gray-200 mb-5 mt-5">
 
                                 <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-2">
                                     <div className="flex items-center gap-2">
@@ -590,13 +591,13 @@ const HostPage = () => {
                                 <div className="flex items-center gap-2 text-gray-700">
                                     <FiClock className="text-green-500" />
                                     <strong>Duration:</strong>{" "}
-                                    {((new Date(data?.quiz_end) - new Date(data?.quiz_start)) /(1000 * 60)).toFixed(2)}{" "}
+                                    {((new Date(data?.quiz_end) - new Date(data?.quiz_start)) / (1000 * 60)).toFixed(2)}{" "}
                                     min
                                 </div>
                             </div>
 
                             {/* marks info and strict mode */}
-                            <div className="bg-white shadow-md rounded-lg p-6 relative">
+                            <div className="bg-[#fefefe] shadow-md rounded-lg p-6 relative border border-gray-200">
 
                                 {/* Row 1: Marks Info */}
                                 <div className="flex flex-wrap items-center justify-between gap-6 mb-3">
@@ -681,7 +682,7 @@ const HostPage = () => {
                                             {/* End Now Button */}
                                             <button
                                                 disabled={!canEnd || instantEndLoading}
-                                                onClick={()=>instandEnd()}
+                                                onClick={() => instandEnd()}
                                                 className={`flex items-center gap-2 ${canEnd
                                                     ? "bg-red-600 hover:bg-red-700 cursor-pointer"
                                                     : "bg-red-300 cursor-not-allowed"
@@ -1092,27 +1093,48 @@ const HostPage = () => {
                             </div>
                         </div>
 
-                        {/* delete section */}
-                        <div className="bg-white shadow-md rounded-lg p-8 my-6">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Delete Quiz</h2>
-                            <p className="text-gray-600 mb-6">
-                                Once you delete this quiz, will be permanently removed.
-                                This action cannot be undone.
-                            </p>
+                        {/* delete section and recreate another quiz  */}
+                        <div className="grid grid-cols-2 gap-x-4">
+                            {/* delete section */}
+                            <div className="bg-white shadow-md rounded-lg p-8">
+                                <h2 className="text-xl font-semibold text-gray-800 mb-4">Delete Quiz</h2>
+                                <p className="text-gray-600 mb-6">
+                                    Once you delete this quiz, will be permanently removed.
+                                    This action cannot be undone.
+                                </p>
 
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => {
-                                        setDeletePanel(true)
-                                    }}
-                                    className="bg-red-600 hover:bg-red-700 cursor-pointer flex items-center gap-2 text-white font-medium px-6 py-3 rounded-lg shadow-md transition-all"
-                                >
-                                    <AiFillDelete size={22} />
-                                    <span>Delete Quiz</span>
-                                </button>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => {
+                                            setDeletePanel(true)
+                                        }}
+                                        className="bg-red-600 hover:bg-red-700 cursor-pointer flex items-center gap-2 text-white font-medium px-6 py-3 rounded-lg shadow-md transition-all"
+                                    >
+                                        <AiFillDelete size={22} />
+                                        <span>Delete Quiz</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* recreate another quiz within same question */}
+                            <div className="bg-white shadow-md rounded-lg p-8">
+                                <h2 className="text-xl font-semibold text-gray-800 mb-4">Re-Create Quiz</h2>
+                                <p className="text-gray-600 mb-6">
+                                    Re-Create Quiz within same Question.
+                                </p>
+
+                                <div className="flex items-center gap-4 mt-12">
+                                    <button
+                                        onClick={() => {
+                                        }}
+                                        className="bg-green-600 hover:bg-green-700 cursor-pointer flex items-center gap-2 text-white font-medium px-6 py-3 rounded-lg shadow-md transition-all"
+                                    >
+                                        <VscGitPullRequestCreate size={22} />
+                                        <span>Recreate Quiz</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-
 
                         {
                             deletePanel && (

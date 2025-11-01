@@ -212,10 +212,10 @@ const OrganizerPannel = () => {
                 </div>
 
                 {/* future quizzes */}
-                <div className="space-y-6 py-6">
+                <div className="space-y-6">
                   {
                     classified_data.future.length > 0 && (
-                      <div>
+                      <div className="py-6">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                           <RiTimeZoneLine className="text-yellow-500" />
                           Future Quizzes
@@ -288,10 +288,10 @@ const OrganizerPannel = () => {
                 </div>
 
                 {/* past quizzes */}
-                <div className="space-y-6 py-6">
+                <div className="space-y-6">
                   {
                     classified_data.past.length > 0 && (
-                      <div>
+                      <div className="py-6"> 
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                           <FaBusinessTime className="text-red-500" />
                           Past Quizzes

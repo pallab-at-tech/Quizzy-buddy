@@ -10,6 +10,7 @@ import { app, server } from "./socket/index.js"
 import connectDB from './config/connectDB.js'
 import userRouter from './router/user.route.js'
 import hostRouter from './router/host.route.js'
+import leaderBoardRouter from './router/leaderboard.route.js'
 
 
 app.use(cors({
@@ -36,7 +37,8 @@ app.get("/", (req, res) => {
 // api end point
 
 app.use("/api", userRouter)
-app.use("/api/host",hostRouter)
+app.use("/api/host", hostRouter)
+app.use("/api/leaderboard", leaderBoardRouter)
 
 
 const PORT = 8080 || process.env.PORT

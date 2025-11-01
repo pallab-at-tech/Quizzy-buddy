@@ -8,6 +8,7 @@ dotenv.config()
 import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 import userModel from '../model/user.model.js'
 import checkIsCorrect from '../utils/checkCorrect.js'
+import { leaderboardMake } from '../controller/leaderboard.controller.js'
 
 const app = express()
 const server = createServer(app)
@@ -247,7 +248,7 @@ io.on('connection', (socket) => {
             // calculated result
             payload.total_solved = total_solved
             payload.total_correct = total_correct
-            payload.get_total_marks = get_total_marks - ((payload.total_question - payload.total_correct) * Math.abs(host.set_negetive_marks))
+            payload.get_total_marks = get_total_marks - ((payload.total_solved - payload.total_correct) * Math.abs(host.set_negetive_marks))
 
             // store data to model
             host.quiz_submission_data.push(payload)
@@ -260,6 +261,24 @@ io.on('connection', (socket) => {
             })
 
             user.participate_count += 1
+
+            const leaderBoard_payload = {
+                quizId: host._id,
+                user: {
+                    userId: {
+                        Id: user._id.toString(),
+                        userId: user.nanoId,
+                        userName: user.name
+                    },
+                    marks: payload.get_total_marks,
+                    timeTaken: total_time,
+                    accuracy: ((payload.total_correct / payload.total_solved) * 100).toFixed(4),
+                    submittedAt: new Date(),
+                    negativeMarks: ((payload.total_solved - payload.total_correct) * Math.abs(host.set_negetive_marks))
+                }
+            }
+
+            await leaderboardMake(leaderBoard_payload, host._id, host.quiz_submission_data.length <= 1)
 
             await Promise.all([user.save(), host.save()])
 
@@ -308,7 +327,7 @@ io.on('connection', (socket) => {
 
             const { hostId } = data || {}
 
-            if(!hostId){
+            if (!hostId) {
                 return socket.emit("added_error", {
                     message: "Host Id required!"
                 })
@@ -318,13 +337,13 @@ io.on('connection', (socket) => {
 
             const host = await quizHostModel.findById(hostId)
 
-            if(!user){
+            if (!user) {
                 return socket.emit("added_error", {
                     message: "User not found!"
                 })
             }
 
-            if(!host){
+            if (!host) {
                 return socket.emit("added_error", {
                     message: "Quiz not found!"
                 })
@@ -553,7 +572,7 @@ io.on('connection', (socket) => {
             socket.emit("instant_started", {
                 message: "Quiz started now",
                 hostId: hostId,
-                startDate : now
+                startDate: now
             })
 
         } catch (error) {
@@ -649,7 +668,7 @@ io.on('connection', (socket) => {
         io.to(userId.toString()).emit("instand_endedHost", {
             message: "Quiz now ended!",
             hostId: hostId,
-            endDate : now
+            endDate: now
         })
 
         // find user _id for current particiapnts

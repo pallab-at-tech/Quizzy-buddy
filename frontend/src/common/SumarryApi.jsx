@@ -64,6 +64,10 @@ const SummaryApi = {
     fetch_questionDetails : {
         url : "/api/host/get-question-details",
         method : "post"
+    },
+    fetch_leaderBoard_details : {
+        url : "/api/leaderboard/fetch-leaderboard",
+        method : "get"
     }
 }
 

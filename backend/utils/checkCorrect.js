@@ -1,9 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
+import dotenv from 'dotenv'
+dotenv.config()
+
 
 const ai = new GoogleGenAI({
-    apiKey: "AIzaSyC-P-cf7q7txjyMiRQuOPiKJcjgjEnQQBQ"
+    apiKey: process.env.GEMINI_API_KEY 
 });
-
 
 
 async function checkIsCorrect(question, userAnswer) {
@@ -41,9 +43,9 @@ async function checkIsCorrect(question, userAnswer) {
         const ans = response.text.replace('```json', '').replace('```', '').trim()
         try {
             let x = JSON.parse(ans)
-            x= {
-                isCorrect : x?.isCorrect.trim(),
-                reason : x?.reason.trim()
+            x = {
+                isCorrect: x?.isCorrect.trim(),
+                reason: x?.reason.trim()
             }
             return x
         } catch (error) {

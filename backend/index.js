@@ -40,7 +40,6 @@ app.use("/api", userRouter)
 app.use("/api/host", hostRouter)
 app.use("/api/leaderboard", leaderBoardRouter)
 
-
 const PORT = 8080 || process.env.PORT
 
 connectDB().then(() => {

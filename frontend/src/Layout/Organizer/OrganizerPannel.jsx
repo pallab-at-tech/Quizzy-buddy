@@ -125,7 +125,7 @@ const OrganizerPannel = () => {
               </h1>
               <p className="text-gray-500 text-sm">
                 <Link to={`/host-quiz`} className="font-bold text-lg mr-14 w-fit border-2 border-gray-400 px-2.5 py-2 rounded-xl hover:bg-[#f1f1f1] transition-colors duration-150">
-                  Create Quiz
+                  Host Quiz
                 </Link>
               </p>
             </header>

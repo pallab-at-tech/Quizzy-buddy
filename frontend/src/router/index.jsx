@@ -20,6 +20,7 @@ import QuizJoined from '../pages/Users/QuizJoined';
 import StartQuiz from '../pages/Users/StartQuiz';
 import GetSubmissionFullDetails from '../Layout/Organizer/GetSubmissionFullDetails';
 import ViewMarksDetails from '../Layout/Organizer/ViewMarksDetails';
+import MyQuiz from '../Layout/myQuiz/MyQuiz';
 
 
 const router = createBrowserRouter([
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
                             }
                         ]
                     },
+                    {
+                        path : "my-quiz",
+                        element : <MyQuiz/>
+                    }
                 ]
             },
             {

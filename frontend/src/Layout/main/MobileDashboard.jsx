@@ -69,7 +69,7 @@ const MobileDashboard = () => {
                         <p className='pl-2'>Registration/Application</p>
                     </Link>
 
-                    <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+                    <Link to={`/dashboard/my-quiz`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
                         <p className='pl-2'>My rounds</p>
                     </Link>
 

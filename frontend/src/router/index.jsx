@@ -21,6 +21,7 @@ import StartQuiz from '../pages/Users/StartQuiz';
 import GetSubmissionFullDetails from '../Layout/Organizer/GetSubmissionFullDetails';
 import ViewMarksDetails from '../Layout/Organizer/ViewMarksDetails';
 import MyQuiz from '../Layout/myQuiz/MyQuiz';
+import ParticiapantsDetails from '../Layout/myQuiz/ParticiapantsDetails';
 
 
 const router = createBrowserRouter([
@@ -68,7 +69,13 @@ const router = createBrowserRouter([
                     },
                     {
                         path : "my-quiz",
-                        element : <MyQuiz/>
+                        element : <MyQuiz/>,
+                        children : [
+                            {
+                                path : ":quiz_Id",
+                                element : <ParticiapantsDetails/>
+                            }
+                        ]
                     }
                 ]
             },

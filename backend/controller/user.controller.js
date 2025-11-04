@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import {customAlphabet} from "nanoid"
+import { customAlphabet } from "nanoid"
 import sendEmail from '../utils/sendEmail.js'
 import verifyEmailTemplate from '../utils/verifyEmailTemplate.js'
 import userModel from '../model/user.model.js'
@@ -8,8 +8,9 @@ import generatedAccessToken from '../utils/generatedAccessToken.js'
 import generateRefreshToken from '../utils/generateRefreshToken.js'
 import generateOTP from '../utils/generateOTP.js'
 import sendOtpTemplate from '../utils/sendOtpTemplate.js'
+import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 
-const nanoIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",6)
+const nanoIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)
 
 
 export const userRegisterController = async (request, response) => {
@@ -46,7 +47,7 @@ export const userRegisterController = async (request, response) => {
             name,
             email,
             password: hashPassword,
-            nanoId : `${firstName}-${uniqueId}`
+            nanoId: `${firstName}-${uniqueId}`
         }
 
         const newUser = new userModel(payload)
@@ -436,24 +437,103 @@ export const userRefressingTokenController = async (request, response) => {
     }
 }
 
-export const userDetailsController = async(request , response) =>{
+export const userDetailsController = async (request, response) => {
     try {
 
         const userId = request.userId
         const userData = await userModel.findById(userId).select("-password -refresh_token -forgot_Password_otp -forgot_Password_expiry")
 
         return response.json({
-            message : 'user Details',
-            data : userData,
-            error : false,
-            success : true
+            message: 'user Details',
+            data: userData,
+            error: false,
+            success: true
         })
-        
+
     } catch (error) {
-        return response.status(400).json({
-            message : error.message || error,
-            success : false,
-            error : true
+        return response.status(500).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const quizParticiapantsDetails = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { quizId } = request.query || {}
+
+        if (!quizId) {
+            return response.status(400).json({
+                message: "Some Error Occured!" || "Host Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(quizId)
+
+        if (!host) {
+            return response.status(400).json({
+                message: "Some Error Occured!" || "Quiz not found!",
+                error: true,
+                success: false
+            })
+        }
+
+        const isUserAttendQuiz = host.quiz_submission_data.find(
+            (u) => u.userDetails.Id.toString() === userId.toString()
+        )
+
+        if (!isUserAttendQuiz) {
+            return response.status(400).json({
+                message: "Illegal Access!",
+                error: true,
+                success: false
+            })
+        }
+
+        const extractIds = isUserAttendQuiz.correctedData.map(
+            (q) => q.questionId
+        )
+
+        const questions = await questionModel.find({ _id: { $in: extractIds } }).lean()
+
+        const combineData = {
+            userDetails: isUserAttendQuiz.userDetails,
+            total_solved: isUserAttendQuiz.total_solved,
+            total_correct: isUserAttendQuiz.total_correct,
+            total_question: isUserAttendQuiz.total_question,
+            get_total_marks: isUserAttendQuiz.get_total_marks,
+            total_time: isUserAttendQuiz.total_time,
+            correctedData: []
+        }
+
+        isUserAttendQuiz.correctedData.map((c) => {
+            const question = questions.find((q) => q._id.toString() === c.questionId.toString())
+            const correctedData = {
+                userAnswer: c.userAnswer,
+                correctAnswer: c.correctAnswer,
+                isCorrect: c.isCorrect,
+                marks: c.marks,
+                questionDetails: question
+            }
+            combineData.correctedData.push(correctedData)
+        })
+
+        return response.json({
+            message : "Get Participants Data",
+            error : false,
+            success : true,
+            data : combineData
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error Occured!" || error.message || error,
+            success: false,
+            error: true
         })
     }
 }

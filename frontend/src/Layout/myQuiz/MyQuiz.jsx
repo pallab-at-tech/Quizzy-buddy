@@ -18,7 +18,7 @@ const MyQuiz = () => {
               My Quiz Participation
             </h1>
 
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
               {user?.participant_info?.length > 0 ? (
                 user.participant_info.map((p) => (
                   <Link

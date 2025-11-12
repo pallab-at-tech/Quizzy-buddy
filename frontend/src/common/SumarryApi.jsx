@@ -68,6 +68,10 @@ const SummaryApi = {
     fetch_leaderBoard_details : {
         url : "/api/leaderboard/fetch-leaderboard",
         method : "get"
+    },
+    score_realised : {
+        url : "/api/host/realised-score",
+        method : "post"
     }
 }
 

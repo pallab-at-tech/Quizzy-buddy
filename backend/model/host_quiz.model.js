@@ -4,22 +4,22 @@ const submitData = new mongoose.Schema({
     userDetails: {
         type: {
             Id: {
-                type : String,
-                default : ""
+                type: String,
+                default: ""
             },
-            userId : {
-                type : String,
-                default : ""
+            userId: {
+                type: String,
+                default: ""
             },
-            userName : {
-                type : String,
-                default : ""
+            userName: {
+                type: String,
+                default: ""
             }
         },
-        default : {
-            Id : "",
-            userId : "",
-            userName : ""
+        default: {
+            Id: "",
+            userId: "",
+            userName: ""
         }
     },
     total_solved: {
@@ -123,17 +123,17 @@ const hostSchema = new mongoose.Schema({
     },
     user_ids: [
         {
-            user_nanoId : {
-                type : String,
-                default : ""
+            user_nanoId: {
+                type: String,
+                default: ""
             },
-            user_name : {
-                type : String,
-                default : ""
+            user_name: {
+                type: String,
+                default: ""
             },
-            joinedAt : {
-                type : Date,
-                default : null
+            joinedAt: {
+                type: Date,
+                default: null
             }
         }
     ],
@@ -150,6 +150,10 @@ const hostSchema = new mongoose.Schema({
     quiz_end: {
         type: Date,
         required: true
+    },
+    realise_score: {
+        type: Boolean,
+        default: false
     },
     strict: {
         type: {
@@ -185,7 +189,6 @@ const hostSchema = new mongoose.Schema({
         type: [submitData],
         default: []
     }
-
 }, {
     timestamps: true
 })

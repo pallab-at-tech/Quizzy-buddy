@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { manageHostDetails } from "../../store/userSlice";
 import { useParams } from "react-router-dom";
 import { VscGitPullRequestCreate } from "react-icons/vsc";
+import { GrScorecard } from "react-icons/gr";
 
 const HostPage = () => {
     const [data, setData] = useState(null);
@@ -65,6 +66,7 @@ const HostPage = () => {
 
     const [instandStartLoading, setInstandStartLoading] = useState(false)
     const [instantEndLoading, setInstantEndLoading] = useState(false)
+    const [realisingScore, setRealisingScore] = useState(false)
 
 
     // function of fetch host details
@@ -517,7 +519,41 @@ const HostPage = () => {
         }
     }
 
-    // console.log("data data", data)
+    // Realise score
+    const realiseScore = async () => {
+        if (!data) return
+        try {
+            setRealisingScore(true)
+            const response = await Axios({
+                ...SummaryApi.score_realised,
+                data: {
+                    hostId: data?._id
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData.success) {
+                toast.success(responseData?.message)
+                setData((prev) => {
+                    return {
+                        ...prev,
+                        realise_score: true
+                    }
+                })
+            }
+            else {
+                toast.error(responseData?.message)
+            }
+
+            setRealisingScore(false)
+
+        } catch (error) {
+            setRealisingScore(false)
+            console.log("RealiseScore error", error)
+        }
+    }
+
 
     return (
         <section className="pt-0 pb-6 px-4">
@@ -690,6 +726,21 @@ const HostPage = () => {
                                             >
                                                 <FiStopCircle />
                                                 End Now
+                                            </button>
+
+                                            <button
+                                                disabled={data?.realise_score || !hasEnded}
+                                                onClick={() => {
+                                                    realiseScore()
+                                                }}
+                                                className={`flex items-center gap-2 ${!data?.realise_score && hasEnded
+                                                    ? "bg-green-600 hover:bg-green-700 cursor-pointer"
+                                                    : "bg-green-300 cursor-not-allowed"
+                                                    } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
+                                            >
+                                                <GrScorecard />
+                                                {realisingScore ? "Realising  , wait..." : "Realise Score"}
+                                                
                                             </button>
                                         </>
                                     );

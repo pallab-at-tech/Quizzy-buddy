@@ -29,7 +29,6 @@ const ViewMarksDetails = () => {
                 })
 
                 const { data: responseData } = response
-                console.log("responseData", responseData)
 
                 if (responseData?.success) {
                     setData((prev) => ({
@@ -51,7 +50,6 @@ const ViewMarksDetails = () => {
 
     return (
         <section className=''>
-
             {/* Basic user details */}
             <div className="w-full bg-white shadow-md rounded-2xl p-6 border border-gray-200">
                 {/* Header Section */}

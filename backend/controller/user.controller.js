@@ -523,7 +523,91 @@ export const quizParticiapantsDetails = async (request, response) => {
         })
 
         return response.json({
-            message : "Get Participants Data",
+            message: "Get Participants Data",
+            error: false,
+            success: true,
+            data: combineData
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error Occured!" || error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const particularParticipantsDetails = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { quizId } = request.query || {}
+
+        if (!quizId) {
+            return response.status(400).json({
+                message: "Quiz Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const host = await quizHostModel.findById(quizId)
+
+        if (!host.realise_score) {
+            return response.status(400).json({
+                message: "Score not realise yet!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!host) {
+            return response.status(400).json({
+                message: "Quiz Not Founded!",
+                error: true,
+                success: false
+            })
+        }
+
+        const findDetails = host.quiz_submission_data.find((f) => f.userDetails.Id.toString() === userId.toString())
+
+        if (!findDetails) {
+            return response.status(400).json({
+                message: "You haven't submit quiz!",
+                error: true,
+                success: false
+            })
+        }
+
+        const extractIds = findDetails.correctedData.map((q) => q.questionId)
+
+        const questions = await questionModel.find({ _id: { $in: extractIds } }).lean()
+
+        const combineData = {
+            userDetails: findDetails.userDetails,
+            total_solved: findDetails.total_solved,
+            total_correct: findDetails.total_correct,
+            total_question: findDetails.total_question,
+            get_total_marks: findDetails.get_total_marks,
+            total_time: findDetails.total_time,
+            correctedData: []
+        }
+
+        findDetails.correctedData.map((c) => {
+
+            const question = questions.find((q) => q._id.toString() === c.questionId.toString())
+            const correctedData = {
+                userAnswer: c.userAnswer,
+                correctAnswer: c.correctAnswer,
+                isCorrect: c.isCorrect,
+                marks: c.marks,
+                questionDetails: question
+            }
+            combineData.correctedData.push(correctedData)
+        })
+
+        return response.json({
+            message : "Get participants details",
             error : false,
             success : true,
             data : combineData

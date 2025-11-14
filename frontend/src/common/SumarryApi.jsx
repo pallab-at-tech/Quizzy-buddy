@@ -72,6 +72,10 @@ const SummaryApi = {
     score_realised : {
         url : "/api/host/realised-score",
         method : "post"
+    },
+    particular_participants_details : {
+        url : "/api/particular-Particiapants-details",
+        method : "get"
     }
 }
 

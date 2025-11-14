@@ -10,7 +10,8 @@ const initialValue = {
     participant_info: [],
     host_info: [],
     participate_count: 0,
-    host_count: 0
+    host_count: 0,
+    daily_strict_count : {}
 }
 
 const userSlice = createSlice({
@@ -28,6 +29,7 @@ const userSlice = createSlice({
             state.host_info = [...action.payload?.host_info]
             state.participate_count = action.payload.participate_count
             state.host_count = action.payload.host_count
+            state.daily_strict_count = action.payload.daily_strict_count
         },
 
         setLogOut: (state, action) => {
@@ -41,6 +43,7 @@ const userSlice = createSlice({
             state.host_info = []
             state.participate_count = 0
             state.host_count = 0
+            state.daily_strict_count = {}
         },
         setHostDetails: (state, action) => {
             const { data } = action.payload

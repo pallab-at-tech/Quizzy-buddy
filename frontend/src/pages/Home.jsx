@@ -157,7 +157,7 @@ const Home = () => {
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
                                     {/* daily quiz section */}
-                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    <Link to={`/daily-quiz`} className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold text-xl'>Practice</h1>

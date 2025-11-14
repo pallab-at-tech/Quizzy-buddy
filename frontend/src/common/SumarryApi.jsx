@@ -76,6 +76,10 @@ const SummaryApi = {
     particular_participants_details : {
         url : "/api/particular-Particiapants-details",
         method : "get"
+    },
+    startQuiz : {
+        url : "/api/daily-quiz/fetch-daily-quiz",
+        method : "get"
     }
 }
 

@@ -90,6 +90,22 @@ const userSchema = new mongoose.Schema({
     host_count: {
         type: Number,
         default: 0
+    },
+    daily_strict_count : {
+        type : {
+            strict_count : {
+                type : Number,
+                default : 0
+            },
+            last_date : {
+                type : Date,
+                default : null
+            }
+        },
+        default : {
+            strict_count : 0,
+            last_date : null
+        }
     }
 }, {
     timestamps: true

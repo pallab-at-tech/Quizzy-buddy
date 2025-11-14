@@ -41,6 +41,23 @@ const DailyQuizSchema = new mongoose.Schema({
         type : Number,
         default : 0
     },
+    timeTaken : {
+        type : {
+            time : {
+                type : Number,
+                default : 10
+            },
+            unit : {
+                type : String,
+                enum : ["sec" , "min"],
+                default : "sec"
+            }
+        },
+        default : {
+            time : 10,
+            unit : "sec"
+        }
+    }
 },
     {
         timestamps: true

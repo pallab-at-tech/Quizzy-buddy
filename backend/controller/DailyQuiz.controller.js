@@ -1,6 +1,7 @@
 import nodeCron from 'node-cron'
 import DailyQuizModel from '../model/dailyQuiz.model.js'
 import generateDailyQuestion from '../utils/generateQuestionForDailyQuiz.js'
+import userModel from '../model/user.model.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -80,9 +81,62 @@ export const startDailyQuizCron = () => {
     })
 }
 
-export const fetchDailyQuiz = async(request , response) => {
+export const startDailyQuizAndFetchQuestion = async (request, response) => {
     try {
-        const {} = request.query || {}
+        const userId = request.userId
+
+        const user = await userModel.findById(userId)
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found!",
+                error: true,
+                success: false
+            })
+        }
+
+        const last_date = user.daily_strict_count.last_date
+        const now = new Date()
+
+        if ((last_date && last_date.getFullYear() === now.getFullYear() && last_date.getMonth() === now.getMonth() && last_date.getDate() === now.getDate())) {
+            return response.status(400).json({
+                message: "You have already completed Daily Quiz!",
+                error: true,
+                success: false
+            })
+        }
+
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+
+        const dailyQuiz = await DailyQuizModel.findOne(
+            {
+                start: {
+                    $gte: startOfDay,
+                    $lte: endOfDay
+                }
+            }
+        )
+
+        if (!dailyQuiz) {
+            return response.status(400).json({
+                message: "Some Error Ocurred!Try Later.",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "Fetched Question Details",
+            data: {
+                topic: dailyQuiz.topic,
+                question_details: dailyQuiz.question_details,
+                total_marks: dailyQuiz.total_marks,
+                negative_marks: dailyQuiz.negative_marks,
+                timeTaken: dailyQuiz.timeTaken
+            },
+            error: false,
+            success: true
+        })
 
     } catch (error) {
         return response.status(500).json({
@@ -93,4 +147,15 @@ export const fetchDailyQuiz = async(request , response) => {
     }
 }
 
+export const submitDailyQuiz = async (request, response) => {
+    try {
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
 

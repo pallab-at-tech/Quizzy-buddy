@@ -22,6 +22,8 @@ import GetSubmissionFullDetails from '../Layout/Organizer/GetSubmissionFullDetai
 import ViewMarksDetails from '../Layout/Organizer/ViewMarksDetails';
 import MyQuiz from '../Layout/myQuiz/MyQuiz';
 import ParticiapantsDetails from '../Layout/myQuiz/ParticiapantsDetails';
+import Mainpage from '../pages/DailyQuiz/Mainpage';
+import QuizPage from '../pages/DailyQuiz/QuizPage';
 
 
 const router = createBrowserRouter([
@@ -142,8 +144,16 @@ const router = createBrowserRouter([
                         element: <StartQuiz />
                     }
                 ]
+            },
+            {
+                path : "/daily-quiz",
+                element : <Mainpage/>
             }
         ]
+    },
+    {
+        path : "/daily-quiz/:userId",
+        element : <QuizPage/>
     },
     {
         path: "/sign-in",

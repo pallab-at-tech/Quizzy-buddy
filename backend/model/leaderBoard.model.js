@@ -2,9 +2,13 @@ import mongoose from "mongoose";
 
 const leaderBoardSchema = new mongoose.Schema({
     quizId: {
-        type: mongoose.Schema.ObjectId,
-        ref: "host",
-        default: null,
+        type: String,
+        default: "",
+    },
+    boardType : {
+        type : String,
+        enum : ["Daily","Normal"],
+        default : "Daily"
     },
     top_users: [
         {

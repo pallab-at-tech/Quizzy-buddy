@@ -8,9 +8,12 @@ dotenv.config()
 
 import { app, server } from "./socket/index.js"
 import connectDB from './config/connectDB.js'
+
 import userRouter from './router/user.route.js'
 import hostRouter from './router/host.route.js'
 import leaderBoardRouter from './router/leaderboard.route.js'
+import { startDailyQuizCron } from './controller/DailyQuiz.controller.js'
+import dailyQuizRouter from './router/dailyQuiz.route.js'
 
 
 app.use(cors({
@@ -27,7 +30,6 @@ app.use(helmet({
 
 
 
-
 app.get("/", (req, res) => {
     return res.json({
         message: "hey , there i am about to start..."
@@ -39,10 +41,14 @@ app.get("/", (req, res) => {
 app.use("/api", userRouter)
 app.use("/api/host", hostRouter)
 app.use("/api/leaderboard", leaderBoardRouter)
+app.use("/api/daily-quiz",dailyQuizRouter)
 
 const PORT = 8080 || process.env.PORT
 
 connectDB().then(() => {
+
+    // shedule set for daily quiz
+    startDailyQuizCron()
 
     server.listen(PORT, () => {
         console.log(`Server starting at http://localhost:${PORT}`)

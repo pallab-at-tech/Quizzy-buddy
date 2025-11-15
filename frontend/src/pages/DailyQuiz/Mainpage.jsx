@@ -65,6 +65,7 @@ const Mainpage = () => {
 
         } catch (error) {
             toast.error(error.response.data.message || "Some error occued!")
+            console.log("error",error)
         }
     }
 

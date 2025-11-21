@@ -53,8 +53,6 @@ const Home = () => {
         }
     }
 
-    // console.log("user",user)
-
     if (isLogin === null) return null;
 
     return (
@@ -96,12 +94,13 @@ const Home = () => {
                             </div>
 
                         </header>
+                        
 
                         {/* Main Section  */}
                         <main className='relative flex flex-grow flex-col items-center justify-center p-4 text-center -mt-[140px] sm:-mt-0'>
 
                             {/* Decorative background images */}
-                            <div className='pointer-events-none absolute top-1/2 left-[10%] hidden -translate-y-1/2 rotate-[358deg] scale-x-[-1] opacity-40  custom-lg:block'>
+                            <div className='pointer-events-none absolute top-1/2 left-[10%] hidden -translate-y-1/2 rotate-[358deg] scale-x-[-1] opacity-40  custom-lg:block '>
                                 <img src={backimg2} alt="" className='h-auto w-64' />
                             </div>
                             <div className='pointer-events-none absolute top-1/2 right-[10%] hidden -translate-y-1/2 rotate-[10deg] opacity-40 custom-lg:block'>

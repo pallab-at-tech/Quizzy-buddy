@@ -80,6 +80,10 @@ const SummaryApi = {
     startQuiz : {
         url : "/api/daily-quiz/fetch-daily-quiz",
         method : "get"
+    },
+    submitQuiz : {
+        url : "/api/daily-quiz/submit-daily-quiz",
+        method : "post"
     }
 }
 

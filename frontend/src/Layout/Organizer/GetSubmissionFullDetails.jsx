@@ -79,6 +79,8 @@ const GetSubmissionFullDetails = () => {
 
     const chartData = convertToScoreBuckets(leaderBoardData?.top_users || [], data?.total_marks);
 
+    console.log("datadatadatadata",data)
+
 
     return (
         <section className="w-full max-w-5xl mx-auto">

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { BiTimer } from 'react-icons/bi'
 import { FaClipboardQuestion } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
+import Axios from '../../utils/Axios'
+import SummaryApi from '../../common/SumarryApi'
 
 const QuizPage = () => {
 
@@ -15,8 +17,29 @@ const QuizPage = () => {
   const [aArr, setaArr] = useState(null)
   const [timer, setTimer] = useState(null)
 
+  const [correct_answer, setCorrect_answer] = useState(null)
   const [submitLoading, setSubmitLoading] = useState(false)
 
+  const dataRef = useRef();
+  const timerRef = useRef();
+  const answerRef = useRef()
+  const correct_answerRef = useRef()
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
+  useEffect(() => {
+    timerRef.current = timer;
+  }, [timer]);
+
+  useEffect(()=>{
+    answerRef.current = answer
+  },[answer])
+
+  useEffect(()=>{
+    correct_answerRef.current = correct_answer
+  },[correct_answer])
 
   useEffect(() => {
     if (!location.state?.data) {
@@ -24,9 +47,14 @@ const QuizPage = () => {
     }
     setData(location.state?.data)
 
-    return () => {
+    const c_arr = []
 
-    }
+    location.state?.data.question_details.map((v) => {
+      c_arr.push(Number(v.correct_answer))
+    })
+
+    setCorrect_answer(c_arr)
+
   }, [])
 
   // set default answer
@@ -110,9 +138,10 @@ const QuizPage = () => {
       setTimer(JSON.parse(stored));
     }
 
-    if(isAlreadySubmit) return
+    if (isAlreadySubmit) return
 
     const timerId = setInterval(() => {
+
       setTimer((prev) => {
         const totalPerQ = constant.unit === "sec" ? constant.time : constant.time * 60;
 
@@ -132,8 +161,9 @@ const QuizPage = () => {
             setTimer(obj);
 
             // Auto-submit
-            navigate("/")
-            localStorage.setItem("submit",1)
+            // navigate("/")
+            handleFinishQuiz()
+            localStorage.setItem("submit", 1)
             return obj;
           }
 
@@ -180,8 +210,100 @@ const QuizPage = () => {
     }
   };
 
-  // console.log("Location", data?.question_details[index])
-  console.log("answer array", timer)
+  // Handle finish Quiz
+  const handleFinishQuiz = async () => {
+
+    if (!data || !timer) return
+    setSubmitLoading(true)
+
+    try {
+      // payload create
+      const payload = {
+        answer: answer,
+        correct_answer: correct_answer,
+        time: 0,
+        randomId: data.randomId || ""
+      }
+
+      const total_question = data?.question_details.length
+
+      if (index === total_question - 1) {
+        payload.time = Number(timer.time) === 0 ? 100 : (Number(timer.time_count) + (10 - Number(timer.time)))
+      }
+      else {
+        payload.time = Number(timer.time) === 0 ? (Number(timer.time_count) + 10) : (Number(timer.time_count) + (10 - Number(timer.time)))
+      }
+
+      const response = await Axios({
+        ...SummaryApi.submitQuiz,
+        data: payload
+      })
+
+      const { data: responseData } = response
+
+      if (responseData.success) {
+        toast.success(responseData.message)
+        localStorage.setItem("submit", 1)
+        navigate("/")
+      }
+      else {
+        toast.error(responseData.message)
+      }
+
+      setSubmitLoading(false)
+
+    } catch (error) {
+      console.log("handleFinishQuiz", error)
+      setSubmitLoading(false)
+    }
+  }
+
+  const ifQuitPage = async () => {
+
+    const latestData = dataRef.current;
+    const latestTimer = timerRef.current;
+
+    if(!latestData || !latestTimer) return
+    setSubmitLoading(true)
+
+    try {
+      // payload create
+      const payload = {
+        answer: answerRef.current,
+        correct_answer: correct_answerRef.current,
+        time: 0,
+        randomId: latestData.randomId || ""
+      }
+
+      const total_question = latestData?.question_details.length
+
+      if (index === total_question - 1) {
+        payload.time = Number(latestTimer.time) === 0 ? 100 : (Number(latestTimer.time_count) + (10 - Number(latestTimer.time)))
+      }
+      else {
+        payload.time = Number(latestTimer.time) === 0 ? (Number(latestTimer.time_count) + 10) : (Number(latestTimer.time_count) + (10 - Number(latestTimer.time)))
+      }
+
+      const response = await Axios({
+        ...SummaryApi.submitQuiz,
+        data: payload
+      })
+
+      console.log(response)
+
+      const { data: responseData } = response
+      setSubmitLoading(false)
+
+    } catch (error) {
+      console.log("handleFinishQuiz", error)
+      setSubmitLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    return () => ifQuitPage()
+  }, []);
+
 
   return (
     <div>
@@ -257,8 +379,7 @@ const QuizPage = () => {
                   disabled={submitLoading}
                   className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
                   onClick={() => {
-                    // removeDetails()
-                    // handleFinishQuiz()
+                    handleFinishQuiz()
                   }}
                 >
                   {`${submitLoading ? "Submitting..." : "Finish"}`}
@@ -272,7 +393,7 @@ const QuizPage = () => {
                     onClick={() => {
                       if (!data?.question_details.length || index >= data?.question_details.length - 1) return
                       setIndex((prevIdx) => {
-                        localStorage.setItem("index",prevIdx+1)
+                        localStorage.setItem("index", prevIdx + 1)
                         return prevIdx + 1
                       })
 
@@ -280,11 +401,11 @@ const QuizPage = () => {
 
                         const countSec = data?.timeTaken.unit === "sec" ? Number(data?.timeTaken.time) : Number(data?.timeTaken.time) * 60
                         const obj = {
-                          time : countSec,
-                          time_count : prev.time_count + (countSec-Number(prev.time))
+                          time: countSec,
+                          time_count: prev.time_count + (countSec - Number(prev.time))
                         }
 
-                        localStorage.setItem("tim",JSON.stringify(obj))
+                        localStorage.setItem("tim", JSON.stringify(obj))
                         return obj
                       })
                     }}

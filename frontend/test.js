@@ -1,18 +1,24 @@
 
+// const nowString = "2025-12-01T08:26:15.575Z"
+// // const now = new Date(nowString)
 
-let count = 10
-const x = setInterval(() => {
+// // console.log(now.getDate()+2)
+// const now = new Date(nowString);
+// const yesterday = new Date(now);
 
-    if (count === -1) {
-        clearInterval(x)
-    }
-    else {
-        console.log("count : ", count)
-        count--
-    }
+// yesterday.setDate(now.getDate() - 1);
 
-}, 1000);
+// console.log("Today:", now);
+// console.log("Yesterday:", yesterday);
 
-setTimeout(() => {
-    console.log("All count down finish.")
-}, 12000);
+
+const arr = [
+    {id : 1 , roll : 10},
+    {id : 5 , roll : 65},
+    {id : 2 , roll : 8},
+    {id : 4 , roll :67}
+]
+
+const updateArr = arr
+
+console.log(updateArr.slice(0,4))

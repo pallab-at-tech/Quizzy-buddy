@@ -10,11 +10,10 @@ const Mainpage = () => {
     const user = useSelector(state => state.user)
     const navigate = useNavigate()
 
-    console.log("User",user)
-
     const [time, setTime] = useState(null)
 
     const isAlreadyAttendQuiz = (last_date) => {
+
         if (!last_date) return false;
 
         const now = new Date();
@@ -52,9 +51,9 @@ const Mainpage = () => {
 
                 setTimeout(() => {
                     // navigate to next page within data...
-                    navigate(`/daily-quiz/${user?._id}`,{
-                        state : {
-                            data : responseData?.data
+                    navigate(`/daily-quiz/${user?._id}`, {
+                        state: {
+                            data: responseData?.data
                         }
                     })
                 }, 10000)
@@ -65,22 +64,23 @@ const Mainpage = () => {
 
         } catch (error) {
             toast.error(error.response.data.message || "Some error occued!")
-            console.log("error",error)
+            console.log("error", error)
         }
     }
+
 
     return (
         <section className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-400 px-4">
 
             {
-                isAlreadyAttendQuiz(user?.last_date) ? (
+                isAlreadyAttendQuiz(user?.daily_strict_count?.last_date) ? (
                     <div className="text-center">
                         <h1 className="text-[40px] font-bold text-red-600 drop-shadow">
                             You already attended today’s quiz 🎉
                         </h1>
 
                         <p className="text-red-800 mt-0">
-                            Come back tomorrow at 12 AM for the next quiz!
+                            Come back tomorrow after 12 AM for the next quiz!
                         </p>
 
                         <button
@@ -119,6 +119,12 @@ const Mainpage = () => {
                         >
                             Start Quiz
                         </button>
+
+                        {/* ⚠️ WARNING NOTE */}
+                        <p className="mt-5 text-sm text-red-600 font-semibold">
+                            ⚠️ Do not leave or go back once the quiz starts.
+                            You will not be able to re-attempt it.
+                        </p>
                     </div>
                 )
             }

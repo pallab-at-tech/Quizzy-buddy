@@ -70,12 +70,12 @@ const Mainpage = () => {
 
 
     return (
-        <section className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-400 px-4">
+        <section className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 via-indigo-50 to-blue-100 px-4">
 
             {
                 isAlreadyAttendQuiz(user?.daily_strict_count?.last_date) ? (
-                    <div className="text-center">
-                        <h1 className="text-[40px] font-bold text-red-600 drop-shadow">
+                    <div className="text-center -mt-[20px]">
+                        <h1 className="text-[45px] font-bold text-red-600 drop-shadow">
                             You already attended today’s quiz 🎉
                         </h1>
 
@@ -85,13 +85,14 @@ const Mainpage = () => {
 
                         <button
                             onClick={() => navigate("/")}
-                            className="mt-6 cursor-pointer bg-white text-red-600 font-semibold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition duration-200"
+                            className="mt-7 cursor-pointer text-white bg-red-600 font-semibold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition duration-200"
                         >
                             Back to Home
                         </button>
                     </div>
                 ) : (
-                    <div className="text-center">
+                    <div className="text-center overflow-hidden">
+
                         <h1 className="text-4xl md:text-5xl font-bold text-blue-800 drop-shadow-lg">
                             Are you ready for the Daily Quiz?
                         </h1>
@@ -104,8 +105,8 @@ const Mainpage = () => {
                             disabled={time}
                             onClick={() => startQuiz()}
                             className="mt-8 
-                            bg-[#fff]
-                            text-indigo-600 
+                            bg-[#164dd7]
+                            text-white 
                             font-bold 
                             px-8 
                             py-3 

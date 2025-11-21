@@ -11,7 +11,7 @@ const initialValue = {
     host_info: [],
     participate_count: 0,
     host_count: 0,
-    daily_strict_count : {}
+    daily_strict_count: {}
 }
 
 const userSlice = createSlice({
@@ -65,10 +65,14 @@ const userSlice = createSlice({
         },
         manageHostDetails: (state, action) => {
             const { hostId } = action.payload
-            state.host_info = state.host_info.filter((h)=> h._id !== hostId)
+            state.host_info = state.host_info.filter((h) => h._id !== hostId)
         },
+        setDailyQuizFinish: (state, action) => {
+            const { data } = action.payload
+            state.daily_strict_count = data || {}
+        }
     }
 })
 
-export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz, manageHostDetails } = userSlice.actions
+export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz, manageHostDetails , setDailyQuizFinish } = userSlice.actions
 export default userSlice.reducer

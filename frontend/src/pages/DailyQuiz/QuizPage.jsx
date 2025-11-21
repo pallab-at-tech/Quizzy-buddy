@@ -5,11 +5,14 @@ import { FaClipboardQuestion } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SumarryApi'
+import { useDispatch } from 'react-redux'
+import { setDailyQuizFinish } from '../../store/userSlice'
 
 const QuizPage = () => {
 
   const location = useLocation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [data, setData] = useState(null)
 
   const [index, setIndex] = useState(0)
@@ -33,13 +36,13 @@ const QuizPage = () => {
     timerRef.current = timer;
   }, [timer]);
 
-  useEffect(()=>{
+  useEffect(() => {
     answerRef.current = answer
-  },[answer])
+  }, [answer])
 
-  useEffect(()=>{
+  useEffect(() => {
     correct_answerRef.current = correct_answer
-  },[correct_answer])
+  }, [correct_answer])
 
   useEffect(() => {
     if (!location.state?.data) {
@@ -161,7 +164,6 @@ const QuizPage = () => {
             setTimer(obj);
 
             // Auto-submit
-            // navigate("/")
             handleFinishQuiz()
             localStorage.setItem("submit", 1)
             return obj;
@@ -242,6 +244,7 @@ const QuizPage = () => {
       const { data: responseData } = response
 
       if (responseData.success) {
+        dispatch(setDailyQuizFinish(responseData.data))
         toast.success(responseData.message)
         localStorage.setItem("submit", 1)
         navigate("/")
@@ -263,7 +266,7 @@ const QuizPage = () => {
     const latestData = dataRef.current;
     const latestTimer = timerRef.current;
 
-    if(!latestData || !latestTimer) return
+    if (!latestData || !latestTimer) return
     setSubmitLoading(true)
 
     try {
@@ -292,6 +295,11 @@ const QuizPage = () => {
       console.log(response)
 
       const { data: responseData } = response
+      
+      if(responseData.success){
+        dispatch(setDailyQuizFinish(responseData.data))
+      }
+
       setSubmitLoading(false)
 
     } catch (error) {
@@ -311,7 +319,7 @@ const QuizPage = () => {
         data ? (
           <div className='fixed overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 py-[80px]'>
 
-            <div className='bg-white min-w-[850px] max-w-[850px] shadow-md rounded-xl mx-[300px] px-10 py-8'>
+            <div className='bg-white min-w-[850px] max-w-[850px] shadow-md rounded-xl mx-auto px-10 py-8'>
 
               {/* Header */}
               <div className='flex items-center justify-between mb-4'>
@@ -386,6 +394,32 @@ const QuizPage = () => {
                 </button>
 
                 <div className='flex items-center justify-end gap-8'>
+
+                  <button
+                    className='cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95'
+                    disabled={submitLoading}
+                    onClick={()=>{
+
+                      setaArr((prev)=>{
+                        const newaArr = prev
+                        newaArr[index] = -1
+                        localStorage.setItem("aArr",JSON.stringify(newaArr))
+                        return newaArr
+                      })
+
+                      setAnswer((prev)=>{
+                        const newAnswer = prev
+                        newAnswer[index] = {
+                          ...newAnswer[index],
+                          userAns : -1
+                        }
+                        localStorage.setItem("ans",JSON.stringify(newAnswer))
+                        return newAnswer
+                      })
+                    }}
+                  >
+                    Clear
+                  </button>
 
                   {/* Next Button */}
                   <button

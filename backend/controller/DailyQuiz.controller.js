@@ -180,10 +180,6 @@ export const submitDailyQuiz = async (request, response) => {
 
         const DailyQuiz = await DailyQuizModel.findOne()
 
-        console.log("payload randomId",randomId)
-        console.log("model randomId",DailyQuiz.randomId)
-        console.log("DailyQuiz.randomId !== randomId",DailyQuiz.randomId !== randomId)
-
         // Quiz already expired
         if (!randomId || DailyQuiz.randomId !== randomId) {
             return response.status(400).json({
@@ -290,7 +286,8 @@ export const submitDailyQuiz = async (request, response) => {
         return response.json({
             message: "Daily Quiz Submitted",
             error: false,
-            success: true
+            success: true,
+            data : user.daily_strict_count
         })
     } catch (error) {
         return response.status(500).json({

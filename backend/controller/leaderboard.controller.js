@@ -57,6 +57,7 @@ export const leaderboardMake = async (payload, quizId, newLeaderBoard = false) =
 export const fetchLeaderBoardDetails = async (request, response) => {
     try {
         const { hostId } = request.query || {}
+        // console.log("hostId",hostId)
 
         if (!hostId) {
             return response.status(400).json({

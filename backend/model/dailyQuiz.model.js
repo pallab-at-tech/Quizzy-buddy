@@ -5,6 +5,10 @@ const DailyQuizSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    randomId : {
+        type : String,
+        default : ""
+    },
     question_details: [
         {
             question : {

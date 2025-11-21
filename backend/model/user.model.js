@@ -100,11 +100,33 @@ const userSchema = new mongoose.Schema({
             last_date : {
                 type : Date,
                 default : null
-            }
+            },
+            best_strick : {
+                type : Number,
+                default : 0
+            },
+            last_week_stats : [
+                {
+                    date : {
+                        type : Date,
+                        default : null
+                    },
+                    score : {
+                        type : Number,
+                        default : 0
+                    },
+                    accuracy : {
+                        type : Number,
+                        default : 0
+                    }   
+                }
+            ]
         },
         default : {
             strict_count : 0,
-            last_date : null
+            last_date : null,
+            best_strick : 0,
+            last_week_stats : []
         }
     }
 }, {

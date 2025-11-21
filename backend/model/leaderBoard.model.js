@@ -8,7 +8,7 @@ const leaderBoardSchema = new mongoose.Schema({
     boardType : {
         type : String,
         enum : ["Daily","Normal"],
-        default : "Daily"
+        default : "Normal"
     },
     top_users: [
         {

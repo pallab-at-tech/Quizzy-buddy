@@ -164,7 +164,11 @@ export const submitDailyQuiz = async (request, response) => {
         const userId = request.userId
         const { answer, correct_answer, time, randomId } = request.body || {}
 
-        const user = await userModel.findById(userId)
+        const [user , DailyQuiz , leaderBoard] = await Promise.all([
+            userModel.findById(userId),
+            DailyQuizModel.findOne(),
+            leaderBoardModel.findOne({boardType : "Daily"})
+        ])
 
         if (!user) {
             return response.status(400).json({
@@ -173,12 +177,6 @@ export const submitDailyQuiz = async (request, response) => {
                 success: false
             })
         }
-
-        let leaderBoard = await leaderBoardModel.findOne({
-            boardType: "Daily"
-        })
-
-        const DailyQuiz = await DailyQuizModel.findOne()
 
         // Quiz already expired
         if (!randomId || DailyQuiz.randomId !== randomId) {
@@ -203,17 +201,18 @@ export const submitDailyQuiz = async (request, response) => {
 
         // calculate correct answer
         let total_solved = 0, total_correct = 0, get_total_marks = 0
-        answer.map((v, i) => {
-            if (v && Number(v.userAns) === Number(correct_answer[i])) {
-                total_correct += 1
-                total_solved += 1
+        
+        for(let i=0 ; i<correct_answer.length ; i++){
+            const userAns = Number(answer[i].userAns ?? -1)
+            const correct = Number(correct_answer[i])
+
+            if(userAns !== -1)  total_solved++
+
+            if(userAns === correct){
+                total_correct++
                 get_total_marks += 2
             }
-
-            if (v && Number(v.userAns) !== -1) {
-                total_solved += 1
-            }
-        })
+        }
 
         // create payload for leaderBoard
         const payload = {
@@ -229,16 +228,33 @@ export const submitDailyQuiz = async (request, response) => {
             negativeMarks: (total_solved - total_correct) * Math.abs(DailyQuiz.negative_marks || 0)
         }
 
+        let board = leaderBoard
+
         // Create or update leaderBoard
-        if (!leaderBoard) {
-            leaderBoard = new leaderBoardModel({
+        if (!board) {
+            board = new leaderBoardModel({
                 quizId: DailyQuiz._id,
                 boardType: "Daily",
                 top_users: [payload]
             })
         }
         else {
-            leaderBoard.top_users = [...leaderBoard.top_users, payload]
+            const updateAt = new Date(board.updatedAt)
+            const isBoardSameDay  = now.getDate() === updateAt.getDate() && now.getMonth() === updateAt.getMonth() && now.getFullYear() === updateAt.getFullYear()
+
+            if(!isBoardSameDay ){
+                board.top_users = [payload]
+            }
+            else{
+                board.top_users.push(payload)
+                // sort leaderBoard
+                board.top_users.sort((a,b)=>{
+                    if(b.marks !== a.marks) return b.marks - a.marks
+                    if(b.accuracy !== a.accuracy) return b.accuracy - a.accuracy
+                    if(a.timeTaken !== b.timeTaken) return a.timeTaken - b.timeTaken
+                    return (a.negativeMarks ?? 0 ) - (b.negativeMarks ?? 0)
+                })
+            }
         }
 
         // update userDetails 
@@ -265,7 +281,8 @@ export const submitDailyQuiz = async (request, response) => {
             user.daily_strict_count.strict_count = 1
             user.daily_strict_count.best_strick = 1
         }
-        user.daily_strict_count.last_week_stats.push(
+
+        user.daily_strict_count.last_week_stats.unshift(
             {
                 date: now,
                 score: payload.marks,
@@ -273,12 +290,9 @@ export const submitDailyQuiz = async (request, response) => {
             }
         )
 
-        let sortedStats = user.daily_strict_count.last_week_stats.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date)
-        })
-        sortedStats = sortedStats.slice(0 , 7)
-
-        user.daily_strict_count.last_week_stats = sortedStats
+        if(user.daily_strict_count.last_week_stats.length > 7){
+            user.daily_strict_count.last_week_stats = user.daily_strict_count.last_week_stats.slice(0,7)
+        }
         user.daily_strict_count.last_date = now
 
         await Promise.all([user.save(), leaderBoard.save()])

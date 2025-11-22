@@ -84,6 +84,10 @@ const SummaryApi = {
     submitQuiz : {
         url : "/api/daily-quiz/submit-daily-quiz",
         method : "post"
+    },
+    daily_leaderBoard : {
+        url : "/api/leaderboard/fetch-daily-leaderboard",
+        method : "get"
     }
 }
 

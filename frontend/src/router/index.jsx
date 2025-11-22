@@ -24,6 +24,7 @@ import MyQuiz from '../Layout/myQuiz/MyQuiz';
 import ParticiapantsDetails from '../Layout/myQuiz/ParticiapantsDetails';
 import Mainpage from '../pages/DailyQuiz/Mainpage';
 import QuizPage from '../pages/DailyQuiz/QuizPage';
+import Leaderboard from '../Layout/Leaderboard/Leaderboard';
 
 
 const router = createBrowserRouter([
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
                                 element : <ParticiapantsDetails/>
                             }
                         ]
+                    },
+                    {
+                        path : "leaderboard",
+                        element : <Leaderboard/>
                     }
                 ]
             },

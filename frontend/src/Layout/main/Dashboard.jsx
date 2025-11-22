@@ -80,7 +80,7 @@ const Dashboard = () => {
               <p className='pl-2'>My Quizzes</p>
             </Link>
 
-            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+            <Link to={`/dashboard/leaderboard`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
               <p className='pl-2'>Leaderboard</p>
             </Link>
 

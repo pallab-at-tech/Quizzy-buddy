@@ -46,7 +46,7 @@ const MyQuiz = () => {
                   </Link>
                 ))
               ) : (
-                <p className="text-gray-600 text-center">
+                <p className="text-gray-400 ml-2 mt-[10px] text-[25px] font-semibold select-none">
                   You haven't participated in any quiz yet.
                 </p>
               )}

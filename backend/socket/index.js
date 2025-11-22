@@ -266,7 +266,7 @@ io.on('connection', (socket) => {
                 quizId: host._id,
                 user: {
                     userId: {
-                        Id: user._id.toString(),
+                        Id: user._id,
                         userId: user.nanoId,
                         userName: user.name
                     },

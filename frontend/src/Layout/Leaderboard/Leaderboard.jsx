@@ -47,7 +47,7 @@ const Leaderboard = () => {
 
 
   return (
-    <section className='mx-[100px] mt-8'>
+    <section className='px-[100px] mt-8 page-scroll' style={{scrollBehavior : "smooth"}}>
 
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
@@ -176,7 +176,7 @@ const Leaderboard = () => {
       </div>
 
       {/* Which factor makes this leader-board */}
-      <div className="bg-white my-6 p-6 rounded-xl shadow-md border border-gray-200">
+      <div className="bg-white mt-6 mb-12 p-6 rounded-xl shadow-md border border-gray-200">
 
         <div className='flex items-center gap-2 mb-4'>
           <ImStatsBars size={23} className='text-yellow-800' />

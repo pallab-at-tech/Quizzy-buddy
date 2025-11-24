@@ -26,6 +26,7 @@ import Mainpage from '../pages/DailyQuiz/Mainpage';
 import QuizPage from '../pages/DailyQuiz/QuizPage';
 import Leaderboard from '../Layout/Leaderboard/Leaderboard';
 import DashboardOverveiw from '../Layout/DashboardOverview/DashboardOverveiw';
+import MainPage from '../pages/BattleOneVsOne/MainPage';
 
 
 const router = createBrowserRouter([
@@ -158,6 +159,10 @@ const router = createBrowserRouter([
             {
                 path : "/daily-quiz",
                 element : <Mainpage/>
+            },
+            {
+                path : "/battle-1v1",
+                element : <MainPage/>
             }
         ]
     },

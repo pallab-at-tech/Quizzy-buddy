@@ -87,7 +87,7 @@ const DashboardOverveiw = () => {
     },[user])
 
     return (
-        <section className='p-10'>
+        <section className='p-10 page-scroll'>
 
             {/* Header */}
             <div>

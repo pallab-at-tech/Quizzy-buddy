@@ -47,7 +47,7 @@ const ParticiapantsDetails = () => {
   }, [])
 
   return (
-    <section>
+    <section className=''>
       {
         loading ? (
           <div className='flex items-center justify-center'>

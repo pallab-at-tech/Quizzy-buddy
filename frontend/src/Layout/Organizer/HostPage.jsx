@@ -556,7 +556,7 @@ const HostPage = () => {
 
 
     return (
-        <section className="pt-0 pb-6 px-4">
+        <section className="pt-0 pb-6 px-4 ">
 
             {
                 navigateTo === "full-details" || navigateTo === "view" ? (

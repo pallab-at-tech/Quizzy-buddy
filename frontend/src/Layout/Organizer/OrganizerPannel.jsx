@@ -105,11 +105,8 @@ const OrganizerPannel = () => {
   }, [host_info])
 
 
-  // console.log("hostInfo",user)
-
-
   return (
-    <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 p-8 scrollbar-hide">
+    <section className="h-[calc(100vh-70px)] overflow-y-auto  bg-gradient-to-br from-gray-50 to-gray-100 p-8 page-scroll">
 
       {
         params?.quizId ? (
@@ -365,6 +362,7 @@ const OrganizerPannel = () => {
                 </div>
               </div>
             )}
+            
           </div>
         )
       }

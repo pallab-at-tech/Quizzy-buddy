@@ -126,7 +126,7 @@ const Home = () => {
                         </main>
                     </div>
                 ) : (
-                    <div className='bg-[#fcfcfc] h-[calc(100vh-50px)] lg:pr-[100px] '>
+                    <div className='bg-[#fcfcfc] h-[calc(100vh-50px)] lg:pr-[100px] page-scroll'>
 
                         <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-16 '>
 
@@ -203,7 +203,7 @@ const Home = () => {
                                     </Link>
 
                                     {/* explore section */}
-                                    <Link className='grid lg:grid-cols-[30%_70%]  bg-[#79b716] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    <Link to={"/battle-1v1"} className='grid lg:grid-cols-[30%_70%]  bg-[#79b716] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Explore</h1>
                                             <div className='text-sm md:font-semibold font-medium'>

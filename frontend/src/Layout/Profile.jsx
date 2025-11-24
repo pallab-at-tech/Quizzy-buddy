@@ -9,7 +9,7 @@ const Profile = () => {
   const user = useSelector(state => state.user)
 
   return (
-    <div className='pt-3 px-3  bg-[#f9f8f8] pb-0 mb-0'>
+    <div className='pt-3 px-3  bg-[#f9f8f8] pb-0 mb-0 '>
 
       {/* outer background */}
       <div className='rounded-t-xl shadow-lg overflow-hidden relative'>

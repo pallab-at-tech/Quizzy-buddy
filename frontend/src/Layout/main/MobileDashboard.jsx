@@ -44,7 +44,7 @@ const MobileDashboard = () => {
     }
 
     return (
-        <section className='min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] p-6 bg-[#fcfcfc] pl-6 pr-6'>
+        <section className='min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] p-6 bg-[#fcfcfc] pl-6 pr-6 '>
 
             {/* profile */}
             <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>
@@ -65,21 +65,21 @@ const MobileDashboard = () => {
 
                 <div className='flex flex-col  gap-1.5 font-semibold'>
 
-                    <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
-                        <p className='pl-2'>Registration/Application</p>
+                    <Link to={`/dashboard/overview`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
+                        <p className='pl-2'>Dashboard Overview</p>
                     </Link>
 
                     <Link to={`/dashboard/my-quiz`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
-                        <p className='pl-2'>My rounds</p>
+                        <p className='pl-2'>My Quizzes</p>
                     </Link>
 
-                    <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
-                        <p className='pl-2'>Bookmark</p>
+                    <Link to={`/dashboard/leaderboard`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+                        <p className='pl-2'>Leaderboard</p>
                     </Link>
 
-                    <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+                    {/* <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
                         <p className='pl-2'>Achivements</p>
-                    </Link>
+                    </Link> */}
 
                 </div>
 

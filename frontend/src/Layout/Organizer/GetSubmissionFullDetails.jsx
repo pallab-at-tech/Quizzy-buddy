@@ -79,7 +79,7 @@ const GetSubmissionFullDetails = () => {
 
 
     return (
-        <section className="w-full max-w-5xl mx-auto">
+        <section className="w-full max-w-5xl mx-auto ">
 
             {/* Header */}
             <div className="mb-8">

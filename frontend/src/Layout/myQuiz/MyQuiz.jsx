@@ -9,7 +9,7 @@ const MyQuiz = () => {
   const route = location.pathname.split("/")
 
   return (
-    <div className="p-8">
+    <div className="p-8 ">
       {
         route[route.length - 1] === "my-quiz" ? (
           <div className="w-full px-6">

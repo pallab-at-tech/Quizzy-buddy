@@ -49,7 +49,7 @@ const Dashboard = () => {
 
 
   return (
-    <section className='bg-[#fcfcfc] grid custom-lg:grid-cols-[20%_1fr]'>
+    <section className='bg-[#fcfcfc] grid custom-lg:grid-cols-[20%_1fr] '>
 
       <div className='hidden custom-lg:block bg-[#fcfcfc] pl-6 pr-6 ipad-mini:pl-[45px] ipad-mini:pr-[45px] custom-lg:pl-6 custom-lg:pr-6 min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] border-r border-[#c8c3c3] shadow-md p-6'>
 
@@ -84,9 +84,9 @@ const Dashboard = () => {
               <p className='pl-2'>Leaderboard</p>
             </Link>
 
-            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
+            {/* <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1 rounded-md'>
               <p className='pl-2'>Achivements</p>
-            </Link>
+            </Link> */}
 
           </div>
 

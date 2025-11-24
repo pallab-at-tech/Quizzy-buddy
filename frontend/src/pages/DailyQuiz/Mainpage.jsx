@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from "react-router-dom";
 import Axios from "../../utils/Axios";
 import SummaryApi from "../../common/SumarryApi";
+import { useEffect } from "react";
 
 const Mainpage = () => {
 
@@ -11,6 +12,8 @@ const Mainpage = () => {
     const navigate = useNavigate()
 
     const [time, setTime] = useState(null)
+    const [ButtonText, setButtonText] = useState("Start Quiz")
+    const [quizLoading, setQuizLoading] = useState(false)
 
     const isAlreadyAttendQuiz = (last_date) => {
 
@@ -30,6 +33,8 @@ const Mainpage = () => {
 
     const startQuiz = async () => {
         try {
+            setQuizLoading(true)
+
             const response = await Axios({
                 ...SummaryApi.startQuiz
             })
@@ -62,11 +67,55 @@ const Mainpage = () => {
                 toast.error(responseData.message)
             }
 
+            setQuizLoading(false)
+
         } catch (error) {
             toast.error(error.response.data.message || "Some error occued!")
+            setQuizLoading(false)
             console.log("error", error)
         }
     }
+
+    const ButtonTextFunc = () => {
+
+        const run = [
+            "Starting...",
+            "Check validation..",
+            "Wait a Sec...",
+            "About to start..."
+        ]
+
+        let index = 0
+
+        const interval = setInterval(() => {
+            if (!quizLoading) {
+                setButtonText("Start Quiz")
+                clearInterval(interval)
+            }
+            else if(run.length <= index){
+                setButtonText(run[run.length -1])
+            }
+            else {
+                setButtonText(run[index])
+                index++
+            }
+        }, 3000);
+
+        return interval
+    }
+
+    useEffect(() => {
+
+        let intervalId;
+
+        if (quizLoading) {
+            intervalId = ButtonTextFunc();
+        } else {
+            setButtonText("Start Quiz");
+        }
+
+        return () => clearInterval(intervalId);
+    }, [quizLoading])
 
 
     return (
@@ -102,9 +151,10 @@ const Mainpage = () => {
                         </p>
 
                         <button
-                            disabled={time}
+                            disabled={time || quizLoading}
                             onClick={() => startQuiz()}
-                            className="mt-8 
+                            className={`
+                            mt-8 
                             bg-[#164dd7]
                             text-white 
                             font-bold 
@@ -115,10 +165,10 @@ const Mainpage = () => {
                             hover:scale-105 
                             transition-transform 
                             duration-200
-                            cursor-pointer
-                        "
+                            ${quizLoading ? "cursor-not-allowed" : "cursor-pointer"}
+                                `}
                         >
-                            Start Quiz
+                            {ButtonText}
                         </button>
 
                         {/* ⚠️ WARNING NOTE */}

@@ -18,7 +18,7 @@ const MyQuiz = () => {
               My Quiz Participation
             </h1>
 
-            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+            <div className={`${user && user?.participant_info?.length > 0 && "grid" } grid-cols-2 gap-x-4 gap-y-3`}>
               {user?.participant_info?.length > 0 ? (
                 user.participant_info.map((p) => (
                   <Link
@@ -46,9 +46,9 @@ const MyQuiz = () => {
                   </Link>
                 ))
               ) : (
-                <p className="text-gray-400 ml-2 mt-[10px] text-[25px] font-semibold select-none">
-                  You haven't participated in any quiz yet.
-                </p>
+                <div className="text-gray-400 text-[30px] font-semibold select-none relative w-full">
+                  <p className='absolute left-[200px] right-0 top-[100px] bottom-0'> You haven't participated in any quiz yet.</p>
+                </div>
               )}
             </div>
           </div>

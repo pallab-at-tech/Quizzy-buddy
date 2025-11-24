@@ -72,6 +72,92 @@ export const generateAndSaveDailyQuiz = async () => {
         DailyQuiz.randomId = payload.randomId
     }
 
+    // LeaderBoard rank extract
+    const leaderBoard = await leaderBoardModel.findOne({
+        boardType: "Daily"
+    })
+
+    // badge update for top10 users
+    if (leaderBoard) {
+        const topTenUser = leaderBoard.top_users.slice(0, 10)
+        let rank = 1
+
+        for (let u of topTenUser) {
+
+            const user = await userModel.findById(u.userId.Id)
+            if (!user) continue
+
+            const badges = user.badge_collection
+            let badgeToGive = null
+
+            if (rank === 1) {
+                if (!badges.Top1) {
+                    badgeToGive = "Top1"
+                }
+                else if (!badges.Top5) {
+                    badgeToGive = "Top5"
+                }
+                else if (!badges.Top10) {
+                    badgeToGive = "Top10"
+                }
+            }
+            else if (rank <= 5) {
+                if (!badges.Top5) {
+                    badgeToGive = "Top5"
+                }
+                else if (!badges.Top10) {
+                    badgeToGive = "Top10"
+                }
+            }
+            else if (rank <= 10) {
+                if (!badges.Top10) {
+                    badgeToGive = "Top10"
+                }
+            }
+
+            if (badgeToGive) {
+                badges[badgeToGive] = true
+            }
+
+            if (rank === 1) {
+                if (!badges.Top1x20) {
+                    badges.top_count.top1Count++
+                }
+                else if (!badges.Top5x20) {
+                    badges.top_count.top5Count++
+                }
+                else if (!badges.Top10x20) {
+                    badges.top_count.top10Count++
+                }
+            }
+            else if (rank <= 5) {
+                if (!badges.Top5x20) {
+                    badges.top_count.top5Count++
+                }
+                else if (!badges.Top10x20) {
+                    badges.top_count.top10Count++
+                }
+            }
+            else if (rank <= 10) {
+                if (!badges.Top10x20) {
+                    badges.top_count.top10Count++
+                }
+            }
+
+            if (badges.top_count.top1Count === 5) badges.Top1x5 = true
+            if (badges.top_count.top1Count === 20) badges.Top1x20 = true
+
+            if (badges.top_count.top5Count === 5) badges.Top5x5 = true
+            if (badges.top_count.top5Count === 20) badges.Top5x20 = true
+
+            if (badges.top_count.top10Count === 5) badges.Top10x5 = true
+            if (badges.top_count.top10Count === 20) badges.Top10x20 = true
+
+            rank ++
+            await user.save()
+        }
+    }
+
     // Save model
 
     return await DailyQuiz.save()
@@ -82,11 +168,22 @@ export const startDailyQuizCron = () => {
 
     nodeCron.schedule("0 0 * * *", async () => {
 
-        console.log("shedule start...")
-
+        console.log("Daily Quiz Cron Started:", new Date().toISOString());
         // just reshedule the daily quiz...
-        await generateAndSaveDailyQuiz()
-    })
+        try {
+            await generateAndSaveDailyQuiz();
+            console.log("Daily Quiz Generated Successfully");
+        } catch (error) {
+            console.error("Daily Quiz Cron Error:", error.message || error);
+        }
+    },
+        {
+            scheduled: true,
+            timezone: "Asia/Kolkata"
+        }
+    )
+
+    console.log("Daily Quiz Cron Initialized");
 }
 
 // fetch question and quiz details when quiz about to start
@@ -164,10 +261,10 @@ export const submitDailyQuiz = async (request, response) => {
         const userId = request.userId
         const { answer, correct_answer, time, randomId } = request.body || {}
 
-        const [user , DailyQuiz , leaderBoard] = await Promise.all([
+        const [user, DailyQuiz, leaderBoard] = await Promise.all([
             userModel.findById(userId),
             DailyQuizModel.findOne(),
-            leaderBoardModel.findOne({boardType : "Daily"})
+            leaderBoardModel.findOne({ boardType: "Daily" })
         ])
 
         if (!user) {
@@ -201,14 +298,14 @@ export const submitDailyQuiz = async (request, response) => {
 
         // calculate correct answer
         let total_solved = 0, total_correct = 0, get_total_marks = 0
-        
-        for(let i=0 ; i<correct_answer.length ; i++){
+
+        for (let i = 0; i < correct_answer.length; i++) {
             const userAns = Number(answer[i].userAns ?? -1)
             const correct = Number(correct_answer[i])
 
-            if(userAns !== -1)  total_solved++
+            if (userAns !== -1) total_solved++
 
-            if(userAns === correct){
+            if (userAns === correct) {
                 total_correct++
                 get_total_marks += 2
             }
@@ -240,19 +337,19 @@ export const submitDailyQuiz = async (request, response) => {
         }
         else {
             const updateAt = new Date(board.updatedAt)
-            const isBoardSameDay  = now.getDate() === updateAt.getDate() && now.getMonth() === updateAt.getMonth() && now.getFullYear() === updateAt.getFullYear()
+            const isBoardSameDay = now.getDate() === updateAt.getDate() && now.getMonth() === updateAt.getMonth() && now.getFullYear() === updateAt.getFullYear()
 
-            if(!isBoardSameDay ){
+            if (!isBoardSameDay) {
                 board.top_users = [payload]
             }
-            else{
+            else {
                 board.top_users.push(payload)
                 // sort leaderBoard
-                board.top_users.sort((a,b)=>{
-                    if(b.marks !== a.marks) return b.marks - a.marks
-                    if(b.accuracy !== a.accuracy) return b.accuracy - a.accuracy
-                    if(a.timeTaken !== b.timeTaken) return a.timeTaken - b.timeTaken
-                    return (a.negativeMarks ?? 0 ) - (b.negativeMarks ?? 0)
+                board.top_users.sort((a, b) => {
+                    if (b.marks !== a.marks) return b.marks - a.marks
+                    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy
+                    if (a.timeTaken !== b.timeTaken) return a.timeTaken - b.timeTaken
+                    return (a.negativeMarks ?? 0) - (b.negativeMarks ?? 0)
                 })
             }
         }
@@ -290,10 +387,27 @@ export const submitDailyQuiz = async (request, response) => {
             }
         )
 
-        if(user.daily_strict_count.last_week_stats.length > 7){
-            user.daily_strict_count.last_week_stats = user.daily_strict_count.last_week_stats.slice(0,7)
+        if (user.daily_strict_count.last_week_stats.length > 7) {
+            user.daily_strict_count.last_week_stats = user.daily_strict_count.last_week_stats.slice(0, 7)
         }
         user.daily_strict_count.last_date = now
+
+        const streakCount = user.daily_strict_count.strict_count
+        if(streakCount === 7){
+            user.badge_collection.Streak1Week = true
+        }
+        else if(streakCount === 30){
+            user.badge_collection.Streak1Month = true
+        }
+        else if(streakCount === 90){
+            user.badge_collection.Streak3Month = true
+        }
+        else if(streakCount === 180){
+            user.badge_collection.Streak6Month = true
+        }
+        else if(streakCount === 360){
+            user.badge_collection.Streak1Year = true
+        }
 
         await Promise.all([user.save(), leaderBoard.save()])
 
@@ -301,7 +415,7 @@ export const submitDailyQuiz = async (request, response) => {
             message: "Daily Quiz Submitted",
             error: false,
             success: true,
-            data : user.daily_strict_count
+            data: user.daily_strict_count
         })
     } catch (error) {
         return response.status(500).json({

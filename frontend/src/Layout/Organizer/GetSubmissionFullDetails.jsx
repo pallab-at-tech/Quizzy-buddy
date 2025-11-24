@@ -46,8 +46,6 @@ const GetSubmissionFullDetails = () => {
 
     const convertToScoreBuckets = (users, total_marks) => {
 
-        console.log("User", users)
-
         if (!users || !total_marks) return
         if (new Date() < new Date(data?.quiz_end)) return
 
@@ -78,8 +76,6 @@ const GetSubmissionFullDetails = () => {
     };
 
     const chartData = convertToScoreBuckets(leaderBoardData?.top_users || [], data?.total_marks);
-
-    console.log("datadatadatadata",data)
 
 
     return (

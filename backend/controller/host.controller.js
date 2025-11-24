@@ -112,6 +112,21 @@ export const createQuizController = async (request, response) => {
             startDate: quiz_start
         })
         user.host_count += 1
+
+        // Badge enables if eligible
+        if(user.host_count === 5){
+            user.badge_collection.Host5 = true
+        }
+        else if(user.host_count === 20){
+            user.badge_collection.Host20 = true
+        }
+        else if(user.host_count === 50){
+            user.badge_collection.Host50 = true
+        }
+        else if(user.host_count === 200){
+            user.badge_collection.Host200 = true
+        }
+
         await user.save()
 
         return response.json({

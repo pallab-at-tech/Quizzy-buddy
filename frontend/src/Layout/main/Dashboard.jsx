@@ -72,7 +72,7 @@ const Dashboard = () => {
 
           <div className='flex flex-col  gap-1.5 font-semibold'>
 
-            <Link className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
+            <Link to={`/dashboard/overview`} className='hover:bg-[#e7e9ffad] transition-all duration-150 p-1  rounded-md'>
               <p className='pl-2'>Dashboard Overview</p>
             </Link>
 

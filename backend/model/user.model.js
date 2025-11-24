@@ -1,5 +1,93 @@
 import mongoose from "mongoose"
 
+const badgeSchema = new mongoose.Schema({
+    Streak1Week : {
+        type : Boolean,
+        default : false
+    },
+    Streak1Month : {
+        type : Boolean,
+        default : false
+    },
+    Streak3Month : {
+        type : Boolean,
+        default : false
+    },
+    Streak6Month : {
+        type : Boolean,
+        default : false
+    },
+    Streak1Year : {
+        type : Boolean,
+        default : false
+    },
+    Host5 : {
+        type : Boolean,
+        default : false
+    },
+    Host20 : {
+        type : Boolean,
+        default : false
+    },
+    Host50 : {
+        type : Boolean,
+        default : false
+    },
+    Host200 : {
+        type : Boolean,
+        default : false
+    },
+    Top1 : {
+        type : Boolean,
+        default : false
+    },
+    Top5 : {
+        type : Boolean,
+        default : false
+    },
+    Top10 : {
+        type : Boolean,
+        default : false
+    },
+    Top10x5 : {
+        type : Boolean,
+        default : false
+    },
+    Top5x5 : {
+        type : Boolean,
+        default : false
+    },
+    Top1x5 : {
+        type : Boolean,
+        default : false
+    },
+    Top10x20 : {
+        type : Boolean,
+        default : false
+    },
+    Top5x20 : {
+        type : Boolean,
+        default : false
+    },
+    Top1x20 : {
+        type : Boolean,
+        default : false
+    },
+    top_count : {
+        top1Count : {
+            type : Number,
+            default : 0
+        },
+        top5Count : {
+            type : Number,
+            default : 0
+        },
+        top10Count : {
+            type : Number,
+            default : 0
+        }
+    }
+})
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -128,6 +216,10 @@ const userSchema = new mongoose.Schema({
             best_strick : 0,
             last_week_stats : []
         }
+    },
+    badge_collection : {
+        type : badgeSchema,
+        default : {}
     }
 }, {
     timestamps: true

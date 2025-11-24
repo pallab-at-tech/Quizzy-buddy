@@ -2,6 +2,7 @@ import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import jwt from 'jsonwebtoken'
+import { customAlphabet } from "nanoid"
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -9,6 +10,7 @@ import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 import userModel from '../model/user.model.js'
 import checkIsCorrect from '../utils/checkCorrect.js'
 import { leaderboardMake } from '../controller/leaderboard.controller.js'
+import battleModel from '../model/battle.model.js'
 
 const app = express()
 const server = createServer(app)
@@ -19,6 +21,8 @@ const io = new Server(server, {
         origin: process.env.FRONTENT_URL
     }
 })
+
+const alphaCollection = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 12)
 
 io.use((socket, next) => {
     const token = socket.handshake.auth?.token
@@ -683,6 +687,102 @@ io.on('connection', (socket) => {
                 })
             )
         );
+    })
+
+    // Create room for 1V1 battle
+    socket.on("create_room1V1", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+            const { user_nanoId } = data || {}
+
+            if (!user_nanoId) {
+                return socket.emit("battleError", {
+                    message: "User nano-Id not found!"
+                })
+            }
+
+            // Check already user in a active room
+            const existingBattle = await battleModel.findOne({
+                "players.userId": userId,
+                status: { $in: ["waiting", "active"] }
+            })
+
+            if (existingBattle) {
+                return socket.emit("battleError", {
+                    message: "You already created/are in a room.",
+                    roomId: existingBattle.roomId
+                })
+            }
+
+            const roomId = alphaCollection()
+
+            const newBattle = await battleModel.create({
+                roomId: roomId,
+                players: [
+                    {
+                        userId: userId,
+                        user_nanoId: user_nanoId,
+                        score: 0,
+                        answer: []
+                    }
+                ],
+                questions: [],
+                status: "waiting"
+            })
+
+            // Join in socket room
+            socket.join(roomId)
+
+            socket.emit("room_created", {
+                message: "Battle room created",
+                roomId: roomId,
+                battleId: newBattle._id
+            })
+
+        } catch (error) {
+            console.log("Create room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    // Join room for 1V1 battle
+    socket.on("Join_room1v1", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+            const {} = data || {}
+
+        } catch (error) {
+            console.log("Join room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
     })
 
     // disconnect user

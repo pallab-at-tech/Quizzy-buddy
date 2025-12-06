@@ -41,53 +41,57 @@ const SummaryApi = {
         url: "/api/host/get-host-details",
         method: "post"
     },
-    saved_changes : {
-        url : "/api/host/saved-changes",
-        method : "post"
+    saved_changes: {
+        url: "/api/host/saved-changes",
+        method: "post"
     },
-    host_details_update : {
-        url : "/api/host/host-update",
-        method : "post"
+    host_details_update: {
+        url: "/api/host/host-update",
+        method: "post"
     },
-    host_time_update : {
-        url : "/api/host/host-time-update",
-        method : "post"
+    host_time_update: {
+        url: "/api/host/host-time-update",
+        method: "post"
     },
-    fetch_participants_quiz_details : {
-        url : "/api/host/participants-details",
-        method : "get"
+    fetch_participants_quiz_details: {
+        url: "/api/host/participants-details",
+        method: "get"
     },
-    check_canParticipate : {
-        url : "/api/host/check-canParticipate",
-        method : "post"
+    check_canParticipate: {
+        url: "/api/host/check-canParticipate",
+        method: "post"
     },
-    fetch_questionDetails : {
-        url : "/api/host/get-question-details",
-        method : "post"
+    fetch_questionDetails: {
+        url: "/api/host/get-question-details",
+        method: "post"
     },
-    fetch_leaderBoard_details : {
-        url : "/api/leaderboard/fetch-leaderboard",
-        method : "get"
+    fetch_leaderBoard_details: {
+        url: "/api/leaderboard/fetch-leaderboard",
+        method: "get"
     },
-    score_realised : {
-        url : "/api/host/realised-score",
-        method : "post"
+    score_realised: {
+        url: "/api/host/realised-score",
+        method: "post"
     },
-    particular_participants_details : {
-        url : "/api/particular-Particiapants-details",
-        method : "get"
+    particular_participants_details: {
+        url: "/api/particular-Particiapants-details",
+        method: "get"
     },
-    startQuiz : {
-        url : "/api/daily-quiz/fetch-daily-quiz",
-        method : "get"
+    startQuiz: {
+        url: "/api/daily-quiz/fetch-daily-quiz",
+        method: "get"
     },
-    submitQuiz : {
-        url : "/api/daily-quiz/submit-daily-quiz",
-        method : "post"
+    submitQuiz: {
+        url: "/api/daily-quiz/submit-daily-quiz",
+        method: "post"
     },
-    daily_leaderBoard : {
-        url : "/api/leaderboard/fetch-daily-leaderboard",
-        method : "get"
+    daily_leaderBoard: {
+        url: "/api/leaderboard/fetch-daily-leaderboard",
+        method: "get"
+    },
+    room_details: {
+        url: "/api/battle/room-details",
+        method: "get"
     }
 }
 

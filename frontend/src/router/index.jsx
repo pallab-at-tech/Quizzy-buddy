@@ -27,6 +27,7 @@ import QuizPage from '../pages/DailyQuiz/QuizPage';
 import Leaderboard from '../Layout/Leaderboard/Leaderboard';
 import DashboardOverveiw from '../Layout/DashboardOverview/DashboardOverveiw';
 import MainPage from '../pages/BattleOneVsOne/MainPage';
+import InsideRoom from '../pages/BattleOneVsOne/InsideRoom';
 
 
 const router = createBrowserRouter([
@@ -162,7 +163,13 @@ const router = createBrowserRouter([
             },
             {
                 path : "/battle-1v1",
-                element : <MainPage/>
+                element : <MainPage/>,
+                children : [
+                    {
+                        path : ":room",
+                        element : <InsideRoom/>
+                    }
+                ]
             }
         ]
     },

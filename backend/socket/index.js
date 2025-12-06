@@ -11,6 +11,7 @@ import userModel from '../model/user.model.js'
 import checkIsCorrect from '../utils/checkCorrect.js'
 import { leaderboardMake } from '../controller/leaderboard.controller.js'
 import battleModel from '../model/battle.model.js'
+import QuestionGenerate_1V1 from '../utils/OneVOneApiSet.js'
 
 const app = express()
 const server = createServer(app)
@@ -40,7 +41,11 @@ io.use((socket, next) => {
     }
 })
 
+// Store the online users
 const onlineUser = new Map()
+
+// Store timers per room for 1v1 battle , so we can clear later
+const battleIntervals = new Map();
 
 io.on('connection', (socket) => {
 
@@ -690,6 +695,19 @@ io.on('connection', (socket) => {
     })
 
     // Create room for 1V1 battle
+
+    const filterQuestion = (question) => {
+        if (!question) return []
+
+        return question.filter((q) => {
+            console.log("qqq", q)
+            if (!q.question || !q.marks || !q.options) return false;
+            if (q.correct_answer === undefined || q.correct_answer === null) return false;
+            if (!Array.isArray(q.options) || q.options.length < 2) return false;
+            return true;
+        });
+    }
+
     socket.on("create_room1V1", async (data) => {
         try {
             const token = socket.handshake.auth?.token;
@@ -705,11 +723,29 @@ io.on('connection', (socket) => {
             }
 
             const userId = payload1.id;
-            const { user_nanoId } = data || {}
+            const { user_nanoId, userName, topic, difficulty } = data || {}
 
             if (!user_nanoId) {
                 return socket.emit("battleError", {
                     message: "User nano-Id not found!"
+                })
+            }
+
+            if (!userName) {
+                return socket.emit("battleError", {
+                    message: "User name required!"
+                })
+            }
+
+            if (!topic) {
+                return socket.emit("battleError", {
+                    message: "Topic required!"
+                })
+            }
+
+            if (!difficulty) {
+                return socket.emit("battleError", {
+                    message: "Difficulty required!"
                 })
             }
 
@@ -728,18 +764,31 @@ io.on('connection', (socket) => {
 
             const roomId = alphaCollection()
 
+            const questions = await QuestionGenerate_1V1(topic, difficulty)
+
+            const q = filterQuestion(questions?.questions) || []
+
+            if (q.length === 0) {
+                return socket.emit("battleError", {
+                    message: "Some error occured! try later!"
+                })
+            }
+
             const newBattle = await battleModel.create({
                 roomId: roomId,
                 players: [
                     {
                         userId: userId,
                         user_nanoId: user_nanoId,
+                        userName: userName,
                         score: 0,
-                        answer: []
+                        answer: [],
+                        admin: true,
                     }
                 ],
-                questions: [],
-                status: "waiting"
+                questions: q,
+                status: "waiting",
+                topic: topic
             })
 
             // Join in socket room
@@ -748,13 +797,25 @@ io.on('connection', (socket) => {
             socket.emit("room_created", {
                 message: "Battle room created",
                 roomId: roomId,
-                battleId: newBattle._id
+                battleId: newBattle._id,
+                topic: topic,
+                player: [
+                    {
+                        userId: userId,
+                        user_nanoId: user_nanoId,
+                        userName: userName,
+                        admin: true,
+                    }
+                ]
             })
 
         } catch (error) {
             console.log("Create room error", error)
             socket.emit("error_500", {
                 message: "Unknown error occured , try later!"
+            })
+            return socket.emit("battleError", {
+                message: "Limit exceed , try later!"
             })
         }
     })
@@ -775,10 +836,301 @@ io.on('connection', (socket) => {
             }
 
             const userId = payload1.id;
-            const {} = data || {}
+            const { roomId, user_nanoId, userName } = data || {}
+
+            if (!roomId) {
+                return socket.emit("Battle_joinErr", {
+                    message: "roomId required"
+                })
+            }
+
+            if (!user_nanoId) {
+                return socket.emit("Battle_joinErr", {
+                    message: "User Id required!"
+                })
+            }
+
+            const battle = await battleModel.findOne({
+                roomId: roomId
+            })
+
+            if (!battle) {
+                return socket.emit("Battle_joinErr", {
+                    message: "Room doesn't exist"
+                })
+            }
+
+            if (battle.players.length === 2) {
+                return socket.emit("Battle_joinErr", {
+                    message: "This room already has 2 players!"
+                })
+            }
+
+            if (battle.players[0].userId.toString() === userId.toString()) {
+                return socket.emit("Battle_joinErr", {
+                    message: "You already inside this room."
+                })
+            }
+
+            const player1 = battle.players[0].userId
+
+            battle.players.push({
+                userId: userId,
+                user_nanoId: user_nanoId,
+                score: 0,
+                answer: [],
+                admin: false,
+                userName: userName
+            })
+
+            battle.status = "active"
+            await battle.save()
+
+            socket.join(roomId)
+
+            const player_payload = []
+
+            battle.players.forEach((p) => {
+                player_payload.push({
+                    userId: p.userId,
+                    user_nanoId: p.user_nanoId,
+                    userName: p.userName,
+                    admin: p.admin
+                })
+            })
+
+            io.to(player1.toString()).emit("battle_ready_adT", {
+                message: `${user_nanoId} Joined in Battle.`,
+                roomId: roomId,
+                battleId: battle._id,
+                topic: battle.topic,
+                player: player_payload
+            })
+
+            io.to(userId.toString()).emit("battle_ready_adF", {
+                message: `You Joined in Battle.`,
+                roomId: roomId,
+                battleId: battle._id,
+                topic: battle.topic,
+                player: player_payload
+            })
 
         } catch (error) {
             console.log("Join room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    // left from the room
+    socket.on("battle_left1v1", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { roomId, user_nano } = data || {}
+
+            if (!roomId) {
+                return socket.emit("battle_leftError", {
+                    message: "RoomId required!"
+                })
+            }
+
+            if (!user_nano) {
+                return socket.emit("battle_leftError", {
+                    message: "User nanoId required!"
+                })
+            }
+
+            const room = await battleModel.findOne({ roomId: roomId })
+
+            if (!room) {
+                return socket.emit("battle_leftError", {
+                    message: "Room doesn't exist!"
+                })
+            }
+
+            socket.leave(roomId)
+
+            if (room.players.length <= 1) {
+                await battleModel.deleteOne({ roomId: roomId })
+
+                io.to(userId).emit("i_left", {
+                    message: "You left the room"
+                })
+            }
+            else {
+                room.players = room.players.filter((u) => u.userId.toString() !== userId.toString())
+                if(room.players.length >= 1){
+                    room.players[0].admin = true
+                }
+                room.status = "waiting"
+
+                await room.save()
+
+                io.to(userId).emit("i_left", {
+                    message: "You left the room"
+                })
+
+                io.to(room.players[0].userId.toString()).emit("u_left", {
+                    message: `${user_nano} left the room`,
+                    data: {
+                        roomId: roomId,
+                        battleId: room._id,
+                        topic: room.topic,
+                        player: [
+                            {
+                                userId: room.players[0].userId,
+                                user_nanoId: room.players[0].user_nanoId,
+                                userName: room.players[0].userName,
+                                admin: room.players[0].admin
+                            }
+                        ]
+                    }
+                })
+            }
+
+        } catch (error) {
+            console.log("Left room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    // start the battle
+    socket.on("battle_start1v1", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { roomId } = data || {}
+
+            if (!roomId) {
+                return socket.emit("battle_startErr", {
+                    message: "RoomId required!"
+                })
+            }
+
+            const battle = await battleModel.findOne({ roomId: roomId })
+            if (!battle) {
+                return socket.emit("battle_startErr", {
+                    message: "Battle room not found!"
+                })
+            }
+
+            if (battleIntervals.has(roomId)) {
+                return socket.emit("battle_startErr", {
+                    message: "Battle already started!"
+                })
+            }
+
+            io.to(roomId).emit("battle_started", {
+                message: "Battle started!",
+                roomId: roomId
+            })
+
+            let index = 0
+            const questions = battle.questions
+
+            const questionInterval = setInterval(async () => {
+
+                if (questions.length <= index) {
+                    clearInterval(questionInterval)
+                    battleIntervals.delete(roomId)
+                    battle.status = "finished"
+                    await battle.save()
+
+                    io.to(roomId).emit("battle_over", {
+                        message: "Battle finished",
+                        roomId
+                    });
+                    return
+                }
+
+                io.to(roomId).emit("new_question", {
+                    index: index,
+                    question: questions[index]
+                })
+
+                index++
+
+            }, 10000)
+
+            battleIntervals.set(roomId, {
+                questionInterval: questionInterval,
+                userId: {
+                    score: 0
+                }
+            })
+
+        } catch (error) {
+            console.log("Battle start error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+
+    socket.on("battle_end1v1", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+            const { roomId } = data || {}
+
+            const battle = await battleModel.findById(roomId)
+
+            if (!battle) return
+
+            const isOneSubmit = battle.players[0].submit || battle.players[1].submit
+
+            if (isOneSubmit) {
+                await battleModel.deleteOne(roomId)
+            }
+            else {
+                const player = battle.players.find((c) => c.userId.toString() === userId.toString())
+                player.submit = true
+
+                await battleModel.save()
+            }
+
+        } catch (error) {
+            console.log("Battle end error", error)
             socket.emit("error_500", {
                 message: "Unknown error occured , try later!"
             })

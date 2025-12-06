@@ -44,6 +44,10 @@ const battleSchema = new mongoose.Schema({
                 type: String,
                 default: ""
             },
+            userName : {
+                type : String,
+                default : ""
+            },
             score: {
                 type: Number,
                 default: 0
@@ -51,6 +55,14 @@ const battleSchema = new mongoose.Schema({
             answer: {
                 type: [playerAnswerSchema],
                 default: []
+            },
+            admin : {
+                type : Boolean,
+                default : false
+            },
+            submit : {
+                type : Boolean,
+                default : false
             }
         }
     ],
@@ -61,7 +73,11 @@ const battleSchema = new mongoose.Schema({
     },
     questions: [
         battleQuestionSchema
-    ]
+    ],
+    topic : {
+        type : String,
+        default : ""
+    }
 })
 
 const battleModel = mongoose.model("battle", battleSchema)

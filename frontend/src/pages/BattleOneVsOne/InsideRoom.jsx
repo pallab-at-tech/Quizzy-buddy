@@ -23,7 +23,7 @@ const InsideRoom = () => {
 
     const blocker = useBlocker(
         ({ currentLocation, nextLocation }) => {
-            return currentLocation.pathname !== nextLocation.pathname
+            return currentLocation.pathname !== nextLocation.pathname && !localStorage.getItem("left")
         }
     )
 
@@ -62,6 +62,7 @@ const InsideRoom = () => {
         socketConnection.once("i_left", (leftData) => {
             toast.success(leftData?.message)
             setLeftRoomLoading(false)
+            localStorage.setItem("left","done")
             navigate("/battle-1v1")
         })
 
@@ -93,6 +94,17 @@ const InsideRoom = () => {
 
     useEffect(() => {
         fetchRoomDetail()
+        
+        const clearLeft = () =>{
+            localStorage.removeItem("left")
+        }
+
+        window.addEventListener("beforeunload",clearLeft)
+
+        return () =>{
+            clearLeft()
+            window.removeEventListener("beforeunload",clearLeft)
+        }
     }, [])
 
     useEffect(() => {

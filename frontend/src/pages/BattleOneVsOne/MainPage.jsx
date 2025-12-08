@@ -20,7 +20,7 @@ const MainPage = () => {
         setRoute(loc[loc.length - 1])
     }, [location])
 
-    console.log("cvcvcv",localStorage.getItem("left"))
+    // console.log("cvcvcv",localStorage.getItem("left"))
 
     return (
         <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc]  page-scroll">

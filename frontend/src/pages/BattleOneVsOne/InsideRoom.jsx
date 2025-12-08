@@ -20,6 +20,8 @@ const InsideRoom = () => {
     const [data, setData] = useState(null)
 
     const [leftRoomLoading, setLeftRoomLoading] = useState(false)
+    const [count, setCount] = useState(null)
+    const [startLoading, setStartLoading] = useState(false)
 
     const blocker = useBlocker(
         ({ currentLocation, nextLocation }) => {
@@ -62,7 +64,7 @@ const InsideRoom = () => {
         socketConnection.once("i_left", (leftData) => {
             toast.success(leftData?.message)
             setLeftRoomLoading(false)
-            localStorage.setItem("left","done")
+            localStorage.setItem("left", "done")
             navigate("/battle-1v1")
         })
 
@@ -77,12 +79,35 @@ const InsideRoom = () => {
         })
     }
 
+    const startQuiz = () => {
+
+        if (!socketConnection || !data) return
+
+        setStartLoading(true)
+
+        socketConnection.once("battle_start", (startData) => {
+            toast.success(startData?.message)
+            setStartLoading(false)
+        })
+
+        socketConnection.once("battle_startErr", (startData) => {
+            toast.error(startData?.message)
+            setStartLoading(false)
+        })
+
+        socketConnection.emit("battle_start1v1", {
+            roomId: data?.roomId
+        })
+    }
+
     useEffect(() => {
-        if (!location.state || !user) return
+        if (!user || !data) return
 
-        for (let index = 0; index < location.state?.player?.length; index++) {
+        console.log("admin compute")
 
-            const p = location.state?.player[index]
+        for (let index = 0; index < data?.player?.length; index++) {
+
+            const p = data?.player[index]
 
             if (user._id === p?.userId) {
                 setIsAdminIam(() => {
@@ -90,26 +115,46 @@ const InsideRoom = () => {
                 })
             }
         }
-    }, [location])
+    }, [data, user])
 
     useEffect(() => {
         fetchRoomDetail()
-        
-        const clearLeft = () =>{
+
+        const clearLeft = () => {
             localStorage.removeItem("left")
         }
 
-        window.addEventListener("beforeunload",clearLeft)
+        window.addEventListener("beforeunload", clearLeft)
 
-        return () =>{
+        return () => {
             clearLeft()
-            window.removeEventListener("beforeunload",clearLeft)
+            window.removeEventListener("beforeunload", clearLeft)
         }
     }, [])
 
     useEffect(() => {
+        if (!socketConnection || !location.state?.roomId) return;
+
+        const handleConnect = () => {
+            socketConnection.emit("reConnect-room", {
+                roomId: location.state.roomId
+            });
+        };
+
+        socketConnection.on("connect", handleConnect);
+
+        return () => {
+            socketConnection.off("connect", handleConnect);
+        };
+    }, [socketConnection, location.state?.roomId]);
+
+    useEffect(() => {
 
         if (!socketConnection) return
+
+        socketConnection.once("reconnected_success", (recData) => {
+            toast.success(recData?.message)
+        })
 
         socketConnection.once("battle_ready_adT", (socData) => {
             setData((prev) => {
@@ -143,12 +188,32 @@ const InsideRoom = () => {
             })
         })
 
+        socketConnection.on("battle_countdown", (countData) => {
+            console.log("count", countData)
+            setCount(countData?.secound_left || null)
+        })
+
+        socketConnection.once("battle_started", (startData) => {
+            toast.success(startData?.message)
+            localStorage.setItem("left","done")
+            navigate("/battle-1v1/start",{
+                state : {
+                    roomId : location.state?.roomId
+                }
+            })
+        })
+
         return () => {
             socketConnection.off("battle_ready_adT")
             socketConnection.off("u_left")
+            socketConnection.off("battle_countdown")
+            socketConnection.off("battle_started")
+            socketConnection.off("reconnected_success")
         }
 
     }, [socketConnection])
+
+    // console.log("isAdminIam isAdminIam", location.state)
 
     return (
         <section className="grid grid-cols-[40%_60%] h-[calc(100vh-70px)] px-12 bg-gray-50">
@@ -180,12 +245,14 @@ const InsideRoom = () => {
                     </div>
 
                     {/* Optional Footer */}
-                    <div className="pt-6">
-                        <button className="w-full cursor-pointer flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-lg shadow-md transition">
-                            <p>Start Battle</p>
-                            <GiDervishSwords size={18} />
-                        </button>
-                    </div>
+                    {
+                        isAdminIam && <div className="pt-6">
+                            <button  onClick={() => startQuiz()} className="w-full cursor-pointer flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold text-lg shadow-md transition">
+                                <p>{startLoading ? "Starting..." : "Start Battle"}</p>
+                                <GiDervishSwords size={18} />
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -235,7 +302,7 @@ const InsideRoom = () => {
                                         </span>
                                     ) : (
                                         <span className="px-3 py-1 text-xs font-semibold bg-gray-200 text-gray-700 rounded-full shadow-sm cursor-pointer hover:bg-gray-300">
-                                            Leave
+                                            You
                                         </span>
                                     )
                                 )}
@@ -294,6 +361,30 @@ const InsideRoom = () => {
                         </div>
 
                     </div>
+                )
+            }
+
+            {
+                count && (
+                    <section className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50">
+                        <div className="bg-white rounded-2xl shadow-xl px-10 py-8 flex flex-col items-center gap-6 animate-scaleIn">
+
+                            {/* Countdown */}
+                            <div className="text-6xl font-bold text-blue-600 tracking-wide">
+                                {count}
+                            </div>
+
+                            {/* Message */}
+                            <p className="text-gray-600 text-lg">Quiz starts in {count} seconds...</p>
+
+                            {/* Cancel Button */}
+                            <button
+                                className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-md transition-all"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </section>
                 )
             }
         </section>

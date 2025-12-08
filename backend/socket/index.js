@@ -888,6 +888,8 @@ io.on('connection', (socket) => {
 
             socket.join(roomId)
 
+            console.log("room is created", socket.rooms.has(roomId))
+
             const player_payload = []
 
             battle.players.forEach((p) => {
@@ -913,6 +915,47 @@ io.on('connection', (socket) => {
                 battleId: battle._id,
                 topic: battle.topic,
                 player: player_payload
+            })
+
+        } catch (error) {
+            console.log("Join room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    // reconnect the room
+    socket.on("reConnect-room", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            const { roomId } = data || {}
+
+            const battle = await battleModel.findOne({roomId : roomId})
+
+            if(!battle){
+                return
+            }
+
+            socket.join(roomId)
+            console.log("Rejoined after refresh:", socket.id, roomId);
+
+            socket.emit("reconnected_success",{
+                message : "Successfully reconnected",
+                roomId
             })
 
         } catch (error) {
@@ -962,10 +1005,10 @@ io.on('connection', (socket) => {
                 })
             }
 
-            socket.leave(roomId)
-
             if (room.players.length <= 1) {
                 await battleModel.deleteOne({ roomId: roomId })
+
+                // socket.leave(roomId)
 
                 io.to(userId).emit("i_left", {
                     message: "You left the room"
@@ -973,7 +1016,7 @@ io.on('connection', (socket) => {
             }
             else {
                 room.players = room.players.filter((u) => u.userId.toString() !== userId.toString())
-                if(room.players.length >= 1){
+                if (room.players.length >= 1) {
                     room.players[0].admin = true
                 }
                 room.status = "waiting"
@@ -1009,6 +1052,58 @@ io.on('connection', (socket) => {
             })
         }
     })
+
+    async function startBattleQuestion(roomId, battle) {
+
+        let index = 0
+        const questions = battle.questions
+
+        const scoreMap = {};
+        for (const player of battle.players) {
+            scoreMap[player.userId] = { score: 0 };
+        }
+
+        socket.on("client-score", (data) => {
+            const { myUserId, userAnswer, index } = data || {}
+
+            if (userAnswer && index && questions.length > index && userAnswer === questions[index]?.correct_option) {
+                scoreMap[myUserId].score += 5
+            }
+
+            io.to(roomId).emit("score-update", {
+                scoreMap
+            })
+        })
+
+        const questionInterval = setInterval(async () => {
+
+            if (questions.length <= index) {
+                clearInterval(questionInterval)
+                battleIntervals.delete(roomId)
+                battle.status = "finished"
+                await battle.save()
+
+                io.to(roomId).emit("battle_over", {
+                    message: "Battle finished",
+                    roomId: roomId,
+                    score: scoreMap
+                });
+                return
+            }
+
+            io.to(roomId).emit("new_question", {
+                index: index,
+                question: questions[index]
+            })
+
+            index++
+        }, 10000)
+
+        battleIntervals.set(roomId, {
+            questionInterval: questionInterval,
+            scores: scoreMap
+        })
+    }
 
     // start the battle
     socket.on("battle_start1v1", async (data) => {
@@ -1048,44 +1143,37 @@ io.on('connection', (socket) => {
                 })
             }
 
-            io.to(roomId).emit("battle_started", {
-                message: "Battle started!",
+            const isAdmin = battle.players.find((m) => m.userId.toString() === userId.toString())
+            if (!isAdmin.admin) {
+                return socket.emit("battle_startErr", {
+                    message: "Access denied!"
+                })
+            }
+
+            io.to(roomId).emit("battle_start", {
+                message: "Battle about to start!",
                 roomId: roomId
             })
 
-            let index = 0
-            const questions = battle.questions
+            let countdown = 10
 
-            const questionInterval = setInterval(async () => {
-
-                if (questions.length <= index) {
-                    clearInterval(questionInterval)
-                    battleIntervals.delete(roomId)
-                    battle.status = "finished"
-                    await battle.save()
-
-                    io.to(roomId).emit("battle_over", {
-                        message: "Battle finished",
-                        roomId
-                    });
-                    return
-                }
-
-                io.to(roomId).emit("new_question", {
-                    index: index,
-                    question: questions[index]
+            const countDownInterval = setInterval(() => {
+                io.to(roomId).emit("battle_countdown", {
+                    secound_left: countdown
                 })
 
-                index++
+                if (countdown === 0) {
+                    clearInterval(countDownInterval)
 
-            }, 10000)
+                    io.to(roomId).emit("battle_started", {
+                        message: "Battle started!",
+                        roomId: roomId
+                    })
 
-            battleIntervals.set(roomId, {
-                questionInterval: questionInterval,
-                userId: {
-                    score: 0
+                    // startBattleQuestion(roomId, battle, userId)
                 }
-            })
+                countdown--;
+            }, 1000)
 
         } catch (error) {
             console.log("Battle start error", error)

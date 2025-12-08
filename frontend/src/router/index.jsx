@@ -28,6 +28,7 @@ import Leaderboard from '../Layout/Leaderboard/Leaderboard';
 import DashboardOverveiw from '../Layout/DashboardOverview/DashboardOverveiw';
 import MainPage from '../pages/BattleOneVsOne/MainPage';
 import InsideRoom from '../pages/BattleOneVsOne/InsideRoom';
+import QuestionSection from '../pages/BattleOneVsOne/QuestionSection';
 
 
 const router = createBrowserRouter([
@@ -168,6 +169,10 @@ const router = createBrowserRouter([
                     {
                         path : ":room",
                         element : <InsideRoom/>
+                    },
+                    {
+                        path : "start",
+                        element : <QuestionSection/>
                     }
                 ]
             }

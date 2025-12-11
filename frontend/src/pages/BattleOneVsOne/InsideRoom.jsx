@@ -213,7 +213,6 @@ const InsideRoom = () => {
 
     }, [socketConnection])
 
-    // console.log("isAdminIam isAdminIam", location.state)
 
     return (
         <section className="grid grid-cols-[40%_60%] h-[calc(100vh-70px)] px-12 bg-gray-50">

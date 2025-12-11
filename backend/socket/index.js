@@ -12,6 +12,7 @@ import checkIsCorrect from '../utils/checkCorrect.js'
 import { leaderboardMake } from '../controller/leaderboard.controller.js'
 import battleModel from '../model/battle.model.js'
 import QuestionGenerate_1V1 from '../utils/OneVOneApiSet.js'
+import e from 'express'
 
 const app = express()
 const server = createServer(app)
@@ -700,7 +701,6 @@ io.on('connection', (socket) => {
         if (!question) return []
 
         return question.filter((q) => {
-            console.log("qqq", q)
             if (!q.question || !q.marks || !q.options) return false;
             if (q.correct_answer === undefined || q.correct_answer === null) return false;
             if (!Array.isArray(q.options) || q.options.length < 2) return false;
@@ -944,17 +944,18 @@ io.on('connection', (socket) => {
 
             const { roomId } = data || {}
 
-            const battle = await battleModel.findOne({roomId : roomId})
+            const battle = await battleModel.findOne({ roomId: roomId })
 
-            if(!battle){
+            if (!battle) {
                 return
             }
 
             socket.join(roomId)
+            // socket.emit("reJoined-room")
             console.log("Rejoined after refresh:", socket.id, roomId);
 
-            socket.emit("reconnected_success",{
-                message : "Successfully reconnected",
+            socket.emit("reconnected_success", {
+                message: "Successfully reconnected",
                 roomId
             })
 
@@ -1053,41 +1054,152 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on("finish-now", async (data) => {
+        const { payloadRoomId, userId, scoreArray } = data || {}
+        const battleState = battleIntervals.get(payloadRoomId);
+
+        if (!battleState) return
+
+        const { scores, submitted, playerCount, battle } = battleState;
+
+        let calScore = 0
+
+        for (let i = 0; i < scoreArray.length; i++) {
+            const q = battle.questions[i]
+            if (q?.correct_answer.toString() === scoreArray[i].toString()) {
+                calScore += 5
+            }
+        }
+
+        if (scores[userId]) {
+            scores[userId].end = true;
+            submitted.add(userId);
+
+            if (submitted.size === playerCount) {
+                battleState.allUserSubmit = true;
+                battle.status = "finished";
+
+                for (let index = 0; index < battle.players.length; index++) {
+                    const p = battle.players[index]
+
+                    if (p.userId.toString() === userId.toString()) {
+
+                        battle.players[index].score = calScore
+                        scores[userId].score = calScore
+
+                        io.to(payloadRoomId).emit("battle_over", {
+                            message: "Battle finished",
+                            roomId: payloadRoomId,
+                            scores: { scoreMap: scores }
+                        });
+                        break
+                    }
+                }
+
+                battleIntervals.delete(payloadRoomId)
+            } else {
+
+                for (let index = 0; index < battle.players.length; index++) {
+                    const p = battle.players[index]
+
+                    if (p.userId.toString() === userId.toString()) {
+
+                        battle.players[index].score = calScore
+
+                        io.to(userId.toString()).emit("wait-opp", {
+                            message: "Wait for opponent...",
+                            scores: { scoreMap: scores }
+                        });
+                        break
+                    }
+                }
+            }
+
+            await battleModel.findOneAndUpdate(
+                {roomId : payloadRoomId},
+                {
+                    players : battle.players,
+                    status : battle.status
+                }
+            )
+        }
+    })
+
+    socket.on("client-score", (data) => {
+
+        const { myUserId, userAnswer, index, roomId } = data || {};
+        if (!roomId) return;
+
+        const battleState = battleIntervals.get(roomId);
+        if (!battleState) return;
+
+        const scoreMap = battleState.scores;
+        const battle = battleState.battle;
+        const questions = battle.questions;
+
+        const indexValue = Number(index);
+
+        const trackArr = scoreMap[myUserId].track_score
+
+        if (userAnswer && questions.length > indexValue) {
+            if (userAnswer.toString() === questions[indexValue].correct_answer.toString()) {
+                if (trackArr && Array.isArray(trackArr) && trackArr[indexValue] === -1) {
+                    scoreMap[myUserId].score += 5;
+                    trackArr[indexValue] = 5
+                }
+            }
+        }
+
+        console.log("score", scoreMap)
+
+        io.to(roomId).emit("score-update", { scoreMap });
+    })
+
     async function startBattleQuestion(roomId, battle) {
 
         let index = 0
-        const questions = battle.questions
+        let questions = battle.questions
 
         const scoreMap = {};
         for (const player of battle.players) {
-            scoreMap[player.userId] = { score: 0 };
+            scoreMap[player.userId] = { score: 0, end: false, track_score: Array.from({ length: 10 }).fill(-1) };
         }
 
-        socket.on("client-score", (data) => {
-            const { myUserId, userAnswer, index } = data || {}
+        const submitted = new Set();
 
-            if (userAnswer && index && questions.length > index && userAnswer === questions[index]?.correct_option) {
-                scoreMap[myUserId].score += 5
+        battleIntervals.set(roomId, {
+            battle,
+            scores: scoreMap,
+            submitted,
+            playerCount: battle.players.length,
+            allUserSubmit: false
+        });
+
+        let countDown = 10
+
+        const countDownInterval = setInterval(() => {
+
+            io.to(roomId).emit("battle_countDown", {
+                timeLeft: countDown
+            })
+
+            countDown--
+
+            if (countDown < 0) {
+                countDown = 10
             }
 
-            io.to(roomId).emit("score-update", {
-                scoreMap
-            })
-        })
+        }, 1000)
 
         const questionInterval = setInterval(async () => {
 
-            if (questions.length <= index) {
-                clearInterval(questionInterval)
-                battleIntervals.delete(roomId)
-                battle.status = "finished"
-                await battle.save()
+            const state = battleIntervals.get(roomId);
+            if (!state) return
+            questions = state.battle.questions;
 
-                io.to(roomId).emit("battle_over", {
-                    message: "Battle finished",
-                    roomId: roomId,
-                    score: scoreMap
-                });
+            if (questions.length <= index || state.allUserSubmit) {
+                clearInterval(questionInterval)
+                clearInterval(countDownInterval)
                 return
             }
 
@@ -1097,12 +1209,8 @@ io.on('connection', (socket) => {
             })
 
             index++
+            countDown = 10
         }, 10000)
-
-        battleIntervals.set(roomId, {
-            questionInterval: questionInterval,
-            scores: scoreMap
-        })
     }
 
     // start the battle
@@ -1170,7 +1278,7 @@ io.on('connection', (socket) => {
                         roomId: roomId
                     })
 
-                    // startBattleQuestion(roomId, battle, userId)
+                    startBattleQuestion(roomId, battle)
                 }
                 countdown--;
             }, 1000)

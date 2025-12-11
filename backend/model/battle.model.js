@@ -13,7 +13,7 @@ const battleQuestionSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    correct_option: {
+    correct_answer: {
         type: String,
         default: ""
     }

@@ -18,9 +18,11 @@ const MainPage = () => {
     useEffect(() => {
         const loc = location.pathname.split("/")
         setRoute(loc[loc.length - 1])
-    }, [location])
 
-    // console.log("cvcvcv",localStorage.getItem("left"))
+        if(localStorage.getItem("left")){
+            localStorage.removeItem("left")
+        }
+    }, [location])
 
     return (
         <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc]  page-scroll">

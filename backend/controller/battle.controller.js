@@ -5,6 +5,7 @@ export const fetchRoomDetails = async (request, response) => {
         const { roomId } = request.query || {}
 
         if (!roomId) {
+            console.log("RoomId required!")
             return response.status(400).json({
                 message: "RoomId required!",
                 error: true,
@@ -15,6 +16,7 @@ export const fetchRoomDetails = async (request, response) => {
         const room = await battleModel.findOne({ roomId: roomId })
 
         if (!room) {
+             console.log("Room not found!")
             return response.status(400).json({
                 message: "Room not found!",
                 error: true,

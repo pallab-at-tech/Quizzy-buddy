@@ -28,10 +28,10 @@ async function QuestionGenerate_1V1(topic, difficulty = "High-school level to ea
     {
     "questions": [
         {
-        "question": "",
+        "question": "2+3= ?",
         "marks": 5,
-        "options": ["", "", "", ""],
-        "correct_answer": 0
+        "options": ["4", "3", "5", "2"],
+        "correct_answer": 2
         }
     ]
     }

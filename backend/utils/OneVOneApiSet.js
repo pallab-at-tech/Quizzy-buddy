@@ -44,7 +44,7 @@ async function QuestionGenerate_1V1(topic, difficulty = "High-school level to ea
     - JSON must be valid and clean.
     `
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.5-flash-lite",
         contents: prompt
     })
 

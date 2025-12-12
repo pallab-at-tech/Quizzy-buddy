@@ -12,7 +12,6 @@ import checkIsCorrect from '../utils/checkCorrect.js'
 import { leaderboardMake } from '../controller/leaderboard.controller.js'
 import battleModel from '../model/battle.model.js'
 import QuestionGenerate_1V1 from '../utils/OneVOneApiSet.js'
-import e from 'express'
 
 const app = express()
 const server = createServer(app)
@@ -47,6 +46,7 @@ const onlineUser = new Map()
 
 // Store timers per room for 1v1 battle , so we can clear later
 const battleIntervals = new Map();
+const storeCountDownInterval = new Map()
 
 io.on('connection', (socket) => {
 
@@ -1054,6 +1054,67 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on("kicked-out", async (data) => {
+        try {
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+            const { roomId, opponentId, opponentNanoId } = data || {}
+
+            if (!roomId) {
+                return socket.emit("kicked_Err", {
+                    message: "RoomId Not Found!"
+                })
+            }
+
+            const battle = await battleModel.findOne({ roomId: roomId })
+
+            if (!battle) {
+                return socket.emit("kicked_Err", {
+                    message: "Room Not Found!"
+                })
+            }
+
+            const isAdmin = battle.players.some((c) => c.userId.toString() === userId.toString() && c.admin === true)
+
+            if (!isAdmin) {
+                return socket.emit("kicked_Err", {
+                    message: "Access denied!"
+                })
+            }
+
+            battle.players = battle.players.filter((f) => f.userId.toString() === userId.toString())
+            await battle.save()
+
+            io.to(userId.toString()).emit("kicked-success", {
+                message: `You kicked Out ${opponentNanoId}`,
+                kicked: false,
+                opponentId: opponentId
+            })
+
+            io.to(opponentId.toString()).emit("kicked-success", {
+                message: "You removed from the room",
+                kicked: true
+            })
+
+        } catch (error) {
+            console.log("Left room error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
     socket.on("finish-now", async (data) => {
         const { payloadRoomId, userId, scoreArray } = data || {}
         const battleState = battleIntervals.get(payloadRoomId);
@@ -1085,6 +1146,8 @@ io.on('connection', (socket) => {
                     if (p.userId.toString() === userId.toString()) {
 
                         battle.players[index].score = calScore
+                        battle.players[index].submit = true
+
                         scores[userId].score = calScore
 
                         io.to(payloadRoomId).emit("battle_over", {
@@ -1105,6 +1168,9 @@ io.on('connection', (socket) => {
                     if (p.userId.toString() === userId.toString()) {
 
                         battle.players[index].score = calScore
+                        battle.players[index].submit = true
+
+                        scores[userId].score = calScore
 
                         io.to(userId.toString()).emit("wait-opp", {
                             message: "Wait for opponent...",
@@ -1116,10 +1182,10 @@ io.on('connection', (socket) => {
             }
 
             await battleModel.findOneAndUpdate(
-                {roomId : payloadRoomId},
+                { roomId: payloadRoomId },
                 {
-                    players : battle.players,
-                    status : battle.status
+                    players: battle.players,
+                    status: battle.status
                 }
             )
         }
@@ -1153,6 +1219,23 @@ io.on('connection', (socket) => {
         console.log("score", scoreMap)
 
         io.to(roomId).emit("score-update", { scoreMap });
+    })
+
+    socket.on("stop-count", (data) => {
+        const { roomId } = data || {}
+
+        if(!roomId) return
+
+        if(!storeCountDownInterval.has(roomId)) return
+
+        const interval = storeCountDownInterval.get(roomId)
+        clearInterval(interval)
+
+        storeCountDownInterval.delete(roomId)
+
+        io.to(roomId).emit("stop-success",{
+            message : "Cancel Count-Down"
+        })
     })
 
     async function startBattleQuestion(roomId, battle) {
@@ -1272,6 +1355,7 @@ io.on('connection', (socket) => {
 
                 if (countdown === 0) {
                     clearInterval(countDownInterval)
+                    storeCountDownInterval.delete(roomId)
 
                     io.to(roomId).emit("battle_started", {
                         message: "Battle started!",
@@ -1283,6 +1367,8 @@ io.on('connection', (socket) => {
                 countdown--;
             }, 1000)
 
+            storeCountDownInterval.set(roomId , countDownInterval)
+
         } catch (error) {
             console.log("Battle start error", error)
             socket.emit("error_500", {
@@ -1290,7 +1376,6 @@ io.on('connection', (socket) => {
             })
         }
     })
-
 
     socket.on("battle_end1v1", async (data) => {
         try {

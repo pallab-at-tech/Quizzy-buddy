@@ -31,7 +31,8 @@ export const fetchRoomDetails = async (request, response) => {
                 userId : m.userId,
                 user_nanoId : m.user_nanoId,
                 userName : m.userName,
-                admin : m.admin
+                admin : m.admin,
+                submit : m.submit
             })
         })
 

@@ -219,10 +219,9 @@ const QuestionSection = () => {
 
   }, [scoreStats, user]);
 
-
   return (
     <>
-      <section className={`min-h-screen inset-0 z-50 fixed w-full bg-gradient-to-br from-[#ffffff] to-[#c7d7ee] flex justify-center  ${heights >= 50 ? "py-[30px]" : "py-[35px]"} px-4 gap-0`}>
+      <section className={`min-h-screen inset-0 z-50 fixed w-full bg-gradient-to-br ${questionSet ? "from-[#ffffff] to-[#c7d7ee]" : "from-[#fffafa] to-[#c7d7ee]"} flex justify-center  ${heights >= 50 ? "py-[30px]" : "py-[35px]"} px-4 gap-0`}>
         {
           questionSet ? (
             <div className="w-full max-w-3xl bg-white shadow-xl rounded-2xl px-6 space-y-6 overflow-auto relative">
@@ -333,16 +332,15 @@ const QuestionSection = () => {
                   >
                     Clear
                   </button>
-
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer font-semibold py-2 px-6 rounded-xl transition">
+                  {/* <button className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer font-semibold py-2 px-6 rounded-xl transition">
                     Next
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
           ) : (
-            <div className='flex items-center justify-center'>
-              <h1 className='text-3xl animate-pulse'>
+            <div className='flex items-center justify-center bg-gradient-to-br'>
+              <h1 className='text-4xl animate-pulse'>
                 <strong>
                   Fetching Question ...
                 </strong>
@@ -379,9 +377,9 @@ const QuestionSection = () => {
                 <button
                   onClick={() => {
                     finishQuiz()
-                    localStorage.setItem("left","done")
+                    localStorage.setItem("left", "done")
                     blocker.proceed()
-                    navigate("/battle-1v1",{replace : true})
+                    navigate("/battle-1v1", { replace: true })
                     clearLocalStorage()
                   }}
                   className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 shadow-sm transition-all cursor-pointer"

@@ -78,8 +78,9 @@ const Mainpage = () => {
 
     const ButtonTextFunc = () => {
 
+        setButtonText("Starting...")
+        
         const run = [
-            "Starting...",
             "Check validation..",
             "Wait a Sec...",
             "About to start..."

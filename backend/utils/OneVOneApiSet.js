@@ -52,14 +52,14 @@ async function QuestionGenerate_1V1(topic, difficulty = "High-school level to ea
         const ans = response.text.replace('```json', '').replace('```', '').trim()
         try {
             let x = JSON.parse(ans)
-            console.log("Response", x)
+            // console.log("Response", x)
             return x
         } catch (error) {
-            console.log("QuestionGenerate_1V1 error", error)
+            // console.log("QuestionGenerate_1V1 error", error)
             return null
         }
     } catch (error) {
-        console.log("QuestionGenerate_1V1 error", error)
+        // console.log("QuestionGenerate_1V1 error", error)
         return null
     }
 }

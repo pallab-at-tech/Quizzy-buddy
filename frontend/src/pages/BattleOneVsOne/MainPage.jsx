@@ -4,7 +4,6 @@ import CreateRoom from "../../components/BattleOneVOne/CreateRoom";
 import { useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import JoinRoom from "../../components/BattleOneVOne/JoinRoom";
-import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
 
@@ -20,23 +19,23 @@ const MainPage = () => {
     }, [location])
 
     // clear un-necessary local storage
-    useEffect(()=>{
-        if(localStorage.getItem("left")){
+    useEffect(() => {
+        if (localStorage.getItem("left")) {
             localStorage.removeItem("left")
         }
-        if(localStorage.getItem("questionSet")){
+        if (localStorage.getItem("questionSet")) {
             localStorage.removeItem("questionSet")
         }
-        if(localStorage.getItem("scoreStats")){
+        if (localStorage.getItem("scoreStats")) {
             localStorage.removeItem("scoreStats")
         }
-        if(localStorage.getItem("wait-opp")){
+        if (localStorage.getItem("wait-opp")) {
             localStorage.removeItem("wait-opp")
         }
-        if(localStorage.getItem("battle_over")){
+        if (localStorage.getItem("battle_over")) {
             localStorage.removeItem("battle_over")
         }
-    },[])
+    }, [])
 
     return (
         <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc]  page-scroll">
@@ -84,20 +83,20 @@ const MainPage = () => {
                         <div className="mb-4 bg-white rounded-3xl shadow-md px-10 py-10 border border-gray-200">
 
                             {/* Sub-Header */}
-                            <div className="flex items-center gap-3 mb-6">
+                            <div className="flex items-center justify-center gap-3 mb-6 mr-[100px]">
                                 <FaBookOpen className="text-3xl text-indigo-600" />
                                 <h2 className="text-2xl font-bold text-gray-800">Quiz Rules</h2>
                             </div>
 
                             {/* Other content */}
-                            <ul className="text-gray-700 text-lg space-y-4">
+                            <ul className="text-gray-700 text-lg space-y-3 grid grid-cols-2 grid-rows-2 gap-x-10">
                                 <li className="flex items-start gap-3">
                                     <span className="text-indigo-600 font-bold">•</span>
                                     Each question carries <b>5 marks</b>.
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <span className="text-indigo-600 font-bold">•</span>
-                                    Wrong answer deducts <b>1.5 marks</b>.
+                                    No <b>Negative</b> marks.
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <span className="text-indigo-600 font-bold">•</span>
@@ -106,10 +105,6 @@ const MainPage = () => {
                                 <li className="flex items-start gap-3">
                                     <span className="text-indigo-600 font-bold">•</span>
                                     Total <b>10 questions</b> will be provided.
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="text-indigo-600 font-bold">•</span>
-                                    Faster correct answers give a competitive advantage.
                                 </li>
                             </ul>
                         </div>

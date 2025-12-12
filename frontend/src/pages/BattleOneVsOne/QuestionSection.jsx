@@ -87,7 +87,7 @@ const QuestionSection = () => {
       setScoreStats(x)
     }
 
-    return () => localStorage.removeItem("left")
+    // return () => localStorage.removeItem("left")
   }, [])
 
   useEffect(() => {
@@ -219,7 +219,6 @@ const QuestionSection = () => {
 
   }, [scoreStats, user]);
 
-  console.log("blocker",blocker.state)
 
   return (
     <>
@@ -363,25 +362,29 @@ const QuestionSection = () => {
               </h1>
 
               <h2 className="text-gray-500 mb-6">
-                Leaving will cause you to exit the room.
+                Leaving will cause you to early submit Quiz.
               </h2>
 
               <div className="flex items-center justify-end gap-4">
 
                 <button
-                  onClick={() => blocker.reset()}
-                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all"
+                  onClick={() => {
+                    blocker.reset()
+                  }}
+                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
 
                 <button
                   onClick={() => {
+                    finishQuiz()
+                    localStorage.setItem("left","done")
                     blocker.proceed()
+                    navigate("/battle-1v1",{replace : true})
                     clearLocalStorage()
-                    navigate("/battle-1v1")
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 shadow-sm transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 shadow-sm transition-all cursor-pointer"
                 >
                   Proceed
                 </button>
@@ -423,9 +426,9 @@ const QuestionSection = () => {
               {/* Button */}
               <button
                 onClick={() => {
+                  localStorage.setItem("left", "done")
                   navigate("/battle-1v1");
                   clearLocalStorage();
-                  localStorage.setItem("left","done")
                 }}
                 className="mt-8 w-full py-3 rounded-xl font-bold text-lg bg-gradient-to-r from-indigo-400/60 to-purple-400/60
                 hover:from-indigo-400/40 hover:to-purple-400/40 transition-all duration-300 shadow-lg cursor-pointer"
@@ -474,9 +477,9 @@ const QuestionSection = () => {
                 {/* Button */}
                 <button
                   onClick={() => {
+                    localStorage.setItem("left", "done")
                     navigate("/battle-1v1");
                     clearLocalStorage();
-                    localStorage.setItem("left","done")
                   }}
                   className="mt-8 w-full py-3 rounded-xl font-bold text-lg bg-gradient-to-r from-indigo-400/60 to-purple-400/60
                 hover:from-indigo-400/40 hover:to-purple-400/40 transition-all duration-300 shadow-lg cursor-pointer"

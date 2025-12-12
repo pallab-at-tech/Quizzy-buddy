@@ -13,16 +13,30 @@ const MainPage = () => {
 
     const [route, setRoute] = useState(null)
     const location = useLocation()
-    const navigate = useNavigate()
 
     useEffect(() => {
         const loc = location.pathname.split("/")
         setRoute(loc[loc.length - 1])
+    }, [location])
 
+    // clear un-necessary local storage
+    useEffect(()=>{
         if(localStorage.getItem("left")){
             localStorage.removeItem("left")
         }
-    }, [location])
+        if(localStorage.getItem("questionSet")){
+            localStorage.removeItem("questionSet")
+        }
+        if(localStorage.getItem("scoreStats")){
+            localStorage.removeItem("scoreStats")
+        }
+        if(localStorage.getItem("wait-opp")){
+            localStorage.removeItem("wait-opp")
+        }
+        if(localStorage.getItem("battle_over")){
+            localStorage.removeItem("battle_over")
+        }
+    },[])
 
     return (
         <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc]  page-scroll">

@@ -11,6 +11,7 @@ import i3 from "../assets/i3.png"
 import i4 from "../assets/i4.png"
 import { useGlobalContext } from '../provider/GlobalProvider';
 import toast from 'react-hot-toast';
+import Logo from '../components/Logo';
 
 const Home = () => {
 
@@ -66,7 +67,7 @@ const Home = () => {
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>
 
                             <div className='text-xl font-bold '>
-                                <Link to="/">Quizzy Buddy</Link>
+                                <Link to="/"><Logo/></Link>
                             </div>
 
                             {/* Centered Navigation Links - Hidden on small screens */}
@@ -128,26 +129,21 @@ const Home = () => {
                 ) : (
                     <div className='bg-[#fcfcfc] h-[calc(100vh-50px)] lg:pr-[100px] page-scroll'>
 
-                        <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-16 '>
+                        <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-[80px]'>
 
-                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[22%] px-3 '>
-                                <div>
-                                    <div className='md:text-5xl text-3xl font-bold flex flex-wrap gap-2.5'>
-                                        <p className='text-[#1633ff]'>Challenge</p>
-                                        <p>Your Mind</p>
+                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[24%] px-3 '>
+                                <div className='mb-14'>
+                                    <div className='text-3xl font-bold flex flex-wrap space-y-[-10px]'>
+                                        <p className='text-[#1633ff] tracking-[2px] md:text-[75px]'>Challenge</p>
+                                        <p className='tracking-[0.5px] md:text-[70px]'>Your Mind</p>
                                     </div>
                                     <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:block hidden'>
-                                        Challenge yourself with engaging quizzes, earn points, and climb the leaderboard and become the ultimate champion.
+                                        Challenge yourself with engaging quizzes , earn points, and climb the leaderboard and become the ultimate champion.
                                     </p>
 
                                     <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:hidden block'>
                                         Challenge yourself with engaging quizzes, earn points, and climb the leaderboard.
                                     </p>
-
-
-                                    <div className='md:mt-10 mt-8'>
-                                        <p className='font-semibold text-xl lg:block hidden'>LeaderBoard</p>
-                                    </div>
                                 </div>
                             </div>
 

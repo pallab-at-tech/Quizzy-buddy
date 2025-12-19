@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useOutletContext, useNavigate , useLocation } from 'react-router-dom';
 import { FaImage, FaPlusCircle } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import toast from 'react-hot-toast'
@@ -20,6 +20,7 @@ const CreateQuizManual = () => {
     const user = useSelector(state => state?.user)
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const location = useLocation()
 
     const [copied, setCopied] = useState(false);
     const [quizData, setQuizData] = useState(null)
@@ -32,6 +33,15 @@ const CreateQuizManual = () => {
 
     const [uploadLoading, setUploadLoading] = useState(new Set())
     const [submitLoading, setSubmitLoading] = useState(false)
+
+    useEffect(()=>{
+        if(!location.state || !location.state?.questions) return
+
+        setQuestions(()=>{
+            return location.state?.questions
+        })
+        
+    },[location.state])
 
     // Add new question
     const addQuestion = () => {

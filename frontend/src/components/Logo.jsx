@@ -16,8 +16,7 @@ const Logo = () => {
 
       {/* Brand Text */}
       <h1 className="text-[26px] font-extrabold tracking-tight leading-none">
-        <span className="bg-gradient-to-r from-[#3747fa] to-[#0e3dbe]
-                         bg-clip-text text-transparent"
+        <span className="bg-gradient-to-r from-[#3747fa] to-[#0e3dbe] bg-clip-text text-transparent"
         >
           Quizzy
         </span>

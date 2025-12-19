@@ -554,6 +554,31 @@ const HostPage = () => {
         }
     }
 
+    // re-create quiz
+    const reCreateQuiz = () => {
+        if (!data || !data?.quiz_data || !Array.isArray(data?.quiz_data)) return
+        const questions = []
+
+        for (let index = 0; index < data?.quiz_data?.length; index++) {
+            const x = data?.quiz_data[index]
+            questions.push({
+                question : x?.question || "",
+                image : x?.image || "",
+                options : x?.options || [],
+                correct : x?.correct_option || "",
+                marks : x?.marks || 0,
+                inputBox : x?.inputBox,
+            })
+        }
+
+        navigate("/host-quiz/create-quiz",{
+            state : {
+                questions : questions
+            }
+        })
+    }
+
+
 
     return (
         <section className="pt-0 pb-6 px-4 ">
@@ -740,7 +765,7 @@ const HostPage = () => {
                                             >
                                                 <GrScorecard />
                                                 {realisingScore ? "Realising  , wait..." : "Realise Score"}
-                                                
+
                                             </button>
                                         </>
                                     );
@@ -1177,6 +1202,7 @@ const HostPage = () => {
                                 <div className="flex items-center gap-4 mt-12">
                                     <button
                                         onClick={() => {
+                                            reCreateQuiz()
                                         }}
                                         className="bg-green-600 hover:bg-green-700 cursor-pointer flex items-center gap-2 text-white font-medium px-6 py-3 rounded-lg shadow-md transition-all"
                                     >

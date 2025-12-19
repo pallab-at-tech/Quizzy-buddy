@@ -233,13 +233,21 @@ export const saveChangesHostDetailsByHost = async (request, response) => {
             })
         }
 
-        const host = await quizHostModel.findById(hostId).populate("quiz_data").select("quiz_data _id host_user_id")
+        const host = await quizHostModel.findById(hostId).populate("quiz_data").select("quiz_data _id host_user_id quiz_end")
 
         if (!host) {
             return response.status(400).json({
                 message: "Host model not found!",
                 error: true,
                 sucess: false
+            })
+        }
+
+        if(host.quiz_end && new Date() >= new Date(host.quiz_end)){
+            return response.status(400).json({
+                message : "Quiz can't edit , after quiz has ended",
+                error : true,
+                success : false
             })
         }
 

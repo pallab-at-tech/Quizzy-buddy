@@ -6,13 +6,16 @@ const initialValue = {
     nanoId: "",
     email: "",
     avatar: "",
+    institute: "",
+    backgroundImg: "",
+    about: "",
     verify_email: false,
     participant_info: [],
     host_info: [],
     participate_count: 0,
     host_count: 0,
     daily_strict_count: {},
-    badge_collection : {}
+    badge_collection: {}
 }
 
 const userSlice = createSlice({
@@ -25,6 +28,9 @@ const userSlice = createSlice({
             state.nanoId = action.payload?.nanoId
             state.email = action.payload?.email
             state.avatar = action.payload?.avatar
+            state.institute = action.payload?.institute
+            state.backgroundImg = action.payload?.backgroundImg
+            state.about = action.payload?.about
             state.verify_email = action.payload?.verify_email
             state.participant_info = [...action.payload?.participant_info]
             state.host_info = [...action.payload?.host_info]
@@ -40,6 +46,9 @@ const userSlice = createSlice({
             state.nanoId = ""
             state.email = ""
             state.avatar = ""
+            state.institute = ""
+            state.backgroundImg = ""
+            state.about = ""
             state.verify_email = false
             state.participant_info = []
             state.host_info = []
@@ -73,9 +82,23 @@ const userSlice = createSlice({
         setDailyQuizFinish: (state, action) => {
             const { data } = action.payload
             state.daily_strict_count = data || {}
+        },
+        setStateAbout: (state, action) => {
+            const { about } = action.payload
+            state.about = about
+        },
+        setBackgroundImage: (state, action) => {
+            const { bg } = action.payload
+            state.backgroundImg = bg
+        },
+        setProfileAndData: (state, action) => {
+            const { profileImg, name, institute } = action.payload
+            state.avatar = profileImg || ""
+            state.name = name
+            state.institute = institute || ""
         }
     }
 })
 
-export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz, manageHostDetails , setDailyQuizFinish } = userSlice.actions
+export const { setUserDetails, setLogOut, setHostDetails, setUserFinishQuiz, manageHostDetails, setDailyQuizFinish, setStateAbout, setBackgroundImage , setProfileAndData } = userSlice.actions
 export default userSlice.reducer

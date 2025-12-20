@@ -21,11 +21,23 @@ const Header = () => {
       <div className='flex items-center gap-4 lg:border-x border-[#d2d2d2] w-fit md:px-8 px-3'>
 
         <Link to={dashboardURL} className='hidden custom-lg:block'>
-          <img src={avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer' />
+          {
+            user?.avatar ? (
+              <img src={user?.avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer object-cover'/>
+            ) : (
+              <img src={avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer object-cover' />
+            )
+          }
         </Link>
 
         <Link to={"/dashboard"} className='block custom-lg:hidden'>
-          <img src={avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer' />
+          {
+            user?.avatar ? (
+              <img src={user?.avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer object-cover'/>
+            ) : (
+              <img src={avatar} alt="" className='lg:w-11 lg:h-11  h-8 w-8 rounded-full border border-[#040132] cursor-pointer object-cover' />
+            )
+          }
         </Link>
 
         <Link>

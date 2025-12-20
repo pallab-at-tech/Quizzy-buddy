@@ -92,6 +92,18 @@ const SummaryApi = {
     room_details: {
         url: "/api/battle/room-details",
         method: "get"
+    },
+    add_about: {
+        url: "/api/about-update",
+        method: "post"
+    },
+    add_background: {
+        url: "/api/background-update",
+        method: "post"
+    },
+    add_profile: {
+        url: "/api/profile-update",
+        method: "post"
     }
 }
 

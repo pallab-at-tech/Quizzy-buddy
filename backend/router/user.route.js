@@ -1,5 +1,5 @@
 import express from 'express'
-import { particularParticipantsDetails, quizParticiapantsDetails, userDetailsController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userResetPasswordController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
+import { addAboutController, addBackgroundImageContoller, addProfileController, particularParticipantsDetails, quizParticiapantsDetails, userDetailsController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userResetPasswordController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
 import auth from '../middleware/auth.js'
 
 const userRouter = express()
@@ -14,5 +14,8 @@ userRouter.post("/refresh-token", userRefressingTokenController)
 userRouter.get("/user-details", auth, userDetailsController)
 userRouter.get("/quiz-details", auth, quizParticiapantsDetails)
 userRouter.get("/particular-Particiapants-details", auth, particularParticipantsDetails)
+userRouter.post("/about-update", auth, addAboutController)
+userRouter.post("/background-update", auth, addBackgroundImageContoller)
+userRouter.post("/profile-update", auth, addProfileController)
 
 export default userRouter

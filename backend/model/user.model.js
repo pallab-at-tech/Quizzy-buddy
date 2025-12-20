@@ -111,6 +111,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    institute : {
+        type : String,
+        default : ""
+    },
+    backgroundImg : {
+        type : String,
+        default : ""
+    },
+    about : {
+        type : String,
+        default : ""
+    },
     verify_email: {
         type: Boolean,
         default: false

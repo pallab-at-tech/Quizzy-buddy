@@ -607,10 +607,10 @@ export const particularParticipantsDetails = async (request, response) => {
         })
 
         return response.json({
-            message : "Get participants details",
-            error : false,
-            success : true,
-            data : combineData
+            message: "Get participants details",
+            error: false,
+            success: true,
+            data: combineData
         })
 
     } catch (error) {
@@ -622,3 +622,84 @@ export const particularParticipantsDetails = async (request, response) => {
     }
 }
 
+export const addAboutController = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { about } = request.body || {}
+
+        await userModel.findByIdAndUpdate(userId, {
+            about: about
+        })
+
+        return response.json({
+            message: "Profile updated",
+            about: about,
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error Occured!" || error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const addBackgroundImageContoller = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { bg } = request.body || {}
+
+        await userModel.findByIdAndUpdate(userId, {
+            backgroundImg: bg
+        })
+
+        return response.json({
+            message: "Back-ground image updated",
+            error: false,
+            success: true
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error Occured!" || error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const addProfileController = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { profileImg, name, institute } = request.body || {}
+
+        if (!name) {
+            return response.status(400).json({
+                message: "Name required!",
+                error: true,
+                success: false
+            })
+        }
+
+        await userModel.findByIdAndUpdate(userId, {
+            name: name,
+            institute: institute,
+            avatar: profileImg
+        })
+
+        return response.json({
+            message: "Profile updated",
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: "Some Error Occured!" || error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}

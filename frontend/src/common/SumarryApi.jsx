@@ -104,6 +104,10 @@ const SummaryApi = {
     add_profile: {
         url: "/api/profile-update",
         method: "post"
+    },
+    get_unread_notify: {
+        url: "/api/notification/unread-notify",
+        method: "post"
     }
 }
 

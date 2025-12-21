@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setUserDetails } from '../store/userSlice';
 import { io } from 'socket.io-client'
 import toast from 'react-hot-toast';
+import { setNotificationState } from '../store/notificationSlice';
 
 
 export const GlobalContext = createContext(null)
@@ -46,6 +47,25 @@ const GlobalProvider = ({ children }) => {
         }
     }
 
+    const fetchNotification = async () => {
+        try {
+            const response = await Axios({
+                ...SummaryApi.get_unread_notify
+            })
+
+            const { data: responseData } = response
+            // console.log("fetchde data for notification", responseData?.notification)
+
+            if (responseData?.success) {
+                dispatch(setNotificationState({
+                    notification: responseData?.notifiaction || []
+                }))
+            }
+        } catch (error) {
+            console.log("fetchNotification error", error)
+        }
+    }
+
     const loginUser = () => {
         localStorage.setItem("log", "true");
         setIsLogin(true);
@@ -62,6 +82,7 @@ const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         fetchUserDetails()
+        fetchNotification()
     }, [])
 
 

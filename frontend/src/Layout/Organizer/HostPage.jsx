@@ -520,33 +520,24 @@ const HostPage = () => {
     }
 
     // Realise score
-    const realiseScore = async () => {
+    const realise_score = async () => {
         if (!data) return
         try {
             setRealisingScore(true)
-            const response = await Axios({
-                ...SummaryApi.score_realised,
-                data: {
-                    hostId: data?._id
-                }
+
+            socketConnection.once("score_realised", (score_msg) => {
+                toast.success(score_msg?.message)
+                setRealisingScore(false)
             })
 
-            const { data: responseData } = response
+            socketConnection.once("score_Error", (score_msg) => {
+                toast.error(score_msg?.message)
+                setRealisingScore(false)
+            })
 
-            if (responseData.success) {
-                toast.success(responseData?.message)
-                setData((prev) => {
-                    return {
-                        ...prev,
-                        realise_score: true
-                    }
-                })
-            }
-            else {
-                toast.error(responseData?.message)
-            }
-
-            setRealisingScore(false)
+            socketConnection.emit("score_realise", {
+                hostId: data?._id
+            })
 
         } catch (error) {
             setRealisingScore(false)
@@ -562,22 +553,21 @@ const HostPage = () => {
         for (let index = 0; index < data?.quiz_data?.length; index++) {
             const x = data?.quiz_data[index]
             questions.push({
-                question : x?.question || "",
-                image : x?.image || "",
-                options : x?.options || [],
-                correct : x?.correct_option || "",
-                marks : x?.marks || 0,
-                inputBox : x?.inputBox,
+                question: x?.question || "",
+                image: x?.image || "",
+                options: x?.options || [],
+                correct: x?.correct_option || "",
+                marks: x?.marks || 0,
+                inputBox: x?.inputBox,
             })
         }
 
-        navigate("/host-quiz/create-quiz",{
-            state : {
-                questions : questions
+        navigate("/host-quiz/create-quiz", {
+            state: {
+                questions: questions
             }
         })
     }
-
 
 
     return (
@@ -756,7 +746,7 @@ const HostPage = () => {
                                             <button
                                                 disabled={data?.realise_score || !hasEnded}
                                                 onClick={() => {
-                                                    realiseScore()
+                                                    realise_score()
                                                 }}
                                                 className={`flex items-center gap-2 ${!data?.realise_score && hasEnded
                                                     ? "bg-green-600 hover:bg-green-700 cursor-pointer"

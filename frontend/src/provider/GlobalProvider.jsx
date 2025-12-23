@@ -54,11 +54,10 @@ const GlobalProvider = ({ children }) => {
             })
 
             const { data: responseData } = response
-            // console.log("fetchde data for notification", responseData?.notification)
-
+            
             if (responseData?.success) {
                 dispatch(setNotificationState({
-                    notification: responseData?.notifiaction || []
+                    notification: responseData?.notification || []
                 }))
             }
         } catch (error) {

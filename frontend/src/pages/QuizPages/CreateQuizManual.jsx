@@ -9,6 +9,7 @@ import SummaryApi from '../../common/SumarryApi';
 import { useSelector , useDispatch } from 'react-redux';
 import { FiCopy, FiCheck } from "react-icons/fi";
 import { setHostDetails } from '../../store/userSlice';
+import { addNotification } from '../../store/notificationSlice';
 
 const CreateQuizManual = () => {
     const { data } = useOutletContext();
@@ -157,6 +158,9 @@ const CreateQuizManual = () => {
                 setQuizData(responseData)
                 dispatch(setHostDetails({
                     data : responseData?.host_info
+                }))
+                dispatch(addNotification({
+                    notifyData : responseData?.notification
                 }))
             }
             else {

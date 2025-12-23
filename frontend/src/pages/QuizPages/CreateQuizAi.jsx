@@ -11,6 +11,7 @@ import SummaryApi from '../../common/SumarryApi'
 import { setHostDetails } from '../../store/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { addNotification } from '../../store/notificationSlice'
 
 const CreateQuizAi = () => {
 
@@ -191,7 +192,7 @@ const CreateQuizAi = () => {
           host_user_nanoId: user?.nanoId,
           quiz_data: questions,
           quiz_start: data?.quiz_start || "",
-          quiz_end : data?.quiz_end || "",
+          quiz_end: data?.quiz_end || "",
           set_negetive_marks: data?.set_negetive_marks || 0,
         }
       })
@@ -203,6 +204,10 @@ const CreateQuizAi = () => {
         setQuizData(responseData)
         dispatch(setHostDetails({
           data: responseData?.host_info
+        }))
+
+        dispatch(addNotification({
+          notifyData: responseData?.notification
         }))
       }
       else {

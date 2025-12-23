@@ -4,7 +4,7 @@ import backimg1 from "../assets/q2-edit.png"
 import backimg2 from "../assets/q3-edit.png"
 import { PiShootingStarFill } from "react-icons/pi";
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import i1 from "../assets/i1.png"
 import i2 from "../assets/i2.png"
 import i3 from "../assets/i3.png"
@@ -12,17 +12,29 @@ import i4 from "../assets/i4.png"
 import { useGlobalContext } from '../provider/GlobalProvider';
 import toast from 'react-hot-toast';
 import Logo from '../components/Logo';
+import { addNotification } from '../store/notificationSlice';
 
 const Home = () => {
 
     const user = useSelector(state => state.user)
     const { isLogin, socketConnection } = useGlobalContext()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => { document.body.style.overflow = 'auto'; };
     }, []);
+
+    useEffect(() => {
+        if (!socketConnection) return
+
+        socketConnection.on("notify", (notify_data) => {
+            dispatch(addNotification({
+                notifyData: notify_data?.notification
+            }))
+        })
+    }, [socketConnection])
 
     const [joinedQuiz, setJoinedQuiz] = useState(false)
     const [quizCode, setQuizCode] = useState("")
@@ -34,7 +46,7 @@ const Home = () => {
 
             socketConnection.once("joinedQuiz_success", (data) => {
                 // toast.success(data?.message)
-                navigate(`/joined/${data?.hostId}`, {state : {pre_Quiz : true}})
+                navigate(`/joined/${data?.hostId}`, { state: { pre_Quiz: true } })
                 setQuizJoinLoader(false)
             })
 
@@ -67,7 +79,7 @@ const Home = () => {
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>
 
                             <div className='text-xl font-bold '>
-                                <Link to="/"><Logo/></Link>
+                                <Link to="/"><Logo /></Link>
                             </div>
 
                             {/* Centered Navigation Links - Hidden on small screens */}
@@ -95,7 +107,7 @@ const Home = () => {
                             </div>
 
                         </header>
-                        
+
 
                         {/* Main Section  */}
                         <main className='relative flex flex-grow flex-col items-center justify-center p-4 text-center -mt-[140px] sm:-mt-0'>

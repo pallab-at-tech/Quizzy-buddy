@@ -9,15 +9,24 @@ const notificationSlice = createSlice({
     initialState: initialState,
     reducers: {
         setNotificationState: (state, action) => {
-            console.log("payload check",action.payload)
             state.notification = action.payload?.notification
         },
         logOut: (state, action) => {
             state.notification = []
         },
+        addNotification: (state, action) => {
+            const { notifyData } = action.payload
+
+            if(notifyData){
+                const notifyId = state.notification.some((n) => notifyData?._id === n?._id)
+                if(!notifyId){
+                    state.notification = [notifyData , ...state.notification]
+                }
+            }
+        }
 
     }
 })
 
-export const { setNotificationState, logOut } = notificationSlice.actions
+export const { setNotificationState, logOut, addNotification } = notificationSlice.actions
 export default notificationSlice.reducer

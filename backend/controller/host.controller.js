@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 import userModel from '../model/user.model.js'
 import { customAlphabet } from "nanoid"
+import notificationModel from '../model/notification.model.js'
 
 
 const hostIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 10)
@@ -113,18 +114,37 @@ export const createQuizController = async (request, response) => {
         })
         user.host_count += 1
 
+        let isBadgeGet = ""
+
         // Badge enables if eligible
-        if(user.host_count === 5){
+        if (user.host_count === 5) {
             user.badge_collection.Host5 = true
+            isBadgeGet = `Unlock "Host-5" badge`
         }
-        else if(user.host_count === 20){
+        else if (user.host_count === 20) {
             user.badge_collection.Host20 = true
+            isBadgeGet = `Unlock "Host-20" badge`
         }
-        else if(user.host_count === 50){
+        else if (user.host_count === 50) {
             user.badge_collection.Host50 = true
+            isBadgeGet = `Unlock "Host-50" badge`
         }
-        else if(user.host_count === 200){
+        else if (user.host_count === 200) {
             user.badge_collection.Host200 = true
+            isBadgeGet = `Unlock "Host-200" badge`
+        }
+
+        let notification = null
+
+        if (isBadgeGet) {
+            notification = new notificationModel({
+                recipent: userId,
+                notification_type: "Achieve Badge",
+                content: isBadgeGet,
+                isRead: false,
+                navigation_link: `/dashboard/overview`
+            })
+            await notification.save()
         }
 
         await user.save()
@@ -158,6 +178,7 @@ export const createQuizController = async (request, response) => {
                 endDate: quiz_end,
                 startDate: quiz_start
             },
+            notification: notification,
             error: false,
             success: true
         })
@@ -243,11 +264,11 @@ export const saveChangesHostDetailsByHost = async (request, response) => {
             })
         }
 
-        if(host.quiz_end && new Date() >= new Date(host.quiz_end)){
+        if (host.quiz_end && new Date() >= new Date(host.quiz_end)) {
             return response.status(400).json({
-                message : "Quiz can't edit , after quiz has ended",
-                error : true,
-                success : false
+                message: "Quiz can't edit , after quiz has ended",
+                error: true,
+                success: false
             })
         }
 
@@ -572,62 +593,6 @@ export const fetchQuestionDetails = async (request, response) => {
             error: false,
             success: true,
             data: combineData
-        })
-
-    } catch (error) {
-        return response.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
-
-export const realise_score = async (request, response) => {
-    try {
-        const { hostId } = request.body || {}
-
-        if (!hostId) {
-            return response.status(400).json({
-                message: "Quiz Id not found!",
-                error: true,
-                success: false
-            })
-        }
-
-        const host = await quizHostModel.findById(hostId)
-
-        if (!host) {
-            return response.status(400).json({
-                message: "Host not found!",
-                error: true,
-                success: false
-            })
-        }
-
-        if (new Date(host.quiz_end) > new Date()) {
-            return response.status(400).json({
-                message: "Quiz not ended yet!",
-                error: true,
-                success: false
-            })
-        }
-
-        if (host.realise_score) {
-            return response.status(400).json({
-                message: "Score already realised!",
-                error: true,
-                success: false
-            })
-        }
-
-        host.realise_score = true
-        await host.save()
-
-        return response.json({
-            message: "Score realised",
-            error: false,
-            success: true
         })
 
     } catch (error) {

@@ -12,6 +12,7 @@ import checkIsCorrect from '../utils/checkCorrect.js'
 import { leaderboardMake } from '../controller/leaderboard.controller.js'
 import battleModel from '../model/battle.model.js'
 import QuestionGenerate_1V1 from '../utils/OneVOneApiSet.js'
+import notificationModel from '../model/notification.model.js'
 
 const app = express()
 const server = createServer(app)
@@ -50,6 +51,7 @@ const storeCountDownInterval = new Map()
 
 io.on('connection', (socket) => {
 
+    /*  Basic Connection */
     // join in a socket room
     socket.on("join_room", (userId) => {
 
@@ -59,6 +61,8 @@ io.on('connection', (socket) => {
         io.emit("online_user", Array.from(new Set(onlineUser.values())))
         console.log("User connected:", `${socket.id} -- ${userId}`);
     })
+
+    /* Joined Quiz for hosted Quiz and their controller */
 
     socket.on("joined_quiz", async (data) => {
         try {
@@ -313,6 +317,98 @@ io.on('connection', (socket) => {
 
         } catch (error) {
             console.log("joined quiz error", error)
+            socket.emit("error_500", {
+                message: "Unknown error occured , try later!"
+            })
+        }
+    })
+
+    socket.on("score_realise", async (data) => {
+        try {
+            const { hostId } = data || {}
+
+            const token = socket.handshake.auth?.token;
+            if (!token) {
+                return socket.emit("session_expired", { message: "No token found. Please login again." });
+            }
+
+            let payload1;
+            try {
+                payload1 = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+            } catch (err) {
+                return socket.emit("session_expired", { message: "Your session has expired. Please log in again." });
+            }
+
+            const userId = payload1.id;
+
+            if (!hostId) {
+                return socket.emit("score_Error", {
+                    message: "Host Id required!"
+                })
+            }
+
+            const host = await quizHostModel.findById(hostId)
+
+            if (!host) {
+                return socket.emit("score_Error", {
+                    message: "Host model not found!"
+                })
+            }
+
+            if (userId.toString() !== host.host_user_id.toString()) {
+                return socket.emit("score_Error", {
+                    message: "Only host can release score!"
+                })
+            }
+
+            if (new Date(host.quiz_end) > new Date()) {
+                return socket.emit("score_Error", {
+                    message: "Quiz not ended yet!"
+                })
+            }
+
+            if (host.realise_score) {
+                return socket.emit("score_Error", {
+                    message: "Score already realised!",
+                })
+            }
+
+            host.realise_score = true
+
+            const PromiseArr = []
+            const Submissions = host.quiz_submission_data || []
+
+            for (const submission of Submissions) {
+                const participant_id = submission.userDetails.Id
+                if (!participant_id) continue
+
+                const notification = new notificationModel({
+                    recipent: participant_id,
+                    notification_type: "score realised",
+                    content: `Score realised - Quiz Id : ${host.nano_id}`,
+                    isRead: false,
+                    navigation_link: "/dashboard/my-quiz"
+                })
+
+                PromiseArr.push(
+                    notification.save().then(() => {
+                        io.to(participant_id.toString()).emit("notify", {
+                            message: "new notification",
+                            notification: notification
+                        })
+                    })
+                )
+            }
+
+            await Promise.all(PromiseArr)
+            await host.save()
+
+            io.to(userId).emit("score_realised", {
+                message: "Score realised!"
+            })
+
+        } catch (error) {
+            console.log("score_realise error", error)
             socket.emit("error_500", {
                 message: "Unknown error occured , try later!"
             })
@@ -693,9 +789,37 @@ io.on('connection', (socket) => {
                 })
             )
         );
+
+        const PromiseArr = []
+        const Submissions = host.quiz_submission_data || []
+
+        for (const submission of Submissions) {
+            const participant_id = submission.userDetails.Id
+            if (!participant_id) continue
+
+            const notification = new notificationModel({
+                recipent: participant_id,
+                notification_type: "Quiz ended",
+                content: `Quiz Ended - Quiz Id : ${host.nano_id}`,
+                isRead: false,
+                navigation_link: "/dashboard/my-quiz"
+            })
+
+            PromiseArr.push(
+                notification.save().then(() => {
+                    io.to(participant_id.toString()).emit("notify", {
+                        message: "new notification",
+                        notification: notification
+                    })
+                })
+            )
+        }
+
+        await Promise.all(PromiseArr)
     })
 
-    // Create room for 1V1 battle
+
+    /* Create room for 1V1 battle and their controller */
 
     const filterQuestion = (question) => {
         if (!question) return []
@@ -1224,17 +1348,17 @@ io.on('connection', (socket) => {
     socket.on("stop-count", (data) => {
         const { roomId } = data || {}
 
-        if(!roomId) return
+        if (!roomId) return
 
-        if(!storeCountDownInterval.has(roomId)) return
+        if (!storeCountDownInterval.has(roomId)) return
 
         const interval = storeCountDownInterval.get(roomId)
         clearInterval(interval)
 
         storeCountDownInterval.delete(roomId)
 
-        io.to(roomId).emit("stop-success",{
-            message : "Cancel Count-Down"
+        io.to(roomId).emit("stop-success", {
+            message: "Cancel Count-Down"
         })
     })
 
@@ -1367,7 +1491,7 @@ io.on('connection', (socket) => {
                 countdown--;
             }, 1000)
 
-            storeCountDownInterval.set(roomId , countDownInterval)
+            storeCountDownInterval.set(roomId, countDownInterval)
 
         } catch (error) {
             console.log("Battle start error", error)

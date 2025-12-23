@@ -15,6 +15,7 @@ import leaderBoardRouter from './router/leaderboard.route.js'
 import { startDailyQuizCron } from './controller/DailyQuiz.controller.js'
 import dailyQuizRouter from './router/dailyQuiz.route.js'
 import battleRouter from './router/battle.route.js'
+import notificationRoute from './router/notification.route.js'
 
 
 app.use(cors({
@@ -42,8 +43,9 @@ app.get("/", (req, res) => {
 app.use("/api", userRouter)
 app.use("/api/host", hostRouter)
 app.use("/api/leaderboard", leaderBoardRouter)
-app.use("/api/daily-quiz",dailyQuizRouter)
-app.use("/api/battle",battleRouter)
+app.use("/api/daily-quiz", dailyQuizRouter)
+app.use("/api/battle", battleRouter)
+app.use("/api/notification", notificationRoute)
 
 const PORT = 8080 || process.env.PORT
 

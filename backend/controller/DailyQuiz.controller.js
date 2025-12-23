@@ -5,6 +5,7 @@ import generateDailyQuestion from '../utils/generateQuestionForDailyQuiz.js'
 import userModel from '../model/user.model.js'
 import leaderBoardModel from '../model/leaderBoard.model.js'
 import dotenv from 'dotenv'
+import notificationModel from '../model/notification.model.js'
 dotenv.config()
 
 const randomId = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)
@@ -90,6 +91,8 @@ export const generateAndSaveDailyQuiz = async () => {
             const badges = user.badge_collection
             let badgeToGive = null
 
+            const promiseArr = []
+
             if (rank === 1) {
                 if (!badges.Top1) {
                     badgeToGive = "Top1"
@@ -117,6 +120,16 @@ export const generateAndSaveDailyQuiz = async () => {
 
             if (badgeToGive) {
                 badges[badgeToGive] = true
+
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "${badgeToGive}" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
             }
 
             if (rank === 1) {
@@ -144,17 +157,90 @@ export const generateAndSaveDailyQuiz = async () => {
                 }
             }
 
-            if (badges.top_count.top1Count === 5) badges.Top1x5 = true
-            if (badges.top_count.top1Count === 20) badges.Top1x20 = true
+            if (badges.top_count.top1Count === 5) {
+                badges.Top1x5 = true
 
-            if (badges.top_count.top5Count === 5) badges.Top5x5 = true
-            if (badges.top_count.top5Count === 20) badges.Top5x20 = true
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top1x5" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
+            if (badges.top_count.top1Count === 20) {
+                badges.Top1x20 = true
 
-            if (badges.top_count.top10Count === 5) badges.Top10x5 = true
-            if (badges.top_count.top10Count === 20) badges.Top10x20 = true
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top1x20" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
 
-            rank ++
+            if (badges.top_count.top5Count === 5) {
+                badges.Top5x5 = true
+
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top5x5" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
+            if (badges.top_count.top5Count === 20) {
+                badges.Top5x20 = true
+
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top5x20" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
+
+            if (badges.top_count.top10Count === 5) {
+                badges.Top10x5 = true
+
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top10x5" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
+            if (badges.top_count.top10Count === 20) {
+                badges.Top10x20 = true
+
+                promiseArr.push(
+                    new notificationModel({
+                        recipent: u.userId.Id,
+                        notification_type: "Achieve Badge",
+                        content: `Unlocked "Top10x20" badge`,
+                        isRead: false,
+                        navigation_link: "/dashboard/overview"
+                    }).save()
+                )
+            }
+
+            rank++
             await user.save()
+            await Promise.all(promiseArr)
         }
     }
 
@@ -393,19 +479,19 @@ export const submitDailyQuiz = async (request, response) => {
         user.daily_strict_count.last_date = now
 
         const streakCount = user.daily_strict_count.strict_count
-        if(streakCount === 7){
+        if (streakCount === 7) {
             user.badge_collection.Streak1Week = true
         }
-        else if(streakCount === 30){
+        else if (streakCount === 30) {
             user.badge_collection.Streak1Month = true
         }
-        else if(streakCount === 90){
+        else if (streakCount === 90) {
             user.badge_collection.Streak3Month = true
         }
-        else if(streakCount === 180){
+        else if (streakCount === 180) {
             user.badge_collection.Streak6Month = true
         }
-        else if(streakCount === 360){
+        else if (streakCount === 360) {
             user.badge_collection.Streak1Year = true
         }
 

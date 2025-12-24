@@ -66,14 +66,14 @@ const Home = () => {
         }
     }
 
-    if (isLogin === null) return null;
+    // if (isLogin === null) return null;
 
     return (
         <section className='w-full'>
 
             {
                 !isLogin ? (
-                    <div className='flex h-[900px] flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
+                    <div className='flex h-screen flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
 
                         {/* Header Section */}
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>

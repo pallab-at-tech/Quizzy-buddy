@@ -12,8 +12,26 @@
 html,
 body {
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+
+  /* Hide scrollbar – Firefox */
+  scrollbar-width: none;
+
+  /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Hide scrollbar – Chrome, Edge, Safari */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#root {
+  min-height: 100%;
+}
+
+
 
 /* The page itself scrolls */
 .page-scroll {

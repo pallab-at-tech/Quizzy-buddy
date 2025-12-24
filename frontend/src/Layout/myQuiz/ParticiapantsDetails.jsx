@@ -47,7 +47,7 @@ const ParticiapantsDetails = () => {
   }, [])
 
   return (
-    <section className='overflow-y-auto h-[calc(100vh-70px)]'>
+    <section>
       {
         loading ? (
           <div className='flex items-center justify-center'>

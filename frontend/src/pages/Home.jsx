@@ -21,10 +21,10 @@ const Home = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = 'auto'; };
-    }, []);
+    // useEffect(() => {
+    //     document.body.style.overflow = 'hidden';
+    //     return () => { document.body.style.overflow = 'auto'; };
+    // }, []);
 
     useEffect(() => {
         if (!socketConnection) return
@@ -66,7 +66,7 @@ const Home = () => {
         }
     }
 
-    // if (isLogin === null) return null;
+    if (isLogin === null) return null;
 
     return (
         <section className='w-full'>

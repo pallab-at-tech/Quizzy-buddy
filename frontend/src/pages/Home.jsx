@@ -73,7 +73,7 @@ const Home = () => {
 
             {
                 !isLogin ? (
-                    <div className='flex h-screen flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
+                    <div className='flex h-screen overflow-y-auto flex-col bg-gradient-to-b from-[#d8e6ff] to-[#305ee4] animate-gradient text-[#010e49]'>
 
                         {/* Header Section */}
                         <header className='flex w-full items-center justify-between p-4 sm:p-6'>

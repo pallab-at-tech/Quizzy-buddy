@@ -29,6 +29,8 @@ import DashboardOverveiw from '../Layout/DashboardOverview/DashboardOverveiw';
 import MainPage from '../pages/BattleOneVsOne/MainPage';
 import InsideRoom from '../pages/BattleOneVsOne/InsideRoom';
 import QuestionSection from '../pages/BattleOneVsOne/QuestionSection';
+import Notification from '../pages/Notification';
+import About from '../pages/About';
 
 
 const router = createBrowserRouter([
@@ -75,22 +77,22 @@ const router = createBrowserRouter([
                         ]
                     },
                     {
-                        path : "my-quiz",
-                        element : <MyQuiz/>,
-                        children : [
+                        path: "my-quiz",
+                        element: <MyQuiz />,
+                        children: [
                             {
-                                path : ":quiz_Id",
-                                element : <ParticiapantsDetails/>
+                                path: ":quiz_Id",
+                                element: <ParticiapantsDetails />
                             }
                         ]
                     },
                     {
-                        path : "leaderboard",
-                        element : <Leaderboard/>
+                        path: "leaderboard",
+                        element: <Leaderboard />
                     },
                     {
-                        path : "overview",
-                        element : <DashboardOverveiw/>
+                        path: "overview",
+                        element: <DashboardOverveiw />
                     }
                 ]
             },
@@ -159,28 +161,36 @@ const router = createBrowserRouter([
                 ]
             },
             {
-                path : "/daily-quiz",
-                element : <Mainpage/>
+                path: "/daily-quiz",
+                element: <Mainpage />
             },
             {
-                path : "/battle-1v1",
-                element : <MainPage/>,
-                children : [
+                path: "/battle-1v1",
+                element: <MainPage />,
+                children: [
                     {
-                        path : ":room",
-                        element : <InsideRoom/>
+                        path: ":room",
+                        element: <InsideRoom />
                     },
                     {
-                        path : "start",
-                        element : <QuestionSection/>
+                        path: "start",
+                        element: <QuestionSection />
                     }
                 ]
+            },
+            {
+                path: "/notification",
+                element: <Notification />
+            },
+            {
+                path : "/about",
+                element : <About/>
             }
         ]
     },
     {
-        path : "/daily-quiz/:userId",
-        element : <QuizPage/>
+        path: "/daily-quiz/:userId",
+        element: <QuizPage />
     },
     {
         path: "/sign-in",

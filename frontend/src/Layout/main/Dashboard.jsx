@@ -47,6 +47,7 @@ const Dashboard = () => {
     }
   }
 
+  console.log("User",user)
 
   return (
     <section className='bg-[#fcfcfc] grid custom-lg:grid-cols-[20%_1fr] '>
@@ -55,10 +56,17 @@ const Dashboard = () => {
 
         {/* profile */}
         <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>
-
-          <div>
-            <img src={avatar} alt="" className='w-14 h-14 rounded-full border  border-[#040132] shadow-md' />
-          </div>
+          {
+            user?.avatar ? (
+              <div>
+                <img src={user?.avatar} alt="" className='w-14 h-14 object-cover rounded-full border  border-[#272729] shadow-md' />
+              </div>
+            ) : (
+              <div>
+                <img src={avatar} alt="" className='w-14 h-14 object-cover rounded-full border  border-[#040132] shadow-md' />
+              </div>
+            )
+          }
 
           <div className='text-sm'>
             <p className='max-w-[22ch] break-all line-clamp-1 font-semibold'>{user?.name}</p>

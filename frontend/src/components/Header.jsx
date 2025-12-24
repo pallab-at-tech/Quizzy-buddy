@@ -71,8 +71,7 @@ const Header = () => {
 
       </div>
 
-      <Link className='w-fit text-center'>about us</Link>
-
+      <Link to={'/about'} className='w-fit text-center'>about us</Link>
     </header>
   )
 }

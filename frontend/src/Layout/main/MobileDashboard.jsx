@@ -50,7 +50,13 @@ const MobileDashboard = () => {
             <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>
 
                 <div>
-                    <img src={avatar} alt="" className='w-14 h-14 rounded-full border  border-[#040132] shadow-md' />
+                    {
+                        user?.avatar ? (
+                            <img src={user?.avatar} alt="" className='w-14 h-14 rounded-full object-cover border border-[#272729] shadow-md' />
+                        ) : (
+                            <img src={avatar} alt="" className='w-14 h-14 rounded-full object-cover border border-[#040132] shadow-md' />
+                        )
+                    }
                 </div>
 
                 <div className='text-sm'>

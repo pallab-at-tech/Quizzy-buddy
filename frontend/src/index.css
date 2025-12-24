@@ -228,6 +228,16 @@ body,
     l20-232 1.6s infinite linear;
 }
 
+.markLoader {
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid #d2d5d8;
+  animation:
+    l20-123 0.8s infinite linear alternate,
+    l20-232 1.6s infinite linear;
+}
+
 @keyframes l20-123 {
   0% {
     clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%)

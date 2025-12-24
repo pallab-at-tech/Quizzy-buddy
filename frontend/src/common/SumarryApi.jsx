@@ -104,6 +104,18 @@ const SummaryApi = {
     get_unread_notify: {
         url: "/api/notification/unread-notify",
         method: "post"
+    },
+    marked_one: {
+        url: "/api/notification/marked-one",
+        method: "post"
+    },
+    get_all_notify : {
+        url : "/api/notification/get-all-notify",
+        method : "get"
+    },
+    marked_all : {
+        url : "/api/notification/marked-all",
+        method : "post"
     }
 }
 

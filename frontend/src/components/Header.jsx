@@ -30,13 +30,13 @@ const Header = () => {
   }, [])
 
   return (
-    <header className='min-h-[70px] sticky z-50 top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid custom-lg:grid-cols-[70%_1fr_1fr] md:grid-cols-[70%_1fr_1fr] grid-cols-[40%_1fr_1fr] items-center '>
+    <header className='min-h-[70px] sticky z-50 top-0 border-b bg-[#fcfcfc] border-[#c8c3c3] grid custom-lg:grid-cols-[70%_1fr_1fr] custom-sm:grid-cols-[6fr_20%_2fr] lg_md:grid-cols-[70%_1fr_1fr] grid-cols-[1fr_1fr] items-center '>
 
-      <Link to={"/"} className='w-fit ml-[60px]'>
+      <Link to={"/"} className='w-fit sm:ml-[60px] ml-6'>
         <Logo />
       </Link>
 
-      <div className='flex items-center gap-4 lg:border-x border-[#d2d2d2] w-fit md:px-8 px-3'>
+      <div className='flex items-center justify-end sm:justify-center gap-4 lg:border-x border-[#d2d2d2] md:px-8 px-10'>
 
         <Link to={dashboardURL} className='hidden custom-lg:block'>
           {
@@ -71,7 +71,7 @@ const Header = () => {
 
       </div>
 
-      <Link to={'/about'} className='w-fit text-center'>about us</Link>
+      <Link to={'/about'} className='text-center hidden sm:block'>About us</Link>
     </header>
   )
 }

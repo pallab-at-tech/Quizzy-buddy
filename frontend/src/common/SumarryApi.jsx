@@ -109,13 +109,17 @@ const SummaryApi = {
         url: "/api/notification/marked-one",
         method: "post"
     },
-    get_all_notify : {
-        url : "/api/notification/get-all-notify",
-        method : "get"
+    get_all_notify: {
+        url: "/api/notification/get-all-notify",
+        method: "get"
     },
-    marked_all : {
-        url : "/api/notification/marked-all",
-        method : "post"
+    marked_all: {
+        url: "/api/notification/marked-all",
+        method: "post"
+    },
+    daily_top2: {
+        url: "/api/leaderboard/fetch-top2-daily",
+        method: "get"
     }
 }
 

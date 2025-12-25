@@ -13,6 +13,8 @@ import { useGlobalContext } from '../provider/GlobalProvider';
 import toast from 'react-hot-toast';
 import Logo from '../components/Logo';
 import { addNotification } from '../store/notificationSlice';
+import DailyQuizCountdown from '../components/Others/DailyQuizCountdown';
+import LeaderBoardComponent from '../components/Others/LeaderBoardComponent';
 
 const Home = () => {
 
@@ -60,6 +62,22 @@ const Home = () => {
             console.log("handleJoinedQuiz error", error)
         }
     }
+
+    const isAlreadyAttendQuiz = (last_date) => {
+
+        if (!last_date) return false;
+
+        const now = new Date();
+        const last = new Date(last_date);
+
+        // Extract date parts for comparison
+        const isSameDay =
+            now.getFullYear() === last.getFullYear() &&
+            now.getMonth() === last.getMonth() &&
+            now.getDate() === last.getDate();
+
+        return isSameDay;
+    };
 
     if (isLogin === null) return null;
 
@@ -136,19 +154,21 @@ const Home = () => {
                 ) : (
                     <div className='bg-[#fcfcfc] h-[calc(100vh-70px)] lg:pr-[100px] page-scroll'>
 
-                        <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-14  lg:pt-[80px]'>
+                        <div className='grid lg:grid-cols-[55%_45%]  lg:px-0 md:px-[70px] px-3  lg:pt-[80px]'>
 
-                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-4 lg:px-[24%] px-3 '>
-                                <div className='mb-14'>
-                                    <div className='text-3xl font-bold flex flex-wrap space-y-[-10px]'>
-                                        <p className='text-[#1633ff] tracking-[2px] md:text-[75px]'>Challenge</p>
-                                        <p className='tracking-[0.5px] md:text-[70px]'>Your Mind</p>
+                            <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-8 lg:px-[24%] px-3 '>
+                                <div className='sm:mb-14 mb-10'>
+                                    
+                                    <div className='text-[29px] font-bold flex flex-wrap gap-0 space-y-[-10px]'>
+                                        <p className='text-[#1633ff] tracking-[2px] md:text-[55px] lg:text-[75px] sm:pr-2 pr-0.5'>Challenge</p>
+                                        <p className='tracking-[0.1px] sm:tracking-[0.7px] md:text-[55px] lg:text-[70px]'>Your Mind</p>
                                     </div>
+                                    
                                     <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:block hidden'>
                                         Challenge yourself with engaging quizzes , earn points, and climb the leaderboard and become the ultimate champion.
                                     </p>
 
-                                    <p className='md:text-base text-sm md:pt-3.5 pt-2 break-words text-[#01062b9f] md:hidden block'>
+                                    <p className='md:text-base text-sm md:pt-3.5 pt-0.5 break-words text-[#01062b9f] md:hidden block'>
                                         Challenge yourself with engaging quizzes, earn points, and climb the leaderboard.
                                     </p>
                                 </div>
@@ -159,11 +179,11 @@ const Home = () => {
                                 <div className='grid grid-cols-2 md:gap-6 gap-4'>
 
                                     {/* daily quiz section */}
-                                    <Link to={`/daily-quiz`} className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
+                                    <Link to={`/daily-quiz`} className='grid lg:grid-cols-[30%_70%]  bg-[#ff6e07] pt-2 pl-2.5 sm:pt-3 sm:pl-3.5 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
 
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold text-xl'>Practice</h1>
-                                            <div className='text-sm md:font-semibold font-medium '>
+                                            <div className='sm:text-[15px] text-[12px] md:font-semibold font-semibold text-[#0e0300e7]'>
                                                 <p>Refine</p>
                                                 <p>Skills Daily</p>
                                             </div>
@@ -176,8 +196,8 @@ const Home = () => {
                                     {/* join quiz section */}
                                     <div onClick={() => setJoinedQuiz(true)} className='grid lg:grid-cols-[30%_70%] cursor-pointer  bg-[#10b107] pt-2 pl-3 rounded-xl overflow-hidden relative  md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
-                                            <h1 className='font-bold md:text-xl text-lg'>Join quiz</h1>
-                                            <div className='text-sm md:font-semibold font-medium'>
+                                            <h1 className='font-bold text-lg'>Join quiz</h1>
+                                            <div className='sm:text-[15px] text-[12px] font-semibold text-[#000000e7]'>
                                                 <p>Enter</p>
                                                 <p>just code</p>
                                             </div>
@@ -195,7 +215,7 @@ const Home = () => {
 
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold text-xl'>Host</h1>
-                                            <div className='text-sm md:font-semibold font-medium '>
+                                            <div className='sm:text-[15px] text-[12px] font-semibold text-[#001122e7]'>
                                                 <p>Rise</p>
                                                 <p>through rank</p>
                                             </div>
@@ -209,7 +229,7 @@ const Home = () => {
                                     <Link to={"/battle-1v1"} className='grid lg:grid-cols-[30%_70%]  bg-[#79b716] pt-2 pl-3 rounded-xl overflow-hidden relative md:min-h-[130px] min-h-[100px]'>
                                         <div className='flex flex-col relative z-10'>
                                             <h1 className='font-bold md:text-xl text-lg'>Explore</h1>
-                                            <div className='text-sm md:font-semibold font-medium'>
+                                            <div className='sm:text-[15px] text-[12px] font-semibold text-[#030c00e7]'>
                                                 <p>Battle</p>
                                                 <p>for excellance</p>
                                             </div>
@@ -223,6 +243,21 @@ const Home = () => {
 
                         </div>
 
+                        <div className='px-5 sm:px-[80px] mt-8 ipad_pro:hidden block'>
+                            {
+                                isAlreadyAttendQuiz(user?.daily_strict_count?.last_date) ? (
+                                    <div>
+                                        <LeaderBoardComponent/>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <DailyQuizCountdown />
+                                    </div>
+                                )
+                            }
+                        </div>
+
+                        <Link to={"/about"} className='text-blue-800 font-semibold text-center my-5 sm:my-8 ipad_pro:hidden block text-sm'>Know More about Our Service !?</Link>
                     </div>
                 )
             }

@@ -139,8 +139,54 @@ export const fetchDailyQuizLeaderBoard = async (request, response) => {
             data: {
                 leaderboard: isToday ? dailyLeaderBoard.top_users : [],
                 current_userDetails: DailyUserDetails,
-                rank : findRank 
+                rank: findRank
             }
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+// Get top 2 player from daily leaderBoard
+export const getTopTwoPlayer = async (request, response) => {
+    try {
+        const userId = request.userId
+
+        const dailyLeaderBoard = await leaderBoardModel.findOne(
+            { boardType: "Daily" }
+        )
+
+        if (!dailyLeaderBoard) {
+            return response.status(400).json({
+                message: "Daily LeaderBoard Not Found!",
+                error: true,
+                success: false
+            })
+        }
+
+        const leaderBoardDate = new Date(dailyLeaderBoard.updatedAt)
+        const now = new Date()
+
+        if (leaderBoardDate.getFullYear() !== now.getFullYear() || leaderBoardDate.getMonth() !== now.getMonth() || leaderBoardDate.getDate() !== now.getDate()) {
+            return response.status(400).json({
+                message: "Daily LeaderBoard Not Updated Yet!",
+                error: true,
+                success: false
+            })
+        }
+
+        const top2 = dailyLeaderBoard.top_users.slice(0, 2)
+
+        return response.json({
+            message: "Get top 2 players",
+            players: top2,
+            error: false,
+            success: true
         })
 
     } catch (error) {

@@ -39,10 +39,10 @@ const DashboardOverveiw = () => {
         return isSameDay ? "Today" : dt.toDateString();
     };
 
-    const convertToScoreBuckets = () => {
+    const convertToScoreBuckets = (bucketSize = 7) => {
         if (!user) return []
 
-        const bucketCount = 7
+        const bucketCount = bucketSize
         const bucket = []
 
         const now = new Date()
@@ -53,7 +53,7 @@ const DashboardOverveiw = () => {
 
             bucket.push({
                 score: 0,
-                date: d.toISOString().slice(0, 10),
+                date: bucketSize < 7 ? d.getDate() : d.toISOString().slice(0, 10),
                 accuracy: 0
             })
         }
@@ -62,7 +62,7 @@ const DashboardOverveiw = () => {
 
         const stats = rawStats.map((d) => ({
             score: d.score,
-            date: new Date(d.date).toISOString().slice(0, 10),
+            date: bucketSize < 7 ? new Date(d.date).getDate() : new Date(d.date).toISOString().slice(0, 10),
             accuracy: d.accuracy
         }))
 
@@ -78,53 +78,78 @@ const DashboardOverveiw = () => {
     }
 
     useEffect(() => {
-        const data = convertToScoreBuckets()
+        let data = null
+        if(window.innerWidth >= 640){
+            data = convertToScoreBuckets(7)
+        }
+        else{
+            data = convertToScoreBuckets(5)
+        }
         setChartData(data)
     }, [user])
 
-    useEffect(()=>{
+    useEffect(() => {
         setlastDateState(lastDate())
-    },[user])
+    }, [user])
 
     return (
-        <section className='p-10 page-scroll'>
+        <section className='p-6 custom-sm:p-8 custom-lg:p-10 page-scroll'>
 
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-gray-800  inline-block pb-2">
+                <h1 className="text-[26px] custom-sm:text-4xl custom-lg:text-3xl font-bold text-gray-800  inline-block pb-2">
                     DashBoard OverView
                 </h1>
             </div>
 
             {/* Daily stats */}
-            <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+            <div className='bg-white shadow-md rounded-2xl p-5 sm:p-8 border border-gray-100 mt-4 sm:mt-8'>
 
                 {/* Title */}
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
                     My Daily Stats
                 </h2>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 sm:gap-5 gap-3">
 
-                    {/* Current Streak */}
-                    <div className="p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
+                    {/* Current Streak for tab and desktop*/}
+                    <div className="sm:p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50 hidden sm:block">
                         <p className="text-gray-500 text-sm text-center">Current Streak</p>
                         <h3 className="text-3xl font-bold text-indigo-600 text-center">
                             {user?.daily_strict_count?.strict_count}
                         </h3>
                     </div>
 
-                    {/* Best Streak */}
-                    <div className="p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
+                    {/* Best Streak for tab and desktop*/}
+                    <div className="sm:p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50 hidden sm:block ">
                         <p className="text-gray-500 text-sm text-center">Best Streak</p>
                         <h3 className="text-3xl font-bold text-green-600 text-center">
                             {user?.daily_strict_count?.best_strick}
                         </h3>
                     </div>
 
+                    {/* Current Streak for mobile */}
+                    <div className='grid grid-cols-2 gap-3 sm:hidden'>
+                        {/* Current Streak */}
+                        <div className="p-3.5 sm:p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
+                            <p className="text-gray-500 text-sm text-center">Current Streak</p>
+                            <h3 className="text-3xl font-bold text-indigo-600 text-center">
+                                {user?.daily_strict_count?.strict_count}
+                            </h3>
+                        </div>
+
+                        {/* Best Streak */}
+                        <div className="p-3.5 sm:p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
+                            <p className="text-gray-500 text-sm text-center">Best Streak</p>
+                            <h3 className="text-3xl font-bold text-green-600 text-center">
+                                {user?.daily_strict_count?.best_strick}
+                            </h3>
+                        </div>
+                    </div>
+
                     {/* Last Played */}
-                    <div className="p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
+                    <div className="p-2.5 sm:p-5 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
                         <p className="text-gray-500 text-sm text-center">Last Played</p>
                         <h3 className="text-lg font-semibold text-gray-800 text-center">
                             {lastDateState}
@@ -134,15 +159,15 @@ const DashboardOverveiw = () => {
             </div>
 
             {/* Badge collection */}
-            <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+            <div className='bg-white shadow-md rounded-2xl p-5 sm:p-8 border border-gray-100 mt-4 sm:mt-8'>
                 {/* Title */}
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
                     My Badge Collection
                 </h2>
 
                 {
                     user && user?.badge_collection && (
-                        <div className='grid grid-cols-4 gap-4 max-h-[400px] overflow-y-auto pr-2'>
+                        <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto pr-2'>
                             {user?.badge_collection?.Streak1Week && <Streak1Week />}
                             {user?.badge_collection?.Streak1Month && <Streak1Month />}
                             {user?.badge_collection?.Streak3Month && <Streak3Month />}
@@ -168,18 +193,22 @@ const DashboardOverveiw = () => {
             </div>
 
             {/* statastical graph */}
-            <div className='bg-white shadow-md rounded-2xl px-8 pb-6 border border-gray-100 mt-8'>
+            <div className='bg-white sm:shadow-md rounded-2xl px-0 sm:px-8 pb-6 sm:border border-gray-100 mt-4 sm:mt-8'>
                 {/* Title */}
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6 pt-6 pl-4">
+                <h2 className="text-2xl font-semibold text-gray-800 sm:mb-6 pt-4 sm:pt-6 pl-4">
                     Last 7 days progress
                 </h2>
 
                 {
                     user && chartData && (user.daily_strict_count?.last_week_stats?.length ?? 0) !== 0 ? (
-                        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 mt-8">
+                        <div className="bg-white shadow-md rounded-2xl p-6 border border-gray-100 mt-4 sm:mt-8">
 
-                            <h2 className="text-xl font-semibold text-purple-700 text-center mb-2">
+                            <h2 className="hidden sm:block text-xl font-semibold text-purple-700 text-center mb-2">
                                 Score & Accuracy vs Last 7 Days
+                            </h2>
+
+                            <h2 className="sm:hidden block text-xl font-semibold text-purple-700 text-center mb-2">
+                                Score & Accuracy vs Last 5 Days
                             </h2>
 
                             {/* Legend */}
@@ -195,12 +224,22 @@ const DashboardOverveiw = () => {
                             </div>
 
 
-                            <ResponsiveContainer width="100%" height={300}>
+                            <ResponsiveContainer width={"100%"} height={300}>
                                 <LineChart data={chartData}>
                                     <CartesianGrid strokeDasharray="3 3" />
 
                                     {/* X-Axis with Label */}
-                                    <XAxis dataKey="date" >
+                                    <XAxis dataKey="date" className='sm:hidden block'>
+                                        <Label
+                                            value="Date"
+                                            offset={-3}
+                                            position="insideBottom"
+                                            style={{ fill: "#4B5563" }}
+                                        />
+                                    </XAxis>
+
+                                    {/* X-Axis with Label */}
+                                    <XAxis dataKey="date" className='hidden sm:block'>
                                         <Label
                                             value="Days"
                                             offset={-3}
@@ -210,7 +249,17 @@ const DashboardOverveiw = () => {
                                     </XAxis>
 
                                     {/* Y-Axis with Label */}
-                                    <YAxis allowDecimals={true}>
+                                    <YAxis allowDecimals={true} className='sm:hidden block'>
+                                        <Label
+                                            value="Score-Acc"
+                                            angle={-90}
+                                            position="insideLeft"
+                                            style={{ textAnchor: "middle", fill: "#4B5563" }}
+                                        />
+                                    </YAxis>
+
+                                    {/* Y-Axis with Label */}
+                                    <YAxis allowDecimals={true} className='hidden sm:block'>
                                         <Label
                                             value="Score / Accuracy"
                                             angle={-90}

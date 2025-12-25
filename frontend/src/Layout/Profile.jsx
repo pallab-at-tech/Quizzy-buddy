@@ -392,7 +392,7 @@ const Profile = () => {
 
             <form
               onSubmit={(e) => addBackgroundImg(e)}
-              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+              className="w-full max-w-[320px] sm:max-w-md rounded-2xl bg-white p-6 shadow-xl"
             >
               {/* Image Preview */}
               <div className="mb-5 overflow-hidden rounded-xl border bg-gray-100">

@@ -44,7 +44,7 @@ const MobileDashboard = () => {
     }
 
     return (
-        <section className='min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] p-6 bg-[#fcfcfc] pl-6 pr-6 '>
+        <section className='h-[calc(100vh-70px)] p-6 bg-[#fcfcfc] sm:px-[45px]'>
 
             {/* profile */}
             <Link to={dashboardURL} className='mt-2 flex gap-3 items-center border-b border-[#c8c3c3] pb-4'>

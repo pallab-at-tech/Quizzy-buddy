@@ -100,12 +100,12 @@ const About = () => {
     ]
 
     return (
-        <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-indigo-50 to-white px-6 py-10">
+        <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gradient-to-br from-indigo-50 to-white px-8 sm:px-12 lg:px-6 py-10">
             <div className="max-w-6xl mx-auto space-y-14">
 
                 {/* Header */}
                 <div className="text-center space-y-4">
-                    <h1 className="text-4xl font-bold text-indigo-700">
+                    <h1 className="text-3xl sm:text-4xl font-bold text-indigo-700">
                         About QuizzyBuddy
                     </h1>
                     <p className="text-gray-600 text-lg max-w-3xl mx-auto">

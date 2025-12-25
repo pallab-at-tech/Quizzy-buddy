@@ -128,7 +128,7 @@ export const Streak1Week = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[0].icon}
             <h3 className="text-md font-semibold mt-3">{badges[0].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[0].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[0].description}</p>
         </div>
     )
 }
@@ -139,7 +139,7 @@ export const Streak1Month = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[1].icon}
             <h3 className="text-md font-semibold mt-3">{badges[1].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[1].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[1].description}</p>
         </div>
     )
 }
@@ -150,7 +150,7 @@ export const Streak3Month = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[2].icon}
             <h3 className="text-md font-semibold mt-3">{badges[2].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[2].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[2].description}</p>
         </div>
     )
 }
@@ -161,7 +161,7 @@ export const Streak6Month = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[3].icon}
             <h3 className="text-md font-semibold mt-3">{badges[3].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[3].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[3].description}</p>
         </div>
     )
 }
@@ -172,7 +172,7 @@ export const Streak1Year = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[4].icon}
             <h3 className="text-md font-semibold mt-3">{badges[4].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[4].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[4].description}</p>
         </div>
     )
 }
@@ -183,7 +183,7 @@ export const Host5 = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[5].icon}
             <h3 className="text-md font-semibold mt-3">{badges[5].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[5].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[5].description}</p>
         </div>
     )
 }
@@ -194,7 +194,7 @@ export const Host20 = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[6].icon}
             <h3 className="text-md font-semibold mt-3">{badges[6].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[6].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[6].description}</p>
         </div>
     )
 }
@@ -205,7 +205,7 @@ export const Host50 = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[7].icon}
             <h3 className="text-md font-semibold mt-3">{badges[7].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[7].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[7].description}</p>
         </div>
     )
 }
@@ -216,7 +216,7 @@ export const Host200 = () => {
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[8].icon}
             <h3 className="text-md font-semibold mt-3">{badges[8].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[8].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[8].description}</p>
         </div>
     )
 }
@@ -224,10 +224,10 @@ export const Host200 = () => {
 // Top 1
 export const Top1 = () =>{
     return (
-        <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
+        <div className='p-2 sm:p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[9].icon}
             <h3 className="text-md font-semibold mt-3">{badges[9].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[9].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[9].description}</p>
         </div>
     )
 }
@@ -238,7 +238,7 @@ export const Top5 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[10].icon}
             <h3 className="text-md font-semibold mt-3">{badges[10].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[10].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[10].description}</p>
         </div>
     )
 }
@@ -249,7 +249,7 @@ export const Top10 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[11].icon}
             <h3 className="text-md font-semibold mt-3">{badges[11].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[11].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[11].description}</p>
         </div>
     )
 }
@@ -260,7 +260,7 @@ export const Top10x5 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[12].icon}
             <h3 className="text-md font-semibold mt-3">{badges[12].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[12].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[12].description}</p>
         </div>
     )
 }
@@ -271,7 +271,7 @@ export const Top5x5 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[13].icon}
             <h3 className="text-md font-semibold mt-3">{badges[13].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[13].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[13].description}</p>
         </div>
     )
 }
@@ -282,7 +282,7 @@ export const Top1x5 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[14].icon}
             <h3 className="text-md font-semibold mt-3">{badges[14].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[14].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[14].description}</p>
         </div>
     )
 }
@@ -293,7 +293,7 @@ export const Top10x20 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[15].icon}
             <h3 className="text-md font-semibold mt-3">{badges[15].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[15].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[15].description}</p>
         </div>
     )
 }
@@ -304,7 +304,7 @@ export const Top5x20 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[16].icon}
             <h3 className="text-md font-semibold mt-3">{badges[16].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[16].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[16].description}</p>
         </div>
     )
 }
@@ -315,7 +315,7 @@ export const Top1x20 = () =>{
         <div className='p-4 bg-white border border-gray-300 shadow-sm rounded-xl flex flex-col items-center text-center hover:shadow-md transition'>
             {badges[17].icon}
             <h3 className="text-md font-semibold mt-3">{badges[17].title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{badges[17].description}</p>
+            <p className="text-sm text-gray-600 mt-1 hidden sm:block">{badges[17].description}</p>
         </div>
     )
 }

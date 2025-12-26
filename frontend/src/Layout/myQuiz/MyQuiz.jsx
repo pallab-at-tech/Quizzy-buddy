@@ -9,16 +9,16 @@ const MyQuiz = () => {
   const route = location.pathname.split("/")
 
   return (
-    <div className="p-8 ">
+    <div className="p-5 custom-sm:p-7 custom-lg:p-8 ">
       {
         route[route.length - 1] === "my-quiz" ? (
-          <div className="w-full px-6">
+          <div className="w-full px-2 sm:px-6">
 
-            <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-6 pb-3">
+            <h1 className="text-[28px] sm:text-3xl font-bold text-gray-800 tracking-tight mb-2.5 sm:mb-6 pb-3">
               My Quiz Participation
             </h1>
 
-            <div className={`${user && user?.participant_info?.length > 0 && "grid" } grid-cols-2 gap-x-4 gap-y-3`}>
+            <div className={`${user && user?.participant_info?.length > 0 && "grid" } sm:grid-cols-2 gap-x-4 gap-y-3`}>
               {user?.participant_info?.length > 0 ? (
                 user.participant_info.map((p) => (
                   <Link
@@ -50,6 +50,7 @@ const MyQuiz = () => {
                   <p className='absolute left-[200px] right-0 top-[100px] bottom-0'> You haven't participated in any quiz yet.</p>
                 </div>
               )}
+              
             </div>
           </div>
         ) : (

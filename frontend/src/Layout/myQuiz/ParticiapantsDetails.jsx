@@ -65,7 +65,8 @@ const ParticiapantsDetails = () => {
             <div className='w-full bg-white shadow-md rounded-2xl p-6 border border-gray-200'>
 
               {/* Header section */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 border-b pb-4">
+              <div className="flex flex-row items-center justify-between mb-6 border-b border-gray-500 pb-4 px-2">
+
                 <div className="flex flex-col">
                   <h2 className="text-2xl font-semibold text-purple-700">
                     {data?.userDetails?.userName || "Unknown User"}

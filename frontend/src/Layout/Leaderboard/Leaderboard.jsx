@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SumarryApi'
 import { FaCrown } from 'react-icons/fa'
@@ -10,6 +10,8 @@ const Leaderboard = () => {
 
   const [data, setData] = useState(null)
   const user = useSelector(state => state.user)
+  const [openEye, setOpenEye] = useState(new Set())
+  const openRef = useRef(null)
 
   const fetchLeaderBoard = async () => {
     try {
@@ -47,7 +49,7 @@ const Leaderboard = () => {
 
 
   return (
-    <section className='px-[100px] mt-8 page-scroll' style={{scrollBehavior : "smooth"}}>
+    <section className='px-[28px] custom-sm:px-[50px] custom-lg:px-[100px] mt-8 page-scroll' style={{ scrollBehavior: "smooth" }}>
 
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
@@ -57,12 +59,12 @@ const Leaderboard = () => {
         </h2>
       </div>
 
-      <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+      <div className='bg-white shadow-md rounded-2xl p-4 sm:p-8 border border-gray-100 mt-5 sm:mt-8'>
 
         {
           data && data?.leaderboard.length !== 0 ? (
             <>
-              <div className='w-full mt-2 space-y-3 max-h-[500px] bg-gray-50 rounded-xl px-6 overflow-y-auto custom_scrollBar_forFullDetails pr-6 py-4'>
+              <div className='w-full mt-2 space-y-3 max-h-[400px] sm:max-h-[500px] bg-gray-50 rounded-xl sm:px-6 overflow-y-auto custom_scrollBar_forFullDetails sm:pr-6 py-4'>
                 {
                   data.leaderboard.map((v, i) => {
                     return <div key={v.userId?.Id}
@@ -88,18 +90,21 @@ const Leaderboard = () => {
                           <span className="font-semibold text-gray-800 ">{v.marks}</span>
                           <span className="text-purple-700 font-medium"> pts</span>
                         </p>
-                        <p>
+
+                        <p className='hidden sm:block'>
                           <span className="text-green-700 font-medium">Acc : </span>
                           <span className="font-semibold text-gray-800">{v.accuracy}%</span>
                         </p>
-                        <p>
+
+                        <p className='hidden sm:block'>
                           <span className="text-yellow-700 font-medium">Time : </span>
                           <span className="font-semibold text-gray-800">{v.timeTaken}s</span>
                         </p>
 
                         {v?.negativeMarks > 0 && (
-                          <p className="text-red-600 font-medium">-{v.negativeMarks}</p>
+                          <p className="text-red-600 font-medium hidden sm:block">-{v.negativeMarks}</p>
                         )}
+
                       </div>
 
                     </div>
@@ -110,21 +115,33 @@ const Leaderboard = () => {
               <div className="w-full mt-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">My Stats</h1>
 
-                <div className="grid grid-cols-[1fr_3fr] gap-4">
+                <div className="grid sm:grid-cols-[1fr_3fr] gap-2.5 sm:gap-4">
 
                   {/* Best Streak */}
-                  <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                  <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-3 custom-lg:p-5 shadow-sm">
                     <h2 className="text-gray-500 text-sm font-medium text-center">Best Streak</h2>
-                    <p className="text-3xl font-bold text-indigo-600 mt-1 text-center">
+                    <p className="text-[26px] sm:text-3xl font-bold text-indigo-600 mt-1 text-center">
                       {data.current_userDetails.daily_strict_count.best_strick}
                     </p>
                   </div>
 
                   {
+                    isTodayQuizFinish(user?.daily_strict_count?.last_date) && (
+                      // My Rank for mobile version
+                      <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-3 custom-lg:p-5 shadow-sm block sm:hidden">
+                        <h2 className="text-gray-500 text-sm font-medium text-center">Rank</h2>
+                        <p className={`${data.rank === -1 ? "text-2xl" : "text-[26px] sm:text-3xl"} font-bold text-purple-600 mt-1 text-center`}>
+                          {data.rank === -1 ? `not realise` : data.rank + 1}
+                        </p>
+                      </div>
+                    )
+                  }
+
+                  {
                     isTodayQuizFinish(user?.daily_strict_count?.last_date) ? (
-                      <div className='grid grid-cols-3 gap-4'>
-                        {/* My Rank */}
-                        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                      <div className='grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4'>
+                        {/* My Rank for tablet and desktop*/}
+                        <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-3 custom-lg:p-5 shadow-sm hidden sm:block">
                           <h2 className="text-gray-500 text-sm font-medium text-center">Rank</h2>
                           <p className={`${data.rank === -1 ? "text-2xl" : "text-3xl"} font-bold text-purple-600 mt-1 text-center`}>
                             {data.rank === -1 ? `not realise` : data.rank + 1}
@@ -132,18 +149,18 @@ const Leaderboard = () => {
                         </div>
 
                         {/* Today's Score */}
-                        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                        <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-3 custom-lg:p-5 shadow-sm">
                           <h2 className="text-gray-500 text-sm font-medium text-center">Today&apos;s Score</h2>
-                          <p className="text-3xl font-bold text-green-600 mt-1 text-center">
+                          <p className="text-[26px] sm:text-3xl font-bold text-green-600 mt-1 text-center">
                             {data.current_userDetails.daily_strict_count.last_week_stats[0]?.score ?? 0}
                           </p>
                         </div>
 
                         {/* Today's Accuracy */}
-                        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                        <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-3 custom-lg:p-5 shadow-sm">
                           <h2 className="text-gray-500 text-sm font-medium text-center">Today&apos;s Accuracy</h2>
-                          <p className="text-3xl font-bold text-blue-600 mt-1 text-center">
-                            {data.current_userDetails.daily_strict_count.last_week_stats[0]?.accuracy ?? 0}%
+                          <p className="text-2xl font-bold text-blue-600 mt-1 text-center">
+                            {data.current_userDetails.daily_strict_count.last_week_stats[0]?.accuracy.toFixed(2) ?? 0}%
                           </p>
                         </div>
                       </div>
@@ -163,9 +180,9 @@ const Leaderboard = () => {
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-center py-4">
-              <div className="border border-gray-200 bg-white rounded-xl px-6 py-4 shadow-sm flex items-center gap-3">
-                <p className="text-purple-700 text-[25px] font-bold">
+            <div className="flex items-center justify-center py-0.5 sm:py-4">
+              <div className="border border-gray-200 bg-white rounded-xl px-4 sm:px-6 py-4 shadow-sm flex items-center gap-3">
+                <p className="text-purple-700 text-[24px] sm:text-[25px] font-bold">
                   ! Leaderboard is not updated yet
                 </p>
               </div>
@@ -176,40 +193,35 @@ const Leaderboard = () => {
       </div>
 
       {/* Which factor makes this leader-board */}
-      <div className="bg-white mt-6 mb-12 p-6 rounded-xl shadow-md border border-gray-200">
+      <div className="bg-white mt-6 mb-6 sm:mb-12 p-6 rounded-xl shadow-md border border-gray-200">
 
-        <div className='flex items-center gap-2 mb-4'>
+        <div className='flex items-center sm:items-center gap-2 mb-4'>
           <ImStatsBars size={23} className='text-yellow-800' />
           <h3 className="text-lg font-semibold text-purple-700">
-            How Leaderboard Ranking Works
+            Leaderboard Ranking
           </h3>
         </div>
 
         <ul className="space-y-3 text-sm text-gray-700">
-          <li className="flex gap-2">
+          <li className="sm:flex gap-2">
             <span className="font-bold text-purple-600">1️⃣ Marks</span>
             — Higher total score gets priority.
           </li>
 
-          <li className="flex gap-2">
+          <li className="sm:flex gap-2">
             <span className="font-bold text-purple-600">2️⃣ Accuracy</span>
             — Better accuracy ranks higher if marks are equal.
           </li>
 
-          <li className="flex gap-2">
+          <li className="sm:flex gap-2">
             <span className="font-bold text-purple-600">3️⃣ Time Taken</span>
             — Faster submission ranks higher if marks & accuracy are same.
           </li>
 
-          <li className="flex gap-2">
+          <li className="sm:flex gap-2">
             <span className="font-bold text-purple-600">4️⃣ Negative Marks</span>
             — Lower negative score ranks higher if previous factors are equal.
           </li>
-
-          {/* <li className="flex gap-2">
-            <span className="font-bold text-purple-600">5️⃣ Submission Time</span>
-            — Earlier submission gets priority when everything else is equal.
-          </li> */}
         </ul>
       </div>
 

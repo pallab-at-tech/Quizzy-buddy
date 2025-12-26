@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useOutletContext, useNavigate, useLocation } from 'react-router-dom'
 import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SumarryApi'
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import { FaCrown } from "react-icons/fa";
-import { ImStatsBars } from "react-icons/im";
-
 
 const GetSubmissionFullDetails = () => {
 
@@ -49,7 +47,7 @@ const GetSubmissionFullDetails = () => {
         if (!users || !total_marks) return
         if (new Date() < new Date(data?.quiz_end)) return
 
-        const bucketCount = 6
+        const bucketCount = 5
         const bucketSize = Math.ceil(total_marks / bucketCount)
 
         const buckets = []
@@ -79,21 +77,21 @@ const GetSubmissionFullDetails = () => {
 
 
     return (
-        <section className="w-full max-w-5xl mx-auto ">
+        <section className="w-full custom-lg:max-w-5xl mx-auto px-2 sm:px-4">
 
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800 border-b-4 border-blue-600 inline-block pb-2">
+            <div className="custom-lg:mb-8 mb-5">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 border-b-4 border-blue-600 inline-block pb-2">
                     Submission Board
                 </h1>
             </div>
 
             {/* Taking Quiz Section */}
-            <div className="bg-white shadow-md rounded-2xl p-8 border border-gray-100">
+            <div className="bg-white shadow-md rounded-2xl p-[18px] sm:p-8 border border-gray-100">
 
                 {/* Sub Header */}
-                <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
+                <div className="mb-3 sm:mb-6 flex items-center justify-between">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
                         <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
                         Taking Quiz
                     </h2>
@@ -111,16 +109,16 @@ const GetSubmissionFullDetails = () => {
                 <div className="space-y-4 text-gray-700">
 
                     {data && new Date(data?.quiz_start) > new Date() ? (
-                        <div className="text-center py-10 bg-purple-100 rounded-xl border border-purple-200">
+                        <div className="text-center py-6 sm:py-10 bg-purple-100 rounded-xl border border-purple-200">
                             <h2 className="text-xl font-medium text-purple-600">🕒 Quiz has not started yet.</h2>
                         </div>
                     ) : data && new Date(data?.quiz_end) < new Date() ? (
-                        <div className="text-center py-10 bg-red-50 rounded-xl border border-red-200">
+                        <div className="text-center py-6 sm:py-10 bg-red-50 rounded-xl border border-red-200">
                             <h2 className="text-xl font-medium text-red-600">⏰ The quiz has ended.</h2>
                         </div>
                     ) : data?.user_ids?.length === 0 ? (
-                        <div className="text-center py-10 bg-yellow-50 rounded-xl border border-yellow-100">
-                            <h2 className="text-xl font-medium text-yellow-600">⚠️ No one is taking the quiz right now.</h2>
+                        <div className="text-center py-6 sm:py-10 px-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                            <h2 className="text-lg sm:text-xl font-medium text-yellow-600">⚠️ No one is taking the quiz right now.</h2>
                         </div>
                     ) : (
                         <div className="space-y-4 max-h-[350px] overflow-y-auto custom_scrollBar_forFullDetails pr-1">
@@ -156,11 +154,11 @@ const GetSubmissionFullDetails = () => {
             </div>
 
             {/* Quiz submission */}
-            <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+            <div className='bg-white shadow-md rounded-2xl p-[18px] sm:p-8 border border-gray-100 mt-4 custom-lg:mt-8'>
 
                 {/* sub-header */}
-                <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
+                <div className="sm:mb-6 flex items-center justify-between">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
                         <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
                         Submitted Quiz
                     </h2>
@@ -172,7 +170,7 @@ const GetSubmissionFullDetails = () => {
                             No quiz submissions yet.
                         </div>
                     ) : (
-                        <div className="grid gap-6 grid-cols-2 mt-6 max-h-[500px] overflow-y-auto custom_scrollBar_forFullDetails pr-2 py-1">
+                        <div className="grid gap-3.5 sm:gap-6 sm:grid-cols-2 mt-2.5 sm:mt-6 max-h-[500px] overflow-y-auto custom_scrollBar_forFullDetails sm:pr-2 py-1">
 
                             {data?.quiz_submission_data.map((v) => {
                                 const accuracy =
@@ -239,7 +237,7 @@ const GetSubmissionFullDetails = () => {
                                         </div>
 
                                         {/* Footer */}
-                                        <div className="mt-5 pt-3 border-t flex justify-between items-center text-sm text-gray-600">
+                                        <div className="mt-5 pt-3 border-t flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm text-gray-600">
                                             <div className="italic">
                                                 <span className='font-medium'>User ID:{" "}</span>
                                                 <span className="font-mono bg-gray-100 px-2 py-0.5 rounded italic">
@@ -247,7 +245,7 @@ const GetSubmissionFullDetails = () => {
                                                 </span>
                                             </div>
                                             <button
-                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-all cursor-pointer"
+                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-1.5 mt-3 sm:mt-0 rounded-lg transition-all cursor-pointer"
                                                 onClick={() => {
                                                     navigate(`${location.pathname.replace("full-details", "view")}`, {
                                                         state: {
@@ -268,11 +266,11 @@ const GetSubmissionFullDetails = () => {
             </div>
 
             {/* LeaderBoard */}
-            <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+            <div className='bg-white shadow-md rounded-2xl p-[18px] sm:p-8 border border-gray-100 mt-4 custom-lg:mt-8'>
 
                 {/* sub-header */}
-                <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
+                <div className="mb-1.5 custom-lg:mb-4 flex items-center justify-between">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
                         <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
                         LeaderBoard
                     </h2>
@@ -281,12 +279,12 @@ const GetSubmissionFullDetails = () => {
                 {/* Main Section */}
                 {
                     new Date() < new Date(data?.quiz_end) ? (
-                        <div className="text-center py-10 bg-red-50 rounded-xl border border-red-200">
+                        <div className="text-center px-4 py-10 bg-red-50 rounded-xl border border-red-200">
                             <h2 className="text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard will be Shown.</h2>
                         </div>
                     ) : (
                         <div>
-                            <div className="w-full mt-2 space-y-3 max-h-[500px] bg-gray-50 rounded-xl px-6 overflow-y-auto custom_scrollBar_forFullDetails pr-6 py-4">
+                            <div className="w-full space-y-3 max-h-[500px] bg-gray-50 rounded-xl px-2 sm:px-3 custom-lg:px-6 overflow-y-auto custom_scrollBar_forFullDetails pr-2 sm:pr-3 custom-lg:pr-6 py-4">
                                 {leaderBoardData && leaderBoardData?.top_users?.map((v, i) => (
                                     <div
                                         key={v.userId?.Id}
@@ -307,22 +305,22 @@ const GetSubmissionFullDetails = () => {
                                         </div>
 
                                         {/* Stats */}
-                                        <div className="flex items-center gap-6 text-[16px]">
+                                        <div className="flex items-center sm:gap-6 text-[16px]">
                                             <p>
                                                 <span className="font-semibold text-gray-800 ">{v.marks}</span>
                                                 <span className="text-purple-700 font-medium"> pts</span>
                                             </p>
-                                            <p>
+                                            <p className='hidden sm:block'>
                                                 <span className="text-green-700 font-medium">Acc : </span>
                                                 <span className="font-semibold text-gray-800">{v.accuracy}%</span>
                                             </p>
-                                            <p>
+                                            <p className='hidden sm:block'>
                                                 <span className="text-yellow-700 font-medium">Time : </span>
                                                 <span className="font-semibold text-gray-800">{v.timeTaken}s</span>
                                             </p>
 
                                             {v?.negativeMarks > 0 && (
-                                                <p className="text-red-600 font-medium">-{v.negativeMarks}</p>
+                                                <p className="text-red-600 font-medium hidden sm:block">-{v.negativeMarks}</p>
                                             )}
                                         </div>
                                     </div>
@@ -330,10 +328,10 @@ const GetSubmissionFullDetails = () => {
                             </div>
 
                             {/* Which factor makes this leader-board */}
-                            <div className="bg-white mt-6 p-6 rounded-xl shadow-md border border-gray-200">
+                            {/* <div className="bg-white mt-6 p-6 rounded-xl shadow-md border border-gray-200">
 
                                 <div className='flex items-center gap-2 mb-4'>
-                                    <ImStatsBars size={23} className='text-yellow-800'/>
+                                    <ImStatsBars size={23} className='text-yellow-800' />
                                     <h3 className="text-lg font-semibold text-purple-700">
                                         How Leaderboard Ranking Works
                                     </h3>
@@ -365,7 +363,7 @@ const GetSubmissionFullDetails = () => {
                                         — Earlier submission gets priority when everything else is equal.
                                     </li>
                                 </ul>
-                            </div>
+                            </div> */}
 
                         </div>
                     )
@@ -373,34 +371,56 @@ const GetSubmissionFullDetails = () => {
             </div>
 
             {/* Stats */}
-            <div className='bg-white shadow-md rounded-2xl p-8 border border-gray-100 mt-8'>
+            <div className='bg-white shadow-md rounded-2xl p-[18px] sm:p-8 border border-gray-100 mt-4 sm:mt-8'>
 
                 {/* sub-header */}
-                <div className="mb-4 flex items-center justify-between">
-                    <h2 className="text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
+                <div className="flex items-center justify-between">
+                    <h2 className="mb-3 custom-lg:mb-4 text-xl sm:text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
                         <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-                        Stats
+                        Stats <span className='text-blue-800'>( Last 5 Days )</span>
                     </h2>
                 </div>
 
                 {/* Main Section */}
                 {
                     new Date() < new Date(data?.quiz_end) ? (
-                        <div className="text-center py-10 bg-red-50 rounded-xl border border-red-200">
-                            <h2 className="text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard will be Shown.</h2>
+                        <div className="text-center px-4 py-6 sm:py-10 bg-red-50 rounded-xl border border-red-200">
+                            <h2 className="text-lg sm:text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard will be Shown.</h2>
                         </div>
                     ) : (
                         <div>
                             <div className="bg-white p-5 rounded-xl shadow-md">
+
                                 <h2 className="text-lg font-semibold mb-4 text-purple-700 text-center">
                                     Score Range (x) vs Number of Users (y)
                                 </h2>
 
                                 <ResponsiveContainer width="100%" height={300}>
-                                    <LineChart data={chartData}>
+                                    <LineChart
+                                        data={chartData}
+                                        margin={{ top: 0, right: 0, left: -14, bottom: 12 }}
+                                    >
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="range" />
-                                        <YAxis allowDecimals={false} />
+
+                                        <XAxis dataKey="range">
+                                            <Label
+                                                value={`SCORE`}
+                                                position="insideBottom"
+                                                offset={-8}
+                                                style={{ fill: "#4B5563", fontWeight: "bold" }}
+                                            />
+                                        </XAxis>
+
+                                        <YAxis allowDecimals={false}>
+                                            <Label
+                                                value={`NO. OF USER`}
+                                                position={`insideLeft`}
+                                                angle={-90}
+                                                offset={20}
+                                                style={{ textAnchor: "middle", fill: "#4B5563", fontWeight: "bold" }}
+                                            />
+                                        </YAxis>
+
                                         <Tooltip />
                                         <Line type="monotone" dataKey="count" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 5 }} />
                                     </LineChart>

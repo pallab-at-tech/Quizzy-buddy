@@ -79,10 +79,10 @@ const DashboardOverveiw = () => {
 
     useEffect(() => {
         let data = null
-        if(window.innerWidth >= 640){
+        if (window.innerWidth >= 640) {
             data = convertToScoreBuckets(7)
         }
-        else{
+        else {
             data = convertToScoreBuckets(5)
         }
         setChartData(data)
@@ -195,8 +195,12 @@ const DashboardOverveiw = () => {
             {/* statastical graph */}
             <div className='bg-white sm:shadow-md rounded-2xl px-0 sm:px-8 pb-6 sm:border border-gray-100 mt-4 sm:mt-8'>
                 {/* Title */}
-                <h2 className="text-2xl font-semibold text-gray-800 sm:mb-6 pt-4 sm:pt-6 pl-4">
+                <h2 className="hidden sm:block text-2xl font-semibold text-gray-800 sm:mb-6 pt-4 sm:pt-6 pl-4">
                     Last 7 days progress
+                </h2>
+
+                <h2 className="block sm:hidden text-2xl font-semibold text-gray-800 sm:mb-6 pt-4 sm:pt-6 pl-4">
+                    Last 5 days progress
                 </h2>
 
                 {
@@ -223,48 +227,32 @@ const DashboardOverveiw = () => {
                                 </div>
                             </div>
 
-
-                            <ResponsiveContainer width={"100%"} height={300}>
-                                <LineChart data={chartData}>
+                            {/* For Tablet and DeskTop Version */}
+                            <ResponsiveContainer width={"100%"} height={300} className={`hidden sm:block`}>
+                                <LineChart
+                                    data={chartData}
+                                    margin={{ top: 0, right: 0, left: 0, bottom: 20 }}
+                                >
                                     <CartesianGrid strokeDasharray="3 3" />
 
                                     {/* X-Axis with Label */}
-                                    <XAxis dataKey="date" className='sm:hidden block'>
+                                    <XAxis dataKey="date">
                                         <Label
-                                            value="Date"
-                                            offset={-3}
+                                            value="DAYS"
+                                            offset={-12}
                                             position="insideBottom"
-                                            style={{ fill: "#4B5563" }}
-                                        />
-                                    </XAxis>
-
-                                    {/* X-Axis with Label */}
-                                    <XAxis dataKey="date" className='hidden sm:block'>
-                                        <Label
-                                            value="Days"
-                                            offset={-3}
-                                            position="insideBottom"
-                                            style={{ fill: "#4B5563" }}
+                                            style={{ fill: "#4B5563", fontWeight: "bold" }}
                                         />
                                     </XAxis>
 
                                     {/* Y-Axis with Label */}
-                                    <YAxis allowDecimals={true} className='sm:hidden block'>
+                                    <YAxis allowDecimals={true}>
                                         <Label
-                                            value="Score-Acc"
+                                            value="SCORE & ACCURACY"
                                             angle={-90}
                                             position="insideLeft"
-                                            style={{ textAnchor: "middle", fill: "#4B5563" }}
-                                        />
-                                    </YAxis>
-
-                                    {/* Y-Axis with Label */}
-                                    <YAxis allowDecimals={true} className='hidden sm:block'>
-                                        <Label
-                                            value="Score / Accuracy"
-                                            angle={-90}
-                                            position="insideLeft"
-                                            style={{ textAnchor: "middle", fill: "#4B5563" }}
+                                            offset={10}
+                                            style={{ textAnchor: "middle", fill: "#4B5563", fontWeight: "bold" }}
                                         />
                                     </YAxis>
 
@@ -287,9 +275,59 @@ const DashboardOverveiw = () => {
                                 </LineChart>
                             </ResponsiveContainer>
 
+                            {/* For Mobile Version */}
+                            <ResponsiveContainer width={"100%"} height={300} className={`block sm:hidden`}>
+                                <LineChart
+                                    data={chartData}
+                                    margin={{ top: 0, right: 0, left: -4, bottom: 14 }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+
+                                    {/* X-Axis with Label */}
+                                    <XAxis dataKey="date">
+                                        <Label
+                                            value="DATE"
+                                            offset={-8}
+                                            position="insideBottom"
+                                            style={{ fill: "#4B5563", fontWeight: "bold" }}
+                                        />
+                                    </XAxis>
+
+                                    {/* Y-Axis with Label */}
+                                    <YAxis allowDecimals={true}>
+                                        <Label
+                                            value="SCORE & ACCURACY"
+                                            angle={-90}
+                                            offset={12}
+                                            position="insideLeft"
+                                            style={{ textAnchor: "middle", fill: "#4B5563", fontWeight: "bold" }}
+                                        />
+                                    </YAxis>
+
+                                    <Tooltip />
+
+                                    <Line
+                                        type="monotone"
+                                        dataKey="score"
+                                        stroke="#8b5cf6"
+                                        strokeWidth={3}
+                                        dot={{ r: 5 }}
+                                    />
+                                    
+                                    <Line
+                                        type="monotone"
+                                        dataKey="accuracy"
+                                        stroke="#10b981"
+                                        strokeWidth={3}
+                                        dot={{ r: 5 }}
+                                    />
+
+                                </LineChart>
+                            </ResponsiveContainer>
+
                         </div>
                     ) : (
-                        <div>
+                        <div className='text-center bg-white shadow-md rounded-2xl p-6 border border-gray-100 mt-4 sm:mt-8'>
                             You haven't attend any Quiz!
                         </div>
                     )

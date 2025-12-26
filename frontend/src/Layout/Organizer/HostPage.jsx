@@ -1218,7 +1218,7 @@ const HostPage = () => {
                         {
                             deletePanel && (
                                 <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
-                                    <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
+                                    <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-8 max-w-sm w-full text-center mx-5">
                                         <h2 className="text-2xl font-semibold text-gray-800 mb-3">Delete Quiz?</h2>
                                         <p className="text-gray-600 mb-8">
                                             Are you sure you want to delete this quiz ?

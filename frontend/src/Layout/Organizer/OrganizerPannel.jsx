@@ -105,7 +105,7 @@ const OrganizerPannel = () => {
 
 
   return (
-    <section className="h-[calc(100vh-70px)] overflow-y-auto  bg-gradient-to-br from-gray-50 to-gray-100 p-8 page-scroll">
+    <section className="h-[calc(100vh-70px)] overflow-y-auto  bg-gradient-to-br from-gray-50 to-gray-100 page-scroll">
 
       {
         params?.quizId ? (
@@ -113,7 +113,7 @@ const OrganizerPannel = () => {
             <Outlet />
           </>
         ) : (
-          <div className="custom-lg:max-w-[1100px] mx-auto">
+          <div className="custom-lg:max-w-[1100px] mx-auto p-8">
 
             <header className="mb-3.5 sm:mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b-2 border-b-gray-300 pb-0.5 sm:pb-6">
               <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-3 sm:mb-0">

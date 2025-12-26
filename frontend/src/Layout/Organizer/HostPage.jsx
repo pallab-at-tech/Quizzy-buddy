@@ -571,7 +571,7 @@ const HostPage = () => {
 
 
     return (
-        <section className="pt-0 pb-6 px-4 ">
+        <section className="p-4 sm:p-6 custom-lg:p-8 ">
 
             {
                 navigateTo === "full-details" || navigateTo === "view" ? (
@@ -579,15 +579,15 @@ const HostPage = () => {
                 ) : (
                     <section>
                         {/* host details */}
-                        <div className="bg-white shadow-md rounded-lg p-8 mb-6">
+                        <div className="bg-white shadow-md rounded-lg p-[18px] sm:p-8 mb-3 custom-sm:mb-4 custom-lg:mb-6">
 
-                            <h1 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <FiUser className="text-blue-600" />
                                 Host Dashboard
                             </h1>
 
                             {/* Host ID */}
-                            <div className="flex items-center gap-2 text-gray-700 mb-4">
+                            <div className="flex items-center gap-2 text-gray-700 mb-3 sm:mb-4">
                                 <FiHash className="text-blue-500" />
                                 <p>
                                     <strong>Host ID:</strong> <span>{data?.nano_id}</span>
@@ -595,7 +595,7 @@ const HostPage = () => {
                             </div>
 
                             {/* Join Code */}
-                            <div className="flex items-center flex-wrap gap-2 border-2 border-blue-200 bg-blue-50 px-3 py-2 rounded-lg mb-4">
+                            <div className="flex items-center flex-wrap gap-2 border-2 border-blue-200 bg-blue-50 px-3 py-3 rounded-lg mb-2 sm:mb-4">
                                 <span className="font-semibold">Join Code:</span>
                                 <span className="font-mono  text-blue-600 bg-blue-200  px-2 py-1 rounded-md">
                                     {data?.provide_join_code}
@@ -615,7 +615,7 @@ const HostPage = () => {
                             </div>
 
                             {/* Quiz Timing */}
-                            <div className="bg-[#fefefe] p-4 shadow-md rounded-lg border border-gray-200 mb-5 mt-5">
+                            <div className="bg-[#fefefe] p-4 shadow-md rounded-lg border border-gray-200 mb-3 sm:mb-5 mt-3 sm:mt-5">
 
                                 <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-2">
                                     <div className="flex items-center gap-2">
@@ -627,7 +627,7 @@ const HostPage = () => {
                                             <FiCalendar className="text-red-500" />
                                             <strong>End:</strong> {formatDateTime(data?.quiz_end)}
                                         </div>
-                                        <div>
+                                        <div className="hidden sm:block">
                                             <button
                                                 onClick={() => setTimeDetailsLoading(true)}
                                                 className="rounded-md  transition font-medium w-fit cursor-pointer flex items-center gap-2 px-3 py-1.5 border border-blue-500 text-blue-600  hover:bg-blue-50"
@@ -645,20 +645,32 @@ const HostPage = () => {
                                     {((new Date(data?.quiz_end) - new Date(data?.quiz_start)) / (1000 * 60)).toFixed(2)}{" "}
                                     min
                                 </div>
+
+                                <div className="flex justify-start sm:hidden mt-4">
+                                    <button
+                                        onClick={() => setTimeDetailsLoading(true)}
+                                        className="rounded-md  transition font-medium w-fit cursor-pointer flex items-center gap-2 px-3 py-1.5 border border-blue-500 text-blue-600  hover:bg-blue-50"
+                                    >
+                                        <FaEdit size={16} />
+                                        Edit
+                                    </button>
+                                </div>
                             </div>
 
                             {/* marks info and strict mode */}
                             <div className="bg-[#fefefe] shadow-md rounded-lg p-6 relative border border-gray-200">
 
                                 {/* Row 1: Marks Info */}
-                                <div className="flex flex-wrap items-center justify-between gap-6 mb-3">
+                                <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-6 sm:mb-3 mb-4">
+
                                     <div className="flex items-center gap-2 text-gray-800">
                                         <FaCheckCircle className="text-green-600" />
                                         <span className="font-semibold">Total Marks : </span>
                                         <span className="">{data?.total_marks ?? 0}</span>
                                     </div>
 
-                                    <div className="flex items-center gap-5">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+
                                         <div className="flex items-center gap-2 text-gray-800">
                                             <FaMinusCircle className="text-red-500" />
                                             <span className="font-semibold">Negative Marks : </span>
@@ -678,7 +690,7 @@ const HostPage = () => {
                                 {/* Row 2: Strict Time */}
                                 <div className="flex flex-col items-start gap-3">
 
-                                    <div className="flex items-center gap-1.5 text-gray-800">
+                                    <div className="flex  items-center gap-1.5 text-gray-800">
                                         <FaExclamationTriangle
                                             className={`${hostDetailsUpdate.data.strict ? "text-blue-600" : "text-gray-400"}`}
                                         />
@@ -703,7 +715,7 @@ const HostPage = () => {
                             </div>
 
                             {/* Instant Controls */}
-                            <div className="flex items-center justify-center gap-10 mt-6">
+                            <div className="flex flex-wrap items-center sm:justify-center gap-4 sm:gap-6 mt-6">
                                 {(() => {
                                     const now = new Date();
                                     const quizStart = new Date(data?.quiz_start);
@@ -748,7 +760,7 @@ const HostPage = () => {
                                                 onClick={() => {
                                                     realise_score()
                                                 }}
-                                                className={`flex items-center gap-2 ${!data?.realise_score && hasEnded
+                                                className={`flex w-full sm:w-auto justify-center items-center gap-2 ${!data?.realise_score && hasEnded
                                                     ? "bg-green-600 hover:bg-green-700 cursor-pointer"
                                                     : "bg-green-300 cursor-not-allowed"
                                                     } text-white font-medium px-5 py-2.5 rounded-lg shadow transition-all duration-200`}
@@ -772,11 +784,11 @@ const HostPage = () => {
                         </div>
 
                         {/* Submission Board */}
-                        <div className="bg-white shadow-md rounded-lg p-8 my-6 relative">
+                        <div className="bg-white shadow-md rounded-lg p-[18px] sm:p-8 my-3 custom-sm:my-4 custom-lg:my-6 relative">
 
                             {/* Full details button */}
                             <button
-                                className="absolute top-3 right-6 text-lg text-blue-600 cursor-pointer font-medium hover:text-blue-700 underline transition"
+                                className="absolute top-[18px] sm:top-3 right-6 text-lg text-blue-600 cursor-pointer font-medium hover:text-blue-700 underline transition"
                                 onClick={() => {
                                     navigate(`full-details`)
                                 }}
@@ -785,22 +797,22 @@ const HostPage = () => {
                             </button>
 
                             {/* Heading */}
-                            <div className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <div className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
                                 <span className="inline-block w-2 h-6 bg-blue-600 rounded"></span>
                                 Submission Board
                             </div>
 
                             {/* Stats */}
-                            <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+                            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-6">
 
                                 {/* Joined */}
-                                <div className="flex flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
+                                <div className="flex w-full flex-col items-center justify-center bg-blue-50 border border-blue-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
                                     <p className="text-gray-600 font-medium text-sm">Joined</p>
                                     <h2 className="text-3xl font-semibold text-blue-700 mt-1">{data?.user_ids?.length || 0}</h2>
                                 </div>
 
                                 {/* Submitted */}
-                                <div className="flex flex-col items-center justify-center bg-green-50 border border-green-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
+                                <div className="flex w-full flex-col items-center justify-center bg-green-50 border border-green-200 rounded-xl px-6 py-4 flex-1 shadow-sm">
                                     <p className="text-gray-600 font-medium text-sm">Submitted</p>
                                     <h2 className="text-2xl font-semibold text-green-700 mt-1">{data?.quiz_submission_data?.length === 0 ? "N/A" : data?.quiz_submission_data?.length || "N/AA"}</h2>
                                 </div>
@@ -809,7 +821,7 @@ const HostPage = () => {
                         </div>
 
                         {/* Question section */}
-                        <div className="bg-white shadow-md rounded-lg p-8 my-6">
+                        <div className="bg-white shadow-md rounded-lg p-[18px] sm:p-8 my-3 custom-sm:my-4 custom-lg:my-6">
 
                             {/* header */}
                             <div className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
@@ -820,7 +832,7 @@ const HostPage = () => {
                             {/* question set */}
                             <div className="flex flex-col gap-5 relative ">
 
-                                <div className="absolute -top-[64px] right-2 z-50 flex items-center gap-4">
+                                <div className="absolute -top-[58px] sm:-top-[64px] right-0.5 sm:right-2 z-50 flex items-center gap-4">
 
                                     <button
                                         onClick={() => {
@@ -828,7 +840,7 @@ const HostPage = () => {
                                             setEditedData(data?.quiz_data || [])
                                         }}
                                         className={`flex items-center gap-2 px-3 py-1.5 border ${editing ? "border-red-500 text-red-600  hover:bg-red-50" : "border-blue-500 text-blue-600  hover:bg-blue-50"} 
-                            rounded-md  transition font-medium w-fit cursor-pointer`}
+                                        rounded-md  transition font-medium w-fit cursor-pointer`}
                                     >
                                         <FaEdit size={16} />
                                         {editing ? "Editing" : "Edit"}
@@ -1160,9 +1172,9 @@ const HostPage = () => {
                         </div>
 
                         {/* delete section and recreate another quiz  */}
-                        <div className="grid grid-cols-2 gap-x-4">
+                        <div className="grid sm:grid-cols-2 gap-2 sm:gap-4">
                             {/* delete section */}
-                            <div className="bg-white shadow-md rounded-lg p-8">
+                            <div className="bg-white shadow-md rounded-lg p-5 sm:p-8">
                                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Delete Quiz</h2>
                                 <p className="text-gray-600 mb-6">
                                     Once you delete this quiz, will be permanently removed.
@@ -1183,7 +1195,7 @@ const HostPage = () => {
                             </div>
 
                             {/* recreate another quiz within same question */}
-                            <div className="bg-white shadow-md rounded-lg p-8">
+                            <div className="bg-white shadow-md rounded-lg p-5 sm:p-8">
                                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Re-Create Quiz</h2>
                                 <p className="text-gray-600 mb-6">
                                     Re-Create Quiz within same Question.

@@ -269,7 +269,7 @@ const QuestionSection = () => {
                   {`${questionSet?.question?.question}`}
                 </p>
 
-                {heights > 52 && (
+                {heights >= 51 && (
                   <div className="flex justify-end">
                     <span
                       onClick={() => setMore(prev => !prev)}

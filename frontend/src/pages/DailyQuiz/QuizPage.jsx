@@ -23,10 +23,16 @@ const QuizPage = () => {
   const [correct_answer, setCorrect_answer] = useState(null)
   const [submitLoading, setSubmitLoading] = useState(false)
 
+  const [heightSetting, setHeightSetting] = useState({
+    more: false,
+    showMoreBtn: false
+  })
+
   const dataRef = useRef();
   const timerRef = useRef();
   const answerRef = useRef()
   const correct_answerRef = useRef()
+  const divRef = useRef(null)
 
   useEffect(() => {
     dataRef.current = data;
@@ -295,8 +301,8 @@ const QuizPage = () => {
       console.log(response)
 
       const { data: responseData } = response
-      
-      if(responseData.success){
+
+      if (responseData.success) {
         dispatch(setDailyQuizFinish(responseData.data))
       }
 
@@ -313,16 +319,38 @@ const QuizPage = () => {
   }, []);
 
 
+  useEffect(() => {
+    const el = divRef.current
+    if (!el) return
+
+    // Reset state when question changes
+    setHeightSetting({
+      more: false,
+      showMoreBtn: false
+    })
+
+    // Wait for DOM render
+    requestAnimationFrame(() => {
+      if (el.scrollHeight > el.clientHeight) {
+        setHeightSetting(prev => ({
+          ...prev,
+          showMoreBtn: true
+        }))
+      }
+    })
+  }, [index])
+
+
   return (
     <div>
       {
         data ? (
-          <div className='fixed overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 py-[80px]'>
+          <div className='fixed flex items-center justify-center overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 '>
 
-            <div className='bg-white min-w-[850px] max-w-[850px] shadow-md rounded-xl mx-auto px-10 py-8'>
+            <div className='bg-white w-auto h-[550px] max-h-[700px] overflow-y-auto custom-lg:w-[850px] shadow-md rounded-xl custom-lg:mx-auto px-6 sm:px-10 py-6 sm:py-8 mx-4 sm:mx-10'>
 
               {/* Header */}
-              <div className='flex items-center justify-between mb-4'>
+              <div className='flex items-center justify-between mb-2.5 sm:mb-4'>
                 <div className="text-2xl font-bold text-gray-800  flex items-center gap-2">
                   <FaClipboardQuestion size={24} className="text-blue-600" />
                   {`Question ${index + 1} )`}
@@ -335,12 +363,33 @@ const QuizPage = () => {
               </div>
 
               {/* questions */}
-              <div className='w-full p-2 text-lg font-semibold mb-3 text-gray-800'>
+              <div ref={divRef} id='divHeight' className={`w-full text-lg font-semibold text-gray-800 overflow-hidden transition-all duration-300
+              ${heightSetting.more ? "" : "line-clamp-2"}
+              `}>
                 {data?.question_details[index].question}
               </div>
 
+              {/* More / Less */}
+              {
+                heightSetting.showMoreBtn && (
+                  <button
+                    onClick={() => {
+                      setHeightSetting((prev) => {
+                        return {
+                          ...prev,
+                          more: !prev.more
+                        }
+                      })
+                    }}
+                    className='text-[16px] text-indigo-600 font-medium hover:underline'
+                  >
+                    {heightSetting.more ? "Less" : "More"}
+                  </button>
+                )
+              }
+
               {/* options */}
-              <div className='flex flex-col gap-4 mb-3'>
+              <div className='flex flex-col gap-2.5 sm:gap-4 my-4'>
                 {
                   data && data?.question_details[index].options.map((v, i) => {
                     return (
@@ -385,7 +434,7 @@ const QuizPage = () => {
                 {/* finish */}
                 <button
                   disabled={submitLoading}
-                  className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
+                  className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-5 py-2 sm:px-8 sm:py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
                   onClick={() => {
                     handleFinishQuiz()
                   }}
@@ -393,27 +442,27 @@ const QuizPage = () => {
                   {`${submitLoading ? "Submitting..." : "Finish"}`}
                 </button>
 
-                <div className='flex items-center justify-end gap-8'>
+                <div className='flex items-center justify-end gap-3 sm:gap-8'>
 
                   <button
-                    className='cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95'
+                    className='cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold px-5 py-2 sm:px-8 sm:py-2.5 rounded-lg transition-all duration-200 active:scale-95'
                     disabled={submitLoading}
-                    onClick={()=>{
+                    onClick={() => {
 
-                      setaArr((prev)=>{
+                      setaArr((prev) => {
                         const newaArr = prev
                         newaArr[index] = -1
-                        localStorage.setItem("aArr",JSON.stringify(newaArr))
+                        localStorage.setItem("aArr", JSON.stringify(newaArr))
                         return newaArr
                       })
 
-                      setAnswer((prev)=>{
+                      setAnswer((prev) => {
                         const newAnswer = prev
                         newAnswer[index] = {
                           ...newAnswer[index],
-                          userAns : -1
+                          userAns: -1
                         }
-                        localStorage.setItem("ans",JSON.stringify(newAnswer))
+                        localStorage.setItem("ans", JSON.stringify(newAnswer))
                         return newAnswer
                       })
                     }}
@@ -423,7 +472,7 @@ const QuizPage = () => {
 
                   {/* Next Button */}
                   <button
-                    className={`${index >= data?.question_details.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all duration-200`}
+                    className={`${index >= data?.question_details.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-5 py-2 sm:px-8 sm:py-3 rounded-xl shadow-md transition-all duration-200`}
                     onClick={() => {
                       if (!data?.question_details.length || index >= data?.question_details.length - 1) return
                       setIndex((prevIdx) => {
@@ -453,26 +502,26 @@ const QuizPage = () => {
           </div>
         ) : (
           <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200'>
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 px-6">
               {/* Warning Icon */}
               <div className="flex justify-center">
-                <span className="text-red-400 text-7xl animate-pulse">⚠️</span>
+                <span className="text-red-400 text-5xl sm:text-7xl animate-pulse">⚠️</span>
               </div>
 
               {/* Main Text */}
-              <h1 className="text-6xl font-extrabold tracking-widest drop-shadow-lg">
+              <h1 className="text-3xl sm:text-6xl font-extrabold sm:tracking-widest drop-shadow-lg">
                 ILLEGAL ACCESS
               </h1>
 
               {/* Subtext */}
-              <p className="text-lg  max-w-md mx-auto text-gray-900 font-medium">
+              <p className="text-[16px] sm:text-lg  max-w-md mx-auto text-gray-900 font-medium px-8 sm:px-0">
                 Unauthorized entry detected. Please return to the main page or contact our administrator.
               </p>
 
               {/* Action Button */}
               <button
                 onClick={() => window.location.href = '/'}
-                className="mt-6 cursor-pointer  bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
+                className="mt-3.5 sm:mt-6 cursor-pointer  bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
               >
                 Go Back
               </button>
@@ -480,7 +529,7 @@ const QuizPage = () => {
           </div>
         )
       }
-    </div>
+    </div >
   )
 }
 

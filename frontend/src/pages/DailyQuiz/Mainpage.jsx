@@ -79,7 +79,7 @@ const Mainpage = () => {
     const ButtonTextFunc = () => {
 
         setButtonText("Starting...")
-        
+
         const run = [
             "Check validation..",
             "Wait a Sec...",
@@ -93,8 +93,8 @@ const Mainpage = () => {
                 setButtonText("Start Quiz")
                 clearInterval(interval)
             }
-            else if(run.length <= index){
-                setButtonText(run[run.length -1])
+            else if (run.length <= index) {
+                setButtonText(run[run.length - 1])
             }
             else {
                 setButtonText(run[index])
@@ -125,17 +125,17 @@ const Mainpage = () => {
             {
                 isAlreadyAttendQuiz(user?.daily_strict_count?.last_date) ? (
                     <div className="text-center -mt-[20px]">
-                        <h1 className="text-[45px] font-bold text-red-600 drop-shadow">
+                        <h1 className="text-3xl custom-sm:text-[40px] custom-lg:text-[45px] font-bold text-red-600 drop-shadow">
                             You already attended today’s quiz 🎉
                         </h1>
 
-                        <p className="text-red-800 mt-0">
+                        <p className="text-red-800 mt-2 px-8">
                             Come back tomorrow after 12 AM for the next quiz!
                         </p>
 
                         <button
                             onClick={() => navigate("/")}
-                            className="mt-7 cursor-pointer text-white bg-red-600 font-semibold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition duration-200"
+                            className="mt-5 custom-lg:mt-7 cursor-pointer text-white bg-red-600 font-semibold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition duration-200"
                         >
                             Back to Home
                         </button>
@@ -143,11 +143,11 @@ const Mainpage = () => {
                 ) : (
                     <div className="text-center overflow-hidden">
 
-                        <h1 className="text-4xl md:text-5xl font-bold text-blue-800 drop-shadow-lg">
+                        <h1 className="text-4xl custom-sm:text-5xl font-bold text-blue-800 drop-shadow-lg">
                             Are you ready for the Daily Quiz?
                         </h1>
 
-                        <p className="text-blue-800 mt-3 text-lg">
+                        <p className="text-blue-800 mt-3 text-lg px-6">
                             Test your knowledge. New quiz every day at 12 AM!
                         </p>
 
@@ -173,7 +173,7 @@ const Mainpage = () => {
                         </button>
 
                         {/* ⚠️ WARNING NOTE */}
-                        <p className="mt-5 text-sm text-red-600 font-semibold">
+                        <p className="mt-5 text-sm text-red-600 font-semibold py-2 px-8  rounded-2xl ">
                             ⚠️ Do not leave or go back once the quiz starts.
                             You will not be able to re-attempt it.
                         </p>
@@ -185,13 +185,13 @@ const Mainpage = () => {
                 time && (
                     <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8c] backdrop-blur-[4px] z-50">
 
-                        <div className="bg-white shadow-2xl rounded-2xl px-10 py-8 text-center animate-scaleUp">
+                        <div className="bg-white shadow-2xl rounded-2xl px-10 py-8 text-center animate-scaleUp mx-4">
 
-                            <h2 className="text-3xl font-bold text-indigo-700">
+                            <h2 className="text-2xl sm:text-3xl font-bold text-indigo-700">
                                 Your Quiz Starts In
                             </h2>
 
-                            <div className="mt-6 text-6xl font-extrabold text-indigo-600 tracking-wide">
+                            <div className="mt-6 text-5xl sm:text-6xl font-extrabold text-indigo-600 tracking-wide">
                                 {`${time}`}
                             </div>
 

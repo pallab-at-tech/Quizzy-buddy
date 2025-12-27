@@ -261,15 +261,16 @@ const QuestionSection = () => {
                 </div>
               </div>
 
+              {/* ${!more && "line-clamp-2 overflow-y-hidden "} */}
               {/* Question */}
               <div className="bg-gray-100 p-3 sm:p-5 rounded-xl shadow-sm relative">
 
-                <p id='heighBox' className={`text-xl font-semibold text-gray-800 leading-tight ${!more && "line-clamp-2 overflow-y-hidden "} select-none`}>
+                <p id='heighBox' className={`text-xl font-semibold text-gray-800 leading-tight  select-none`}>
                   <span>{`Q.${Number(questionSet?.index) + 1} ) `}</span>
                   {`${questionSet?.question?.question}`}
                 </p>
 
-                {heights >= 51 && (
+                {/* {heights >= 50 && (
                   <div className="flex justify-end">
                     <span
                       onClick={() => setMore(prev => !prev)}
@@ -278,7 +279,7 @@ const QuestionSection = () => {
                       {more ? "less" : "more"}
                     </span>
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Options */}

@@ -347,7 +347,7 @@ const QuizPage = () => {
         data ? (
           <div className='fixed flex items-center justify-center overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 '>
 
-            <div className='bg-white w-auto h-[550px] max-h-[700px] overflow-y-auto custom-lg:w-[850px] shadow-md rounded-xl custom-lg:mx-auto px-6 sm:px-10 py-6 sm:py-8 mx-4 sm:mx-10'>
+            <div className='bg-white w-full h-[550px] max-h-[700px] overflow-y-auto custom-lg:w-[850px] shadow-md rounded-xl custom-lg:mx-auto px-6 sm:px-10 py-6 sm:py-8 mx-4 sm:mx-10'>
 
               {/* Header */}
               <div className='flex items-center justify-between mb-2.5 sm:mb-4'>

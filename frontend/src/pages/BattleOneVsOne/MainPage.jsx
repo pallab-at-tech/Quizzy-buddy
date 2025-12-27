@@ -35,31 +35,34 @@ const MainPage = () => {
         if (localStorage.getItem("battle_over")) {
             localStorage.removeItem("battle_over")
         }
+        if(localStorage.getItem("data")){
+            localStorage.removeItem("data")
+        }
     }, [])
 
     return (
-        <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc]  page-scroll">
+        <section className="h-[calc(100vh-70px)] bg-gradient-to-br from-[#eef2ff] to-[#f8fafc] page-scroll">
 
             {
                 route && route !== "battle-1v1" ? (
                     <Outlet />
                 ) : (
-                    <div className="w-full max-w-5xl mx-auto py-8">
+                    <div className="w-full max-w-5xl mx-auto py-6 sm:py-8 px-8">
 
                         {/* Page Heading */}
-                        <div className="text-center mb-14">
+                        <div className="text-center mb-6 custom-sm:mb-10 custom-lg:mb-14">
                             <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
                                 Quiz Battle <span className="text-indigo-600">1 vs 1</span>
                             </h1>
-                            <p className="text-gray-600 mt-3 text-lg">
+                            <p className="text-gray-600 mt-2 sm:mt-3 text-lg px-8">
                                 Challenge your opponent and prove your knowledge in real time.
                             </p>
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 mb-14">
+                        <div className="grid md:grid-cols-2 gap-5 custom-lg:gap-10 mb-6 custom-sm:mb-10 custom-lg:mb-14">
                             {/* Create Room */}
-                            <button onClick={() => setCreateRoomOpen(true)} className="bg-white border border-gray-200 p-10 rounded-3xl shadow-sm hover:shadow-xl
+                            <button onClick={() => setCreateRoomOpen(true)} className="bg-white border border-gray-200 p-5 custom-sm:p-8 custom-lg:p-10 rounded-3xl shadow-sm hover:shadow-xl
                                 hover:scale-[1.02] transition-all flex flex-col items-center text-center cursor-pointer">
                                 <div className="bg-indigo-600 text-white p-4 rounded-full text-3xl mb-4">
                                     <FaPlus />
@@ -69,7 +72,7 @@ const MainPage = () => {
                             </button>
 
                             {/* Join Room */}
-                            <button onClick={() => setjoinRoomOpen(true)} className="bg-white p-10 rounded-3xl shadow-sm hover:shadow-xl cursor-pointer
+                            <button onClick={() => setjoinRoomOpen(true)} className="bg-white p-5 custom-sm:p-8 custom-lg:p-10 rounded-3xl shadow-sm hover:shadow-xl cursor-pointer
                                 border border-gray-200 hover:scale-[1.02] transition-all flex flex-col items-center text-center">
                                 <div className="bg-emerald-600 text-white p-4 rounded-full text-3xl mb-4">
                                     <FaSignInAlt />
@@ -80,31 +83,43 @@ const MainPage = () => {
                         </div>
 
                         {/* Rules Section (fixed spacing) */}
-                        <div className="mb-4 bg-white rounded-3xl shadow-md px-10 py-10 border border-gray-200">
+                        <div className="mb-4 bg-white rounded-3xl shadow-md p-6 custom-lg:px-10 custom-lg:py-10 border border-gray-200">
 
                             {/* Sub-Header */}
-                            <div className="flex items-center justify-center gap-3 mb-6 mr-[100px]">
-                                <FaBookOpen className="text-3xl text-indigo-600" />
+                            <div className="flex items-center justify-center gap-3 mb-6 custom-lg:mr-[100px]">
+                                <FaBookOpen className="text-2xl sm:text-3xl text-indigo-600" />
                                 <h2 className="text-2xl font-bold text-gray-800">Quiz Rules</h2>
                             </div>
 
                             {/* Other content */}
-                            <ul className="text-gray-700 text-lg space-y-3 grid grid-cols-2 grid-rows-2 gap-x-10">
-                                <li className="flex items-start gap-3">
+                            <ul className="text-gray-700 text-base sm:text-lg grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 sm:gap-x-10">
+                                
+                                <li className="flex items-start gap-2">
                                     <span className="text-indigo-600 font-bold">•</span>
-                                    Each question carries <b>5 marks</b>.
+                                    <span>
+                                        Each question carries <b>5 marks</b>.
+                                    </span>
                                 </li>
-                                <li className="flex items-start gap-3">
+
+                                <li className="flex items-start gap-2">
                                     <span className="text-indigo-600 font-bold">•</span>
-                                    No <b>Negative</b> marks.
+                                    <span>
+                                        No <b>Negative</b> marks.
+                                    </span>
                                 </li>
-                                <li className="flex items-start gap-3">
+
+                                <li className="flex items-start gap-2">
                                     <span className="text-indigo-600 font-bold">•</span>
-                                    You get <b>10 seconds</b> to answer each question.
+                                    <span>
+                                        You get <b>10 seconds</b> to answer each question.
+                                    </span>
                                 </li>
-                                <li className="flex items-start gap-3">
+
+                                <li className="flex items-start gap-2">
                                     <span className="text-indigo-600 font-bold">•</span>
-                                    Total <b>10 questions</b> will be provided.
+                                    <span>
+                                        Total <b>10 questions</b> will be provided.
+                                    </span>
                                 </li>
                             </ul>
                         </div>

@@ -10,8 +10,6 @@ const Leaderboard = () => {
 
   const [data, setData] = useState(null)
   const user = useSelector(state => state.user)
-  const [openEye, setOpenEye] = useState(new Set())
-  const openRef = useRef(null)
 
   const fetchLeaderBoard = async () => {
     try {

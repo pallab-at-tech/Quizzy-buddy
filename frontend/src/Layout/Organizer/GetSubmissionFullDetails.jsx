@@ -4,6 +4,7 @@ import Axios from '../../utils/Axios'
 import SummaryApi from '../../common/SumarryApi'
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import { FaCrown } from "react-icons/fa";
+import { ImStatsBars } from 'react-icons/im';
 
 const GetSubmissionFullDetails = () => {
 
@@ -328,42 +329,42 @@ const GetSubmissionFullDetails = () => {
                             </div>
 
                             {/* Which factor makes this leader-board */}
-                            {/* <div className="bg-white mt-6 p-6 rounded-xl shadow-md border border-gray-200">
+                            <div className="bg-white mt-6 mb-6 sm:mb-12 p-6 rounded-xl shadow-md border border-gray-200">
 
-                                <div className='flex items-center gap-2 mb-4'>
+                                <div className='flex items-center sm:items-center gap-2 mb-4'>
                                     <ImStatsBars size={23} className='text-yellow-800' />
                                     <h3 className="text-lg font-semibold text-purple-700">
-                                        How Leaderboard Ranking Works
+                                        Leaderboard Ranking
                                     </h3>
                                 </div>
 
                                 <ul className="space-y-3 text-sm text-gray-700">
-                                    <li className="flex gap-2">
+                                    <li className="sm:flex gap-2">
                                         <span className="font-bold text-purple-600">1️⃣ Marks</span>
                                         — Higher total score gets priority.
                                     </li>
 
-                                    <li className="flex gap-2">
+                                    <li className="sm:flex gap-2">
                                         <span className="font-bold text-purple-600">2️⃣ Accuracy</span>
                                         — Better accuracy ranks higher if marks are equal.
                                     </li>
 
-                                    <li className="flex gap-2">
+                                    <li className="sm:flex gap-2">
                                         <span className="font-bold text-purple-600">3️⃣ Time Taken</span>
                                         — Faster submission ranks higher if marks & accuracy are same.
                                     </li>
 
-                                    <li className="flex gap-2">
+                                    <li className="sm:flex gap-2">
                                         <span className="font-bold text-purple-600">4️⃣ Negative Marks</span>
                                         — Lower negative score ranks higher if previous factors are equal.
                                     </li>
 
-                                    <li className="flex gap-2">
+                                    <li className="sm:flex gap-2">
                                         <span className="font-bold text-purple-600">5️⃣ Submission Time</span>
                                         — Earlier submission gets priority when everything else is equal.
                                     </li>
                                 </ul>
-                            </div> */}
+                            </div>
 
                         </div>
                     )

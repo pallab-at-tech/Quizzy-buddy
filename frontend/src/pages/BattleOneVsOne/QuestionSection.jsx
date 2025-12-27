@@ -17,12 +17,12 @@ const QuestionSection = () => {
   const [more, setMore] = useState(false)
   const [heights, setHeights] = useState(0)
 
-  const [countDown, setCountDown] = useState(null)
+  const [countDown, setCountDown] = useState(0)
   const [questionSet, setQuestionSet] = useState(null)
   const [answerArr, setAnswerArr] = useState(Array.from({ length: 10 }).fill("-1"))
-
   const [scoreStats, setScoreStats] = useState(null)
-  const [oppoScore, setOppoScore] = useState(null)
+
+  const [oppoScore, setOppoScore] = useState(0)
   const [quizFinishing, setQuizFinishing] = useState(false)
 
   const blocker = useBlocker(
@@ -219,62 +219,66 @@ const QuestionSection = () => {
 
   }, [scoreStats, user]);
 
+
   return (
     <>
-      <section className={`min-h-screen inset-0 z-50 fixed w-full bg-gradient-to-br ${questionSet ? "from-[#ffffff] to-[#c7d7ee]" : "from-[#fffafa] to-[#c7d7ee]"} flex justify-center  ${heights >= 50 ? "py-[30px]" : "py-[35px]"} px-4 gap-0`}>
+      <section className={`h-screen inset-0 z-50 fixed w-full bg-gradient-to-br ${questionSet ? "from-[#ffffff] to-[#c7d7ee]" : "from-[#fffafa] to-[#c7d7ee]"} flex justify-center  ${heights >= 50 ? "sm:py-[30px]" : "sm:py-[35px]"} sm:px-4 gap-0`}>
         {
           questionSet ? (
-            <div className="w-full max-w-3xl bg-white shadow-xl rounded-2xl px-6 space-y-6 overflow-auto relative">
+            <div className="h-screen custom-sm:h-[700px] custom-lg:h-auto my-auto w-full sm:w-[600px] custom-lg:max-w-3xl bg-white shadow-xl rounded-2xl px-6 space-y-6 overflow-auto relative pb-6">
 
               {/* Scoreboard */}
               <div className='sticky top-0 z-10'>
 
-                <div className='bg-white min-h-[20px]'></div>
+                <div className='bg-white min-h-[25px] sm:min-h-[20px]'></div>
 
-                <div className="grid grid-cols-3 items-center bg-gradient-to-l to-[#b0c9ff] from-[#bce2f5]  p-5 rounded-b-xl rounded-t-md shadow-sm px-[30px] relative">
+                <div className="grid grid-cols-3 items-center bg-gradient-to-l to-[#b0c9ff] from-[#bce2f5] p-3.5 sm:p-5 rounded-b-xl rounded-t-md shadow-sm px-6 sm:px-[30px] relative">
 
-                  <div className="text-lg font-semibold text-blue-700 flex items-center gap-2">
-                    <GiBattleGear size={28} className='w-[40px] h-[40px] p-1 rounded-full border-[2px] border-blue-500 shadow-md shadow-[#c4cfff] bg-[#e8efff]' />
-                    You : <span className="font-bold">{(scoreStats && user && scoreStats?.scoreMap[user?._id]) ? scoreStats?.scoreMap[user?._id]?.score : 0}</span>
+                  <div className="text-[16px] sm:text-lg font-semibold text-blue-700 flex sm:flex-row flex-col sm:items-center sm:gap-2">
+                    <div className='flex sm:gap-2 flex-col sm:flex-row items-center w-fit sm:w-auto'>
+                      <GiBattleGear size={28} className='w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] p-1 rounded-full border-[2px] border-blue-500 shadow-md shadow-[#c4cfff] bg-[#e8efff]' />
+                      <span className="font-bold">You : {(scoreStats && user && scoreStats?.scoreMap[user?._id]) ? scoreStats?.scoreMap[user?._id]?.score : 0}</span>
+                    </div>
                   </div>
 
                   <div className='justify-self-center'>
                     <div className='flex items-center gap-1.5'>
-                      <span className='text-blue-700 font-semibold text-[22px]'>Count</span>
+                      <span className='text-blue-700 font-semibold text-[22px] hidden sm:block'>Count</span>
                       <div className='w-[40px] h-[40px] flex items-center justify-center text-blue-700 font-bold text-lg p-1 rounded-full border-[2px] border-blue-500 shadow-md shadow-[#c4cfff] bg-[#e8efff]'>
                         {countDown || 10}
                       </div>
-                      <span className='text-blue-700 font-semibold text-[22px]'>Down</span>
+                      <span className='text-blue-700 font-semibold text-[22px] hidden sm:block'>Down</span>
                     </div>
                   </div>
 
-                  <div className="text-lg font-semibold text-blue-700 justify-self-end flex items-center gap-1.5">
+                  <div className="text-[16px] sm:text-lg font-semibold text-blue-700 justify-self-end flex sm:flex-row flex-col-reverse items-center sm:gap-1.5">
                     <div className=''>
-                      <div>Opponent : <span className="font-bold">{oppoScore ? oppoScore : 0}</span></div>
+                      <div className="font-bold">Rival : <span >{oppoScore ? oppoScore : 0}</span></div>
                       {/* <p className='absolute bottom-3 right-[80px] text-[12px] tracking-[1px] italic'>gfgjfgdf hvghy gygy gftfdtrd.</p> */}
                     </div>
-                    <FaMandalorian size={25} className='mt-1.5 ml-1.5 w-[40px] h-[40px] p-1 rounded-full border-[2px] border-blue-500 shadow-md shadow-[#c4cfff] bg-[#e8efff]' />
+                    <FaMandalorian size={25} className='sm:mt-1.5 sm:ml-1.5 w-[35px] h-[35px] sm:w-[40px] sm:h-[40px] p-1 rounded-full border-[2px] border-blue-500 shadow-md shadow-[#c4cfff] bg-[#e8efff]' />
                   </div>
                 </div>
               </div>
 
               {/* Question */}
-              <div className="bg-gray-100 px-5 py-5 rounded-xl shadow-sm relative">
+              <div className="bg-gray-100 p-3 sm:p-5 rounded-xl shadow-sm relative">
 
-                <p id='heighBox' className={`text-xl font-semibold text-gray-800 leading-tight ${!more ? "line-clamp-2 overflow-y-hidden " : "inline"} select-none`}>
+                <p id='heighBox' className={`text-xl font-semibold text-gray-800 leading-tight ${!more && "line-clamp-2 overflow-y-hidden "} select-none`}>
                   <span>{`Q.${Number(questionSet?.index) + 1} ) `}</span>
-                  {questionSet?.question?.question}
+                  {`${questionSet?.question?.question}`}
                 </p>
 
-                {
-                  heights > 50 && (
-                    !more ? (
-                      <span onClick={() => setMore((prev) => !prev)} className='text-blue-600 text-[18px] pl-1 font-semibold cursor-pointer hover:underline absolute bottom-[16px] right-[18px]'>more</span>
-                    ) : (
-                      <span onClick={() => setMore((prev) => !prev)} className='text-blue-600 text-[18px] pl-1 font-semibold cursor-pointer hover:underline'>less</span>
-                    )
-                  )
-                }
+                {heights > 52 && (
+                  <div className="flex justify-end">
+                    <span
+                      onClick={() => setMore(prev => !prev)}
+                      className="text-blue-600 text-[18px] font-semibold cursor-pointer hover:underline"
+                    >
+                      {more ? "less" : "more"}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Options */}
@@ -306,7 +310,7 @@ const QuestionSection = () => {
               </div>
 
               {/* Navigation Buttons */}
-              <div className={`flex justify-between items-center ${heights > 50 && "my-4"}`}>
+              <div className={`flex justify-between items-center ${heights > 52 && "my-4"}`}>
 
                 <button
                   onClick={() => {
@@ -332,15 +336,12 @@ const QuestionSection = () => {
                   >
                     Clear
                   </button>
-                  {/* <button className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer font-semibold py-2 px-6 rounded-xl transition">
-                    Next
-                  </button> */}
                 </div>
               </div>
             </div>
           ) : (
             <div className='flex items-center justify-center bg-gradient-to-br'>
-              <h1 className='text-4xl animate-pulse'>
+              <h1 className='text-[28px] sm:text-4xl animate-pulse'>
                 <strong>
                   Fetching Question ...
                 </strong>
@@ -353,7 +354,7 @@ const QuestionSection = () => {
       {
         blocker.state === "blocked" ? (
           <section className='fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50'>
-            <div className="bg-white min-w-[500px] max-w-[500px] p-8 rounded-3xl shadow-xl border border-gray-100 relative">
+            <div className="bg-white w-[500px] p-8 rounded-3xl shadow-xl border border-gray-100 relative mx-3">
 
               <h1 className="text-2xl font-semibold text-gray-800 mb-2">
                 Are you sure you want to leave?
@@ -394,11 +395,11 @@ const QuestionSection = () => {
           <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xl px-4">
 
             <div className="relative bg-gradient-to-br from-[#464545] to-white/10 backdrop-blur-2xl border-[3px] border-gray-400
-            shadow-2xl rounded-3xl px-10 py-8 w-full max-w-lg text-white outline-none"
+            shadow-2xl rounded-3xl px-8 sm:px-10 py-6 sm:py-8 w-full max-w-lg text-white outline-none mx-3 sm:mx-0"
             >
 
               {/* Title */}
-              <h1 className="text-4xl font-extrabold tracking-wide mb-6">
+              <h1 className="text-[28px] sm:text-4xl font-extrabold tracking-wide mb-6">
                 🎉 Battle Over!
               </h1>
 
@@ -436,15 +437,15 @@ const QuestionSection = () => {
             </div>
           </section>
         ) : localStorage.getItem("wait-opp") ? (
-          <section className='min-h-screen inset-0 z-50 fixed w-full flex items-center justify-center backdrop-blur-[5px]'>
+          <section className='h-screen inset-0 z-50 fixed w-full flex items-center justify-center backdrop-blur-[5px]'>
             <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xl px-4">
 
               <div className="relative bg-gradient-to-br from-[#464545] to-white/10 backdrop-blur-2xl border-[3px] border-gray-400
-            shadow-2xl rounded-3xl px-10 py-8 w-full max-w-lg text-white outline-none"
+              shadow-2xl rounded-3xl px-8 sm:px-10 py-6 sm:py-8 w-full max-w-lg text-white outline-none mx-3 sm:mx-0"
               >
 
                 {/* Title */}
-                <div className="text-3xl font-extrabold tracking-wide flex items-center gap-3 mb-6">
+                <div className="text-2xl sm:text-3xl font-extrabold tracking-wide flex items-center gap-3 custom-sm:gap-3 custom-lg:gap-5  mb-6">
                   <div>Wait For Opponent !?</div>
                   <span className='wait_loader'></span>
                 </div>
@@ -460,10 +461,9 @@ const QuestionSection = () => {
                   </div>
 
                   <div className="flex justify-between items-center bg-white/10 p-4 rounded-xl border border-white/20">
-                    <div className="text-lg font-semibold flex items-center gap-3">
-                      Opponent Score (
-                      <span className='text-red-400 animate-pulse'>updating...</span>
-                      )
+                    <div className="text-lg font-semibold flex flex-col sm:flex-row sm:items-center sm:gap-3">
+                      Opponent Score 
+                      <span className='text-red-400 animate-pulse'>( updating... )</span>
                     </div>
 
                     <span className="text-3xl font-bold text-red-300 drop-shadow-md">

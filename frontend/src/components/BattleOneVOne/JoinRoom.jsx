@@ -84,7 +84,7 @@ const JoinRoom = ({ close }) => {
     return (
         <section className='fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50'>
 
-            <div className='bg-white min-w-[500px] max-w-[500px] p-8 rounded-2xl shadow-2xl border border-gray-200 relative'>
+            <div className='bg-white w-[350px] sm:w-[500px] p-6 sm:p-8 mx-4 rounded-2xl shadow-2xl border border-gray-200 relative'>
 
                 <div className='absolute top-5 right-8'>
                     <RxCross2 onClick={() => close()} size={26} className='hover:text-blue-500 cursor-pointer' />
@@ -132,9 +132,7 @@ const JoinRoom = ({ close }) => {
                     </button>
                 </div>
             </div>
-
-
-
+            
         </section>
     )
 }

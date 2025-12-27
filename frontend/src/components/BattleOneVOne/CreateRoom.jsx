@@ -168,16 +168,16 @@ const CreateRoom = ({ close }) => {
     }, [createLoading])
 
     return (
-        <section className="fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+        <section className="fixed h-[calc(100vh-70px)] sm:h-auto top-[70px] bottom-0 left-0 right-0 sm:inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
 
-            <div className="bg-white min-w-[700px] max-w-[700px] p-8 rounded-2xl shadow-2xl border border-gray-200 relative">
+            <div className="bg-gradient-to-br from-[#eef2ff] to-[#f8fafc] sm:from-white sm:to-white w-full sm:w-[700px] h-[100%] sm:h-auto overflow-y-auto p-6 sm:p-8 sm:rounded-2xl sm:shadow-2xl sm:border border-gray-200 relative">
 
-                <div className='absolute top-5 right-8'>
+                <div className='absolute top-7 right-8'>
                     <RxCross2 onClick={() => close()} size={26} className='hover:text-blue-500 cursor-pointer' />
                 </div>
 
                 {/* Heading */}
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                     Few Setup To Go...
                 </h1>
 
@@ -193,8 +193,8 @@ const CreateRoom = ({ close }) => {
                                         return `${v.header}  ----  "${v.desc}"`
                                     })
                                 }}
-                                className="bg-indigo-100 text-indigo-700 font-medium rounded-full py-1 px-3 cursor-pointer 
-                                   hover:bg-indigo-200 transition-all"
+                                className={`bg-indigo-100 text-indigo-700 font-medium rounded-full py-1 px-3 cursor-pointer 
+                                   hover:bg-indigo-200 transition-all ${i > 6 && "hidden sm:block" }`}
                             >
                                 {v.header}
                             </div>
@@ -211,7 +211,7 @@ const CreateRoom = ({ close }) => {
                         value={quizTopicText}
                         onChange={(e) => setQuizTopicText(e.target.value)}
                         placeholder="Write something about your quiz..."
-                        className="w-full min-h-[100px] max-h-[100px] p-3 rounded-xl border border-gray-300
+                        className="w-full min-h-[100px] max-h-[100px] p-3 rounded-xl border border-violet-600
                             focus:ring-2 focus:ring-indigo-300 outline-none
                            text-gray-700"
                     >

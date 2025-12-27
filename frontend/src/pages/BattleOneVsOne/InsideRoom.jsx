@@ -278,13 +278,14 @@ const InsideRoom = () => {
             {
                 isIamSubmit ? (
                     <section className="h-[calc(100vh-70px)] w-full flex items-center justify-center bg-gradient-to-br from-[#fdf3f3] to-[#c9d8f0] p-4 overflow-y-hidden">
-                        <div className="bg-white/70 backdrop-blur-xl shadow-2xl rounded-2xl mb-[20px] px-10 py-12 max-w-xl w-full text-center border border-white/40 animate-fadeIn">
 
-                            <h1 className="text-[55px] font-extrabold text-[#1f2a3c] drop-shadow-sm">
+                        <div className="bg-white/70 backdrop-blur-xl shadow-2xl rounded-2xl mb-[20px] px-8 py-8 sm:px-10 sm:py-12 mx-4 sm:mx-0 max-w-xl w-full text-center border border-white/40 animate-fadeIn">
+
+                            <h1 className="text-3xl sm:text-[55px] font-extrabold text-[#1f2a3c] drop-shadow-sm">
                                 Already Used <span className='text-red-700'>!</span>
                             </h1>
 
-                            <p className="text-lg text-[#4a5568] mt-4 mb-10 tracking-wide leading-relaxed">
+                            <p className="text-lg text-[#4a5568] mt-4 mb-6 sm:mb-10 tracking-wide leading-relaxed">
                                 You have already accessed this battle room.
                                 Please return to the main screen to continue.
                             </p>
@@ -301,20 +302,20 @@ const InsideRoom = () => {
                         </div>
                     </section>
                 ) : (
-                    <section className="grid grid-cols-[40%_60%] h-[calc(100vh-70px)] px-12 bg-gray-50">
+                    <section className="custom-lg:grid grid-cols-[40%_60%] h-[calc(100vh-70px)] px-4 sm:px-6 custom-lg:px-12 bg-gray-50">
 
                         {/* LEFT PANEL — Room Details */}
-                        <div className="px-4 pt-[40px]">
+                        <div className="px-4 pt-6 custom-lg:pt-[40px]">
 
-                            <div className="p-8 w-full">
+                            <div className="custom-lg:p-8 w-full">
 
                                 {/* Title */}
-                                <h2 className="text-3xl font-bold text-gray-900 text-center mb-6">
+                                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-6">
                                     Battle Room Overview
                                 </h2>
 
                                 {/* Room ID */}
-                                <div className="mb-5">
+                                <div className="mb-2.5 custom-lg:mb-5">
                                     <p className="text-gray-600 text-sm font-medium">Room ID</p>
                                     <div className="mt-2 bg-gray-100 p-3 rounded-lg border font-mono text-lg text-gray-800 shadow-inner">
                                         {data?.roomId || "N/A"}
@@ -322,7 +323,7 @@ const InsideRoom = () => {
                                 </div>
 
                                 {/* Topic */}
-                                <div className="mb-5">
+                                <div className="custom-lg:mb-5">
                                     <p className="text-gray-600 text-sm font-medium">Topic</p>
                                     <div className="mt-2 bg-indigo-50 p-3 rounded-lg border border-indigo-200 text-gray-900 font-semibold shadow-inner">
                                         {data?.topic || "Unknown Topic"}
@@ -342,7 +343,7 @@ const InsideRoom = () => {
                         </div>
 
                         {/* RIGHT PANEL — Member Details */}
-                        <div className="px-[150px] pt-[74px] border-l-2 border-l-gray-200">
+                        <div className="px-6 custom-lg:px-[150px] pt-11 custom-lg:pt-[74px] custom-lg:border-l-2 border-l-gray-200">
 
                             <div className='flex justify-between'>
                                 <h1 className="text-3xl font-bold text-gray-900 mb-6">
@@ -351,7 +352,7 @@ const InsideRoom = () => {
                                 <MdOutlineExitToApp size={28} className='cursor-pointer' onClick={() => leftRoom()} title='Left Room' />
                             </div>
 
-                            <div className="w-full max-w-lg space-y-4 bg-white shadow-lg border border-gray-200 py-6 px-6 rounded-xl">
+                            <div className="w-full custom-lg:max-w-lg space-y-4 bg-white shadow-lg border border-gray-200 py-6 px-6 rounded-xl">
 
                                 {data && data?.player?.map((v, i) => (
                                     <div
@@ -397,7 +398,7 @@ const InsideRoom = () => {
                             </div>
 
                             {/* NOTE SECTION max-w-lg*/}
-                            <div className={`${data && data?.player?.length > 1 ? "pt-6 mr-8" : "pt-10"}`}>
+                            <div className={`${data && data?.player?.length > 1 ? "pt-6" : "pt-10"} pb-6`}>
                                 <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow-sm">
                                     <p className="font-semibold">Note:</p>
                                     <p className="text-sm mt-1">
@@ -412,7 +413,7 @@ const InsideRoom = () => {
                             blocker.state === "blocked" && (
                                 <div className='fixed inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50'>
 
-                                    <div className="bg-white min-w-[500px] max-w-[500px] p-8 rounded-3xl shadow-xl border border-gray-100 relative">
+                                    <div className="bg-white w-[500px] p-6 sm:p-8 rounded-3xl shadow-xl border border-gray-100 relative mx-4">
 
                                         <h1 className="text-2xl font-semibold text-gray-800 mb-2">
                                             Are you sure you want to leave?

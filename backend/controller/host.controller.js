@@ -17,7 +17,7 @@ export const createQuizController = async (request, response) => {
 
         if (!quiz_data || quiz_data.length === 0) {
             return response.status(400).json({
-                message: "No quiz data found!",
+                message: "Quiz data not found!",
                 error: true,
                 success: false
             })
@@ -34,6 +34,24 @@ export const createQuizController = async (request, response) => {
         if (!quiz_end.trim()) {
             return response.status(400).json({
                 message: "Quiz end time required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const currTimeDate = new Date()
+
+        if(currTimeDate >= new Date(quiz_start) || currTimeDate >= new Date(quiz_end)){
+            return response.status(400).json({
+                message : "Quiz start or end time can't be past time.",
+                error : true,
+                success : false
+            })
+        }
+
+        if (new Date(quiz_start) >= new Date(quiz_end)) {
+            return response.status(400).json({
+                message: "Quiz start time must be less than end.",
                 error: true,
                 success: false
             })

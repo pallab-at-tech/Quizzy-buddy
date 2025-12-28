@@ -65,13 +65,22 @@ const HostQuizPage = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // console.log("HostQuizPage user", user)
+    useEffect(()=>{
+        setData((prev)=>{
+            return {
+                ...prev,
+                host_id: user?.nanoId
+            }
+        })
+    },[user])
+
+    // console.log("HostQuizPage user", data)
 
     return (
-        <section className='h-[calc(100vh-70px)] grid grid-cols-[320px_1fr]'>
+        <section className='h-[calc(100vh-70px)] grid custom-sm:grid-cols-[280px_1fr] custom-lg:grid-cols-[320px_1fr]'>
 
             {/* sidebar */}
-            <div className="px-6 py-8 bg-white shadow-md border-r-2 border-r-gray-200  flex flex-col gap-6 sticky top-[70px] max-h-[calc(100vh-70px)]">
+            <div className="hidden sm:flex px-6 py-8 bg-white shadow-md border-r-2 border-r-gray-200 flex-col gap-6 sticky top-[70px] max-h-[calc(100vh-70px)]">
                 {/* Host Details */}
                 <div className="bg-blue-50 p-4 rounded-lg shadow-sm">
                     <h2 className="text-lg font-semibold text-blue-700 mb-2">Host Details</h2>
@@ -108,47 +117,6 @@ const HostQuizPage = () => {
                             className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400"
                         />
                     </label>
-
-                    {/* <div className="flex flex-col text-gray-600 text-sm">
-                        Time per Question
-                        <div className="mt-1 flex items-center gap-2">
-                            <input
-                                type="number"
-                                min="1"
-                                placeholder="e.g. 10"
-                                className="w-24 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
-                                onChange={(e) => {
-
-                                    if (e.target.value <= 0) {
-                                        toast.error("Negative / null time can't selected.")
-                                        e.target.value = ""
-                                    }
-                                    else {
-                                        setData((preve) => {
-                                            return {
-                                                ...preve,
-                                                quiz_expire_per_Q: e.target.value
-                                            }
-                                        })
-                                    }
-                                }}
-                            />
-                            <select
-                                className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
-                                onChange={(e) => {
-                                    setData((prev) => {
-                                        return {
-                                            ...prev,
-                                            time_sec_min: e.target.value
-                                        }
-                                    })
-                                }}
-                            >
-                                <option value="seconds">Seconds</option>
-                                <option value="minutes">Minutes</option>
-                            </select>
-                        </div>
-                    </div> */}
                 </div>
 
                 {/* Negative Mark */}

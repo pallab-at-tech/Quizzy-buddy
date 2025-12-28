@@ -102,14 +102,14 @@ const router = createBrowserRouter([
                 children: [
                     {
                         index: true,
-                        element: <div className="px-8 py-10 bg-gray-50 h-full">
-                            <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-2">
+                        element: <div className="px-6 sm:px-8 py-5 sm:py-10 bg-gray-50 sm:bg-gray-50 h-full">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-6 sm:mb-8 flex items-center gap-2">
                                 ⚙️ Quiz Setup
                             </h1>
 
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <div className="grid custom-lg:grid-cols-2 gap-4 sm:gap-6">
                                 {/* Manual Quiz Card */}
-                                <Link to={"/host-quiz/create-quiz"} className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-blue-400 transition-all duration-300 cursor-pointer">
+                                <Link to={"/host-quiz/create-quiz"} className="group bg-white sm:bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-blue-400 transition-all duration-300 cursor-pointer">
                                     <div className="flex items-center gap-4 mb-3">
                                         <div className="p-3 bg-blue-100 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                                             <FaEdit size={26} />
@@ -124,7 +124,7 @@ const router = createBrowserRouter([
                                 </Link>
 
                                 {/* AI Assistance Quiz Card */}
-                                <Link to={"/host-quiz/create-ai-quiz"} className="group bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-400 transition-all duration-300 cursor-pointer">
+                                <Link to={"/host-quiz/create-ai-quiz"} className="group bg-white sm:bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:shadow-xl hover:border-purple-400 transition-all duration-300 cursor-pointer">
                                     <div className="flex items-center gap-4 mb-3">
                                         <div className="p-3 bg-purple-100 text-purple-600 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
                                             <FaRobot size={26} />

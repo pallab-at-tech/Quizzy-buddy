@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { FiClock, FiUser, FiSend, FiCheck, FiCopy } from "react-icons/fi"
 import generateAiQuestions from "../../utils/quiz_prompt"
@@ -28,6 +28,13 @@ const CreateQuizAi = () => {
     hard: 0
   })
 
+  const [minDateTime, setMinDateTime] = useState("");
+  const [mobileData, setMobileData] = useState({
+    quiz_start: "",
+    quiz_end: "",
+    set_negetive_marks: 0
+  })
+
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -37,7 +44,6 @@ const CreateQuizAi = () => {
 
   const [copied, setCopied] = useState(false);
   const [quizData, setQuizData] = useState(null)
-
 
   const generateQuestion = async () => {
     try {
@@ -95,6 +101,45 @@ const CreateQuizAi = () => {
     const updated = [...questions];
     updated[index][field] = value;
     setQuestions(updated);
+  };
+
+  // Handle time change
+  const handleDateTimeChange = (e) => {
+    const selected = new Date(e.target.value);
+    const now = new Date();
+
+    const name = e.target.name
+
+    if (mobileData.quiz_end.trim() && mobileData.quiz_start.trim()) {
+
+      if (new Date(data.quiz_start) <= new Date(data.quiz_end)) {
+        toast.error("Quiz start time must be less than Quiz end time.")
+        setMobileData((prev) => {
+          return {
+            ...prev,
+            [name]: ""
+          }
+        })
+        return
+      }
+    }
+
+    if (selected < now) {
+      toast.error("You cannot select past date or time!")
+      setMobileData((prev) => {
+        return {
+          ...prev,
+          [name]: ""
+        }
+      })
+    } else {
+      setMobileData((prev) => {
+        return {
+          ...prev,
+          [name]: e.target.value
+        }
+      })
+    }
   };
 
   //  Handle option updates
@@ -191,9 +236,9 @@ const CreateQuizAi = () => {
         data: {
           host_user_nanoId: user?.nanoId,
           quiz_data: questions,
-          quiz_start: data?.quiz_start || "",
-          quiz_end: data?.quiz_end || "",
-          set_negetive_marks: data?.set_negetive_marks || 0,
+          quiz_start: data?.quiz_start || mobileData.quiz_start || "",
+          quiz_end: data?.quiz_end || mobileData.quiz_end || "",
+          set_negetive_marks: data?.set_negetive_marks || mobileData.set_negetive_marks || 0,
         }
       })
 
@@ -229,28 +274,94 @@ const CreateQuizAi = () => {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  // Update min date
+  useEffect(() => {
+    const updateMin = () => {
+      const now = new Date();
+      const formatted = now.toISOString().slice(0, 16);
+      setMinDateTime(formatted);
+    };
+
+    updateMin();
+    const timer = setInterval(updateMin, 60000);
+    return () => clearInterval(timer);
+  }, []);
+  
 
   return (
-    <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">
+    <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-4 custom-lg:p-6 scrollbar-hide">
 
-      <div className="max-w-3xl mx-auto bg-white shadow-sm rounded-2xl p-6 border border-gray-200">
+      <div className="sm:max-w-3xl mx-auto bg-white shadow-sm rounded-2xl p-4 custom-lg:p-6 border border-gray-200">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 sm:text-center">
           Create Quiz With AI
         </h1>
 
         {/* Quiz Info Card */}
-        <div className="bg-blue-50 border border-blue-200 p-5 rounded-lg mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="bg-blue-50 border border-blue-200 p-5 rounded-lg mb-5 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-          <div className="space-y-2">
+          <div className="space-y-1 sm:space-y-2">
 
+            {/* Host Id */}
             <p className="flex items-center gap-2 text-gray-700">
               <FiUser className="text-blue-600" />
               <span className="font-semibold">Host ID:</span>{" "}
               {data?.host_id || "N/A"}
             </p>
 
-            <p className="flex items-center gap-2 text-gray-700">
+            {/* start time and date for mobile version */}
+            <label className="block sm:hidden text-gray-600 mt-3.5">
+              <p className="font-semibold">Start Date & Time : </p>
+              <input
+                name='quiz_start'
+                type="datetime-local"
+                min={minDateTime}
+                value={mobileData.quiz_start}
+                onChange={handleDateTimeChange}
+                className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400 w-full"
+              />
+            </label>
+
+            {/* End Date & Time for mobile version */}
+            <label className="block sm:hidden text-gray-600 mt-3.5">
+              <p className="font-semibold">End Date & Time</p>
+              <input
+                name='quiz_end'
+                type="datetime-local"
+                min={minDateTime}
+                value={mobileData.quiz_end}
+                onChange={handleDateTimeChange}
+                className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400 w-full"
+              />
+            </label>
+
+            {/* Negative Mark for mobile version */}
+            <div className="rounded-lg sm:shadow-md block sm:hidden mt-3.5">
+              <h2 className="font-semibold text-gray-700 mb-2">Negative Marks</h2>
+              <input
+                type="number"
+                max={0}
+                onChange={(e) => {
+                  if (e.target.value > 0) {
+                    toast.error("This field can't take positive value.")
+                    e.target.value = 0
+                  }
+                  else {
+                    setMobileData((prev) => {
+                      return {
+                        ...prev,
+                        set_negetive_marks: e.target.value
+                      }
+                    })
+                  }
+                }}
+                placeholder="Enter negative mark"
+                className="w-full p-2 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-red-400"
+              />
+            </div>
+
+            {/* For tablet and desktop version */}
+            <p className="items-center gap-2 text-gray-700 hidden sm:flex">
               <FiClock className="text-blue-600" />
               <span className="font-semibold">Start Time:</span>{" "}
               {data?.quiz_start
@@ -265,13 +376,14 @@ const CreateQuizAi = () => {
             </p>
           </div>
 
+          {/* Submit button for all version */}
           <button
             disabled={submitLoading || !questions}
             onClick={() => handleSubmitQuiz()}
-            className={`flex items-center gap-2 ${submitLoading || !questions
+            className={`flex justify-center items-center gap-2 ${submitLoading || !questions
               ? "bg-blue-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-              } text-white font-semibold px-5 py-2 rounded-md shadow transition duration-200`}
+              } text-white font-semibold px-5 py-2 rounded-md shadow transition duration-200 w-full sm:w-auto`}
           >
             <FiSend />
             {submitLoading ? "Submitting..." : "Submit"}
@@ -285,7 +397,7 @@ const CreateQuizAi = () => {
               {questions.map((q, i) => (
                 <div
                   key={i}
-                  className="bg-white p-4 rounded-lg shadow-md mb-6 border border-gray-200 transition-all hover:shadow-lg"
+                  className="bg-white p-4 rounded-lg shadow-md mb-4 sm:mb-6 border border-gray-200 transition-all hover:shadow-lg"
                 >
                   <div className="flex justify-between items-center mb-3">
                     <h2 className="text-lg font-semibold text-gray-700">
@@ -435,8 +547,8 @@ const CreateQuizAi = () => {
 
                     {
                       !q.inputBox && (
-                        <label className="text-sm text-gray-600">
-                          Correct Answer:
+                        <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                          <span>Correct Answer : </span>
                           <select
                             value={q.correct}
                             onChange={(e) => {
@@ -455,8 +567,8 @@ const CreateQuizAi = () => {
                       )
                     }
 
-                    <label className="text-sm text-gray-600">
-                      Marks:
+                    <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                      <span> Marks : </span>
                       <input
                         type="number"
                         value={q.marks}
@@ -486,7 +598,7 @@ const CreateQuizAi = () => {
             </div>
           ) : (
             // Prompt Input Section
-            <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg shadow-sm">
+            <div className="bg-gray-50 border border-gray-200 p-4 sm:p-6 rounded-lg shadow-sm">
 
               <h2 className="text-lg font-semibold text-gray-800 mb-3">
                 Just enter your prompt
@@ -603,7 +715,7 @@ const CreateQuizAi = () => {
               <button
                 onClick={() => generateQuestion()}
                 disabled={generatingQuestionLoading}
-                className={`mt-5 w-full ${generatingQuestionLoading
+                className={`mt-3 sm:mt-5 w-full ${generatingQuestionLoading
                   ? "bg-blue-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
                   } sm:w-auto text-white font-semibold px-6 py-2 rounded-md flex items-center justify-center gap-2 transition duration-200 shadow`}
@@ -621,7 +733,7 @@ const CreateQuizAi = () => {
         quizData && (
           <section className="fixed inset-0 flex items-center justify-center bg-[#98b9e08f] backdrop-blur-[5px]">
 
-            <div className="bg-white shadow-xl rounded-2xl p-6 w-[90%] max-w-[500px]">
+            <div className="bg-white shadow-xl rounded-2xl p-6 w-[90%] sm:max-w-[500px]">
 
               {/* Title */}
               <h1 className="text-2xl font-bold text-center text-blue-600 mb-4">
@@ -629,13 +741,13 @@ const CreateQuizAi = () => {
               </h1>
 
               {/* Details */}
-              <div className="space-y-2 text-gray-800 px-5 text-[16px]">
+              <div className="space-y-2 text-gray-800 sm:px-5 text-[16px]">
 
                 <div className="flex flex-col">
 
-                  <div className='flex items-center  gap-2'>
+                  <div className='flex flex-wrap items-center gap-1 sm:gap-2'>
                     <span className="font-semibold">Join Code:</span>
-                    <span className="font-mono text-blue-600 bg-blue-100 px-2 py-1 rounded-md">
+                    <span className="font-mono text-blue-600 bg-blue-100 px-1 sm:px-2 py-1 rounded-md text-[12px] sm:text-lg">
                       {quizData.data.join_code}
                     </span>
 
@@ -651,7 +763,7 @@ const CreateQuizAi = () => {
                       <span className="text-sm text-green-600 font-medium">Copied!</span>
                     )}
                   </div>
-                  <p>
+                  <p className=''>
                     <span className="font-semibold">Total Marks:</span>{" "}
                     {quizData.data.total_marks}
                   </p>

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useOutletContext, useNavigate , useLocation } from 'react-router-dom';
+import { useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 import { FaImage, FaPlusCircle } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import toast from 'react-hot-toast'
 import uploadFile from '../../utils/uploadFile';
 import Axios from '../../utils/Axios';
 import SummaryApi from '../../common/SumarryApi';
-import { useSelector , useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FiCopy, FiCheck } from "react-icons/fi";
 import { setHostDetails } from '../../store/userSlice';
 import { addNotification } from '../../store/notificationSlice';
@@ -17,8 +17,15 @@ const CreateQuizManual = () => {
     const [questions, setQuestions] = useState([
         { question: '', options: ['', ''], correct: '', marks: '', image: '', inputBox: false },
     ]);
+    const [minDateTime, setMinDateTime] = useState("");
+    const [mobileData, setMobileData] = useState({
+        quiz_start: "",
+        quiz_end: "",
+        set_negetive_marks: 0
+    })
 
     const user = useSelector(state => state?.user)
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const location = useLocation()
@@ -35,14 +42,66 @@ const CreateQuizManual = () => {
     const [uploadLoading, setUploadLoading] = useState(new Set())
     const [submitLoading, setSubmitLoading] = useState(false)
 
-    useEffect(()=>{
-        if(!location.state || !location.state?.questions) return
+    useEffect(() => {
+        if (!location.state || !location.state?.questions) return
 
-        setQuestions(()=>{
+        setQuestions(() => {
             return location.state?.questions
         })
-        
-    },[location.state])
+
+    }, [location.state])
+
+    // Update min date
+    useEffect(() => {
+        const updateMin = () => {
+            const now = new Date();
+            const formatted = now.toISOString().slice(0, 16);
+            setMinDateTime(formatted);
+        };
+
+        updateMin();
+        const timer = setInterval(updateMin, 60000);
+        return () => clearInterval(timer);
+    }, []);
+
+    // Handle time change
+    const handleDateTimeChange = (e) => {
+        const selected = new Date(e.target.value);
+        const now = new Date();
+
+        const name = e.target.name
+
+        if (mobileData.quiz_end.trim() && mobileData.quiz_start.trim()) {
+
+            if (new Date(data.quiz_start) <= new Date(data.quiz_end)) {
+                toast.error("Quiz start time must be less than Quiz end time.")
+                setMobileData((prev) => {
+                    return {
+                        ...prev,
+                        [name]: ""
+                    }
+                })
+                return
+            }
+        }
+
+        if (selected < now) {
+            toast.error("You cannot select past date or time!")
+            setMobileData((prev) => {
+                return {
+                    ...prev,
+                    [name]: ""
+                }
+            })
+        } else {
+            setMobileData((prev) => {
+                return {
+                    ...prev,
+                    [name]: e.target.value
+                }
+            })
+        }
+    };
 
     // Add new question
     const addQuestion = () => {
@@ -145,9 +204,9 @@ const CreateQuizManual = () => {
                 data: {
                     host_user_nanoId: user?.nanoId,
                     quiz_data: questions,
-                    quiz_start: data?.quiz_start || "",
-                    quiz_end : data?.quiz_end || "",
-                    set_negetive_marks: data?.set_negetive_marks || 0,
+                    quiz_start: data?.quiz_start || mobileData?.quiz_start || "",
+                    quiz_end: data?.quiz_end || mobileData?.quiz_end || "",
+                    set_negetive_marks: data?.set_negetive_marks || mobileData.set_negetive_marks || 0,
                 }
             })
 
@@ -157,10 +216,10 @@ const CreateQuizManual = () => {
                 toast.success(responseData?.message)
                 setQuizData(responseData)
                 dispatch(setHostDetails({
-                    data : responseData?.host_info
+                    data: responseData?.host_info
                 }))
                 dispatch(addNotification({
-                    notifyData : responseData?.notification
+                    notifyData: responseData?.notification
                 }))
             }
             else {
@@ -178,22 +237,25 @@ const CreateQuizManual = () => {
 
 
     return (
-        <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-6 scrollbar-hide">
+        <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-4 sm:p-6 scrollbar-hide">
 
-            <div className="max-w-3xl mx-auto">
+            <div className="sm:max-w-3xl mx-auto">
 
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pl-1 sm:pl-0">
                     Create Quiz Manually
                 </h1>
 
                 {/* Quiz Info */}
-                <div className="bg-blue-50 border border-blue-200 p-4 rounded-md mb-6 flex items-center justify-between px-4">
+                <div className="sm:bg-blue-50 bg-white sm:border shadow-md sm:shadow-none border-blue-200 p-4 rounded-md mb-4 sm:mb-6 flex flex-col sm:flex-row gap-3 sm:gap-0 sm:items-center justify-between px-4">
                     <div>
+                        {/* Host Id */}
                         <p className="text-gray-700">
                             <span className="font-semibold">Host ID :</span>{' '}
                             {data?.host_id || 'N/A'}
                         </p>
-                        <p className="text-gray-700">
+
+                        {/* For  tablet and desktop version*/}
+                        <p className="text-gray-700 hidden sm:block">
                             <span className="font-semibold">Start Time :</span>{' '}
                             {data?.quiz_start
                                 ? new Date(data.quiz_start).toLocaleString(undefined, {
@@ -205,9 +267,61 @@ const CreateQuizManual = () => {
                                 })
                                 : 'Not Set'}
                         </p>
+
+                        {/* start time and date for mobile version */}
+                        <label className="block sm:hidden text-gray-600 mt-3.5">
+                            <p className="font-semibold">Start Date & Time : </p>
+                            <input
+                                name='quiz_start'
+                                type="datetime-local"
+                                min={minDateTime}
+                                value={mobileData.quiz_start}
+                                onChange={handleDateTimeChange}
+                                className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400 w-full"
+                            />
+                        </label>
+
+                        {/* End Date & Time for mobile version */}
+                        <label className="block sm:hidden text-gray-600 mt-3.5">
+                            <p className="font-semibold">End Date & Time</p>
+                            <input
+                                name='quiz_end'
+                                type="datetime-local"
+                                min={minDateTime}
+                                value={mobileData.quiz_end}
+                                onChange={handleDateTimeChange}
+                                className="mt-1 p-2 border border-gray-300 outline-none rounded-md focus:ring-2 focus:ring-blue-400 w-full"
+                            />
+                        </label>
+
+                        {/* Negative Mark for mobile version */}
+                        <div className="rounded-lg sm:shadow-md block sm:hidden mt-3.5">
+                            <h2 className="font-semibold text-gray-700 mb-2">Negative Marks</h2>
+                            <input
+                                type="number"
+                                max={0}
+                                onChange={(e) => {
+                                    if (e.target.value > 0) {
+                                        toast.error("This field can't take positive value.")
+                                        e.target.value = 0
+                                    }
+                                    else {
+                                        setMobileData((prev) => {
+                                            return {
+                                                ...prev,
+                                                set_negetive_marks: e.target.value
+                                            }
+                                        })
+                                    }
+                                }}
+                                placeholder="Enter negative mark"
+                                className="w-full p-2 border outline-none border-gray-300 rounded-md focus:ring-2 focus:ring-red-400"
+                            />
+                        </div>
                     </div>
+
                     <div onClick={() => handleSubmitQuiz()}
-                        className={`mr-4 ${submitLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"} text-white font-semibold px-4 py-2 rounded-md transition`}
+                        className={`mr-4 ${submitLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"} text-white font-semibold px-4 py-2 rounded-md transition w-full sm:w-auto text-center`}
                     >
                         Submit
                     </div>
@@ -218,7 +332,7 @@ const CreateQuizManual = () => {
                     {questions.map((q, i) => (
                         <div
                             key={i}
-                            className="bg-white p-4 rounded-lg shadow-md mb-6 border border-gray-200 transition-all hover:shadow-lg"
+                            className="bg-white p-4 rounded-lg shadow-md mb-4 sm:mb-6 border border-gray-200 transition-all hover:shadow-lg"
                         >
                             <div className="flex justify-between items-center mb-3">
                                 <h2 className="text-lg font-semibold text-gray-700">
@@ -365,11 +479,10 @@ const CreateQuizManual = () => {
 
                             {/* Correct Answer + Marks */}
                             <div className="flex items-center justify-between">
-
                                 {
                                     !q.inputBox && (
-                                        <label className="text-sm text-gray-600">
-                                            Correct Answer:
+                                        <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                                            <span>Correct Answer : </span>
                                             <select
                                                 value={q.correct}
                                                 onChange={(e) =>
@@ -388,8 +501,8 @@ const CreateQuizManual = () => {
                                     )
                                 }
 
-                                <label className="text-sm text-gray-600">
-                                    Marks:
+                                <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                                    <span> Marks : </span>
                                     <input
                                         type="number"
                                         value={q.marks}
@@ -423,7 +536,7 @@ const CreateQuizManual = () => {
                 quizData && (
                     <section className="fixed inset-0 flex items-center justify-center bg-[#98b9e08f] backdrop-blur-[5px]">
 
-                        <div className="bg-white shadow-xl rounded-2xl p-6 w-[90%] max-w-[500px]">
+                        <div className="bg-white shadow-xl rounded-2xl p-6 w-[90%] sm:max-w-[500px]">
 
                             {/* Title */}
                             <h1 className="text-2xl font-bold text-center text-blue-600 mb-4">
@@ -431,13 +544,13 @@ const CreateQuizManual = () => {
                             </h1>
 
                             {/* Details */}
-                            <div className="space-y-2 text-gray-800 px-5 text-[16px]">
+                            <div className="space-y-2 text-gray-800 sm:px-5 text-[16px]">
 
                                 <div className="flex flex-col">
 
-                                    <div className='flex items-center  gap-2'>
-                                        <span className="font-semibold">Join Code:</span>
-                                        <span className="font-mono text-blue-600 bg-blue-100 px-2 py-1 rounded-md">
+                                    <div className='flex flex-wrap items-center gap-1 sm:gap-2'>
+                                        <span className="font-semibold">Join Code : </span>
+                                        <span className="font-mono text-blue-600 bg-blue-100 px-1 sm:px-2 py-1 rounded-md text-[12px] sm:text-lg">
                                             {quizData.data.join_code}
                                         </span>
 
@@ -446,14 +559,14 @@ const CreateQuizManual = () => {
                                             className="text-gray-600 hover:text-blue-600 transition"
                                             title="Copy to clipboard"
                                         >
-                                            {copied ? <FiCheck size={18} /> : <FiCopy size={18} className='cursor-pointer'/>}
+                                            {copied ? <FiCheck size={18} /> : <FiCopy size={18} className='cursor-pointer' />}
                                         </button>
 
                                         {copied && (
                                             <span className="text-sm text-green-600 font-medium">Copied!</span>
                                         )}
                                     </div>
-                                    <p>
+                                    <p className=''>
                                         <span className="font-semibold">Total Marks:</span>{" "}
                                         {quizData.data.total_marks}
                                     </p>
@@ -476,7 +589,7 @@ const CreateQuizManual = () => {
                             {/* Action Button */}
                             <div className="mt-6 text-center">
                                 <button
-                                    onClick={()=>{
+                                    onClick={() => {
                                         setQuizData(null)
                                         navigate("/host-quiz")
                                     }}

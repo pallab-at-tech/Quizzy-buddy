@@ -839,10 +839,10 @@ const HostPage = () => {
                                             setEditing(true)
                                             setEditedData(data?.quiz_data || [])
                                         }}
-                                        className={`flex items-center gap-2 px-3 py-1.5 border ${editing ? "border-red-500 text-red-600  hover:bg-red-50" : "border-blue-500 text-blue-600  hover:bg-blue-50"} 
+                                        className={`${editing ? "sm:flex hidden" : "flex"} items-center gap-2 px-3 py-1.5 border ${editing ? "border-red-500 text-red-600  hover:bg-red-50" : "border-blue-500 text-blue-600  hover:bg-blue-50"} 
                                         rounded-md  transition font-medium w-fit cursor-pointer`}
                                     >
-                                        <FaEdit size={16} />
+                                        <FaEdit size={16}/>
                                         {editing ? "Editing" : "Edit"}
                                     </button>
 
@@ -851,9 +851,20 @@ const HostPage = () => {
                                         editing && (
                                             <button
                                                 onClick={addQuestion}
-                                                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                                                className="sm:flex hidden items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
                                             >
                                                 <FaPlusCircle size={18} /> Add Question
+                                            </button>
+                                        )
+                                    }
+
+                                    {
+                                        editing && (
+                                            <button
+                                                onClick={addQuestion}
+                                                className="sm:hidden flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-md transition"
+                                            >
+                                                <FaPlusCircle size={14} /> Add
                                             </button>
                                         )
                                     }
@@ -867,7 +878,7 @@ const HostPage = () => {
                                                     return (
                                                         <div
                                                             key={i}
-                                                            className="border border-gray-200 rounded-lg p-5 bg-gray-50 shadow-sm hover:shadow-md transition mb-3"
+                                                            className="border border-gray-200 rounded-lg p-3 sm:p-5 bg-gray-50 shadow-sm hover:shadow-md transition mb-3"
                                                         >
                                                             {/* header */}
                                                             <div className="flex justify-between items-center mb-3">
@@ -1027,8 +1038,8 @@ const HostPage = () => {
 
                                                                 {
                                                                     !q.inputBox && (
-                                                                        <label className="text-sm text-gray-600">
-                                                                            Correct Answer:
+                                                                        <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                                                                            <span>Correct Answer : </span>
                                                                             <select
                                                                                 value={q.correct_option}
                                                                                 onChange={(e) =>
@@ -1047,8 +1058,8 @@ const HostPage = () => {
                                                                     )
                                                                 }
 
-                                                                <label className="text-sm text-gray-600">
-                                                                    Marks:
+                                                                <label className="text-sm text-gray-600 flex gap-1 flex-col sm:flex-row items-center">
+                                                                    <span>Marks : </span>
                                                                     <input
                                                                         type="number"
                                                                         value={q.marks}
@@ -1071,7 +1082,7 @@ const HostPage = () => {
                                                 })
                                             }
 
-                                            <div className="flex items-center justify-start gap-4 mt-6">
+                                            <div className="sm:flex hidden items-center justify-start gap-4 mt-6">
                                                 {/* Discard Button */}
                                                 <button
                                                     disabled={editLoading}
@@ -1095,6 +1106,33 @@ const HostPage = () => {
                                                 >
                                                     <FaSave size={14} />
                                                     {editLoading ? "Saving..." : "Save Changes"}
+                                                </button>
+                                            </div>
+
+                                            <div className="sm:hidden flex items-center justify-start gap-4 mt-4">
+                                                {/* Discard Button */}
+                                                <button
+                                                    disabled={editLoading}
+                                                    onClick={() => {
+                                                        setEditedData(null)
+                                                        setEditing(false)
+                                                    }}
+                                                    className="flex items-center gap-2 px-3 py-2 border border-red-500 text-red-600 
+                                        rounded-md hover:bg-red-50 transition font-medium cursor-pointer"
+                                                >
+                                                    <FaTimes size={14} />
+                                                    Discard
+                                                </button>
+
+                                                {/* Save Button */}
+                                                <button
+                                                    disabled={editLoading}
+                                                    onClick={() => handelEditQuestion()}
+                                                    className={`flex items-center gap-2 px-3 py-2 ${editLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}
+                                        text-white  rounded-md  transition font-medium shadow-sm`}
+                                                >
+                                                    <FaSave size={14} />
+                                                    {editLoading ? "Saving..." : "Save"}
                                                 </button>
                                             </div>
                                         </div>

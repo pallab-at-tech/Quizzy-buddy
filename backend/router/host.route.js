@@ -1,6 +1,6 @@
 import express from 'express'
 import auth from '../middleware/auth.js'
-import { checkingUserCanAttendQuiz, createQuizController, fetchHostPlusQuizDetails, fetchParticipantsDetailsController, fetchQuestionDetails, hostOtherDetails, hostTimeUpdate, saveChangesHostDetailsByHost } from '../controller/host.controller.js'
+import { checkingUserCanAttendQuiz, createQuizController, deleteSubmittedUserQuiz, fetchHostPlusQuizDetails, fetchParticipantsDetailsController, fetchQuestionDetails, hostOtherDetails, hostTimeUpdate, saveChangesHostDetailsByHost } from '../controller/host.controller.js'
 
 const hostRouter = express()
 
@@ -12,5 +12,6 @@ hostRouter.post("/host-time-update", auth, hostTimeUpdate)
 hostRouter.get("/participants-details", auth, fetchParticipantsDetailsController)
 hostRouter.post("/check-canParticipate", auth, checkingUserCanAttendQuiz)
 hostRouter.post("/get-question-details", auth, fetchQuestionDetails)
+hostRouter.post("/delete-record", auth, deleteSubmittedUserQuiz)
 
 export default hostRouter

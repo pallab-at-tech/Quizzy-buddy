@@ -5,14 +5,21 @@ import SummaryApi from '../../common/SumarryApi'
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Label } from "recharts";
 import { FaCrown } from "react-icons/fa";
 import { ImStatsBars } from 'react-icons/im';
+import { FaDeleteLeft } from "react-icons/fa6";
+import toast from 'react-hot-toast';
 
 const GetSubmissionFullDetails = () => {
 
-    const { data } = useOutletContext()
+    const { data, setData } = useOutletContext()
     const navigate = useNavigate()
     const location = useLocation()
 
     const [leaderBoardData, setLeaderBoardData] = useState(null)
+    const [deleteSet, setDeleteSet] = useState({
+        data: {},
+        has: false,
+        loading: false
+    })
 
     const fetchLeaderBoard = async () => {
         if (!data) return
@@ -73,6 +80,63 @@ const GetSubmissionFullDetails = () => {
 
         return buckets;
     };
+
+    const deleteUserSubmission = async () => {
+
+        if (deleteSet.loading) return
+
+        try {
+
+            setDeleteSet((prev) => {
+                return {
+                    ...prev,
+                    loading: true
+                }
+            })
+
+            const response = await Axios({
+                ...SummaryApi.deleteSubmission_record,
+                data: {
+                    submitId: deleteSet?.data?._id,
+                    submittedUserId: deleteSet.data?.userDetails?.Id,
+                    hostId: data?._id
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData?.success) {
+                toast.success(responseData?.message)
+                setData((prev) => {
+                    let submit = prev?.quiz_submission_data || []
+                    submit = submit?.filter((u) => u?._id !== deleteSet.data?._id) || []
+                    return {
+                        ...prev,
+                        quiz_submission_data: submit || []
+                    }
+                })
+            }
+            else {
+                toast.error(responseData?.message)
+            }
+
+            setDeleteSet(() => {
+                return {
+                    data: {},
+                    has: false,
+                    loading: false
+                }
+            })
+        } catch (error) {
+            setDeleteSet(() => {
+                return {
+                    data: {},
+                    has: false,
+                    loading: false
+                }
+            })
+        }
+    }
 
     const chartData = convertToScoreBuckets(leaderBoardData?.top_users || [], data?.total_marks);
 
@@ -182,10 +246,25 @@ const GetSubmissionFullDetails = () => {
                                 return (
                                     <div
                                         key={v._id}
-                                        className="bg-white shadow-md hover:shadow-lg border-2 border-gray-200 rounded-2xl p-6 transition-all duration-200"
+                                        className="bg-white shadow-md hover:shadow-lg border-2 border-gray-200 rounded-2xl p-6 transition-all duration-200 relative"
                                     >
+                                        {/* delete icon */}
+                                        <FaDeleteLeft
+                                            size={19}
+                                            className={`${deleteSet.has ? "cursor-not-allowed" : "cursor-pointer"} absolute top-2 right-7 text-red-600`}
+                                            onClick={() => {
+                                                setDeleteSet(() => {
+                                                    return {
+                                                        data: v,
+                                                        has: true,
+                                                        loading: false
+                                                    }
+                                                })
+                                            }}
+                                        />
+
                                         {/* Header */}
-                                        <div className="flex items-center justify-between mb-3">
+                                        <div className="flex flex-col custom-lg:flex-row custom-lg:items-center justify-between mb-3">
                                             <h3 className="text-lg font-semibold text-purple-700 flex items-center gap-2">
                                                 {v.userDetails?.userName || "Unknown User"}
                                             </h3>
@@ -238,7 +317,7 @@ const GetSubmissionFullDetails = () => {
                                         </div>
 
                                         {/* Footer */}
-                                        <div className="mt-5 pt-3 border-t flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm text-gray-600">
+                                        <div className="mt-5 pt-3 border-t flex flex-col custom-lg:flex-row custom-lg:justify-between custom-lg:items-center text-sm text-gray-600">
                                             <div className="italic">
                                                 <span className='font-medium'>User ID:{" "}</span>
                                                 <span className="font-mono bg-gray-100 px-2 py-0.5 rounded italic">
@@ -246,7 +325,7 @@ const GetSubmissionFullDetails = () => {
                                                 </span>
                                             </div>
                                             <button
-                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-1.5 mt-3 sm:mt-0 rounded-lg transition-all cursor-pointer"
+                                                className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-1.5 mt-3 custom-lg:mt-0 rounded-lg transition-all cursor-pointer"
                                                 onClick={() => {
                                                     navigate(`${location.pathname.replace("full-details", "view")}`, {
                                                         state: {
@@ -281,7 +360,7 @@ const GetSubmissionFullDetails = () => {
                 {
                     new Date() < new Date(data?.quiz_end) ? (
                         <div className="text-center px-4 py-10 bg-red-50 rounded-xl border border-red-200">
-                            <h2 className="text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard will be Shown.</h2>
+                            <h2 className="text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard Will Be Shown.</h2>
                         </div>
                     ) : (
                         <div>
@@ -386,7 +465,7 @@ const GetSubmissionFullDetails = () => {
                 {
                     new Date() < new Date(data?.quiz_end) ? (
                         <div className="text-center px-4 py-6 sm:py-10 bg-red-50 rounded-xl border border-red-200">
-                            <h2 className="text-lg sm:text-xl font-medium text-red-600">⏰ After Quiz Ended , LeaderBoard will be Shown.</h2>
+                            <h2 className="text-lg sm:text-xl font-medium text-red-600">⏰ After Quiz Ended , Stats Will Be Shown.</h2>
                         </div>
                     ) : (
                         <div>
@@ -431,6 +510,54 @@ const GetSubmissionFullDetails = () => {
                     )
                 }
             </div>
+
+            {
+                deleteSet.has && (
+                    <section className="fixed h-screen inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50">
+                        <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 animate-scaleIn">
+
+                            {/* Header */}
+                            <h2 className="text-xl font-bold text-red-600 text-center">
+                                Confirm Deletion
+                            </h2>
+
+                            <p className="text-gray-600 text-center mt-2">
+                                Are you sure you want to delete <span className='font-bold text-gray-600'>{`${deleteSet?.data?.userDetails?.userName}`}</span>'s record?
+                                This action <span className="font-semibold text-red-500">cannot be undone</span>.
+                            </p>
+
+                            {/* Actions */}
+                            <div className="mt-6 flex gap-3">
+                                <button
+                                    className={`w-1/2 ${deleteSet.loading ? "cursor-not-allowed" : "cursor-pointer"} py-2 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition`}
+                                    disabled={deleteSet.loading}
+                                    onClick={() => {
+                                        setDeleteSet(() => {
+                                            return {
+                                                data: {},
+                                                has: false,
+                                                loading: false
+                                            }
+                                        })
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    className={`w-1/2 ${deleteSet.loading ? "cursor-not-allowed" : "cursor-pointer"} py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition`}
+                                    disabled={deleteSet.loading}
+                                    onClick={() => {
+                                        deleteUserSubmission()
+                                    }}
+                                >
+                                    {deleteSet.loading ? "Deleting..." : "Delete"}
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
 
         </section>
     )

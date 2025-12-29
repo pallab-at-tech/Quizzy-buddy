@@ -3,6 +3,7 @@ import { questionModel, quizHostModel } from '../model/host_quiz.model.js'
 import userModel from '../model/user.model.js'
 import { customAlphabet } from "nanoid"
 import notificationModel from '../model/notification.model.js'
+import leaderBoardModel from '../model/leaderBoard.model.js'
 
 
 const hostIdentity = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 10)
@@ -41,11 +42,11 @@ export const createQuizController = async (request, response) => {
 
         const currTimeDate = new Date()
 
-        if(currTimeDate >= new Date(quiz_start) || currTimeDate >= new Date(quiz_end)){
+        if (currTimeDate >= new Date(quiz_start) || currTimeDate >= new Date(quiz_end)) {
             return response.status(400).json({
-                message : "Quiz start or end time can't be past time.",
-                error : true,
-                success : false
+                message: "Quiz start or end time can't be past time.",
+                error: true,
+                success: false
             })
         }
 
@@ -611,6 +612,91 @@ export const fetchQuestionDetails = async (request, response) => {
             error: false,
             success: true,
             data: combineData
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const deleteSubmittedUserQuiz = async (request, response) => {
+    try {
+        const { hostId, submitId, submittedUserId } = request.body || {}
+        const userId = request.userId
+
+        if (!hostId) {
+            return response.status(400).json({
+                message: "Host Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!submitId) {
+            return response.status(400).json({
+                message: "Submit Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!submittedUserId) {
+            return response.status(400).json({
+                message: "Submitted user Id required!",
+                error: true,
+                success: false
+            })
+        }
+
+        const quiz = await quizHostModel.findById(hostId)
+        const user = await userModel.findById(submittedUserId)
+
+        if (!quiz) {
+            return response.status(400).json({
+                message: "Quiz not found!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (!user) {
+            return response.status(400).json({
+                message: "User not found!",
+                error: true,
+                success: false
+            })
+        }
+
+        if (userId.toString() !== quiz.host_user_id.toString()) {
+            return response.status(400).json({
+                message: "Permission denied!",
+                error: true,
+                success: false
+            })
+        }
+
+        user.participant_info = user.participant_info.filter((u) => u.quiz_id.toString() !== hostId.toString())
+
+        quiz.quiz_submission_data = quiz.quiz_submission_data.filter((u) => u._id.toString() !== submitId.toString())
+
+        const updateLeaderBoard = await leaderBoardModel.findOne({ quizId: hostId })
+
+        if (updateLeaderBoard) {
+            updateLeaderBoard.top_users = updateLeaderBoard.top_users.filter((u) => u.userId.Id.toString() !== submittedUserId.toString())
+            await Promise.all([quiz.save(), updateLeaderBoard.save(), user.save()])
+        }
+        else {
+            await Promise.all([quiz.save(), user.save()])
+        }
+
+        return response.json({
+            message: `Submission record updated`,
+            error: false,
+            success: true
         })
 
     } catch (error) {

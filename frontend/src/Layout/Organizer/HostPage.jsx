@@ -575,7 +575,7 @@ const HostPage = () => {
 
             {
                 navigateTo === "full-details" || navigateTo === "view" ? (
-                    <Outlet context={{ data: data }} />
+                    <Outlet context={{ data: data , setData }} />
                 ) : (
                     <section>
                         {/* host details */}

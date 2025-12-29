@@ -120,6 +120,10 @@ const SummaryApi = {
     daily_top2: {
         url: "/api/leaderboard/fetch-top2-daily",
         method: "get"
+    },
+    deleteSubmission_record : {
+        url : "/api/host/delete-record",
+        method : "post"
     }
 }
 

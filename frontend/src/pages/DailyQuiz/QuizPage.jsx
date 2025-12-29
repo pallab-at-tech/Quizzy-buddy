@@ -23,16 +23,10 @@ const QuizPage = () => {
   const [correct_answer, setCorrect_answer] = useState(null)
   const [submitLoading, setSubmitLoading] = useState(false)
 
-  const [heightSetting, setHeightSetting] = useState({
-    more: false,
-    showMoreBtn: false
-  })
-
   const dataRef = useRef();
   const timerRef = useRef();
   const answerRef = useRef()
   const correct_answerRef = useRef()
-  const divRef = useRef(null)
 
   useEffect(() => {
     dataRef.current = data;
@@ -315,39 +309,25 @@ const QuizPage = () => {
   }
 
   useEffect(() => {
-    return () => ifQuitPage()
+    const left = () => {
+      ifQuitPage()
+    }
+
+    window.addEventListener("beforeunload", left)
+
+    return () => {
+      left()
+      window.removeEventListener("beforeunload", left)
+    }
   }, []);
-
-
-  useEffect(() => {
-    const el = divRef.current
-    if (!el) return
-
-    // Reset state when question changes
-    setHeightSetting({
-      more: false,
-      showMoreBtn: false
-    })
-
-    // Wait for DOM render
-    requestAnimationFrame(() => {
-      if (el.scrollHeight > el.clientHeight) {
-        setHeightSetting(prev => ({
-          ...prev,
-          showMoreBtn: true
-        }))
-      }
-    })
-  }, [index])
-
 
   return (
     <div>
       {
         data ? (
-          <div className='fixed flex items-center justify-center overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 '>
+          <div className='fixed flex items-center justify-center overflow-y-auto inset-0 z-50 bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100 '>
 
-            <div className='bg-white w-full h-[550px] max-h-[700px] overflow-y-auto custom-lg:w-[850px] shadow-md rounded-xl custom-lg:mx-auto px-6 sm:px-10 py-6 sm:py-8 mx-4 sm:mx-10'>
+            <div className='bg-white w-full sm:max-w-[650px] custom-lg:max-w-3xl max-h-[95dvh] overflow-y-auto shadow-md rounded-xl px-6 sm:px-10 py-6 sm:py-8 mx-5 sm:mx-10'>
 
               {/* Header */}
               <div className='flex items-center justify-between mb-2.5 sm:mb-4'>
@@ -362,70 +342,54 @@ const QuizPage = () => {
                 </div>
               </div>
 
-              {/* questions */}
-              <div ref={divRef} id='divHeight' className={`w-full text-lg font-semibold text-gray-800 overflow-hidden transition-all duration-300
-              ${heightSetting.more ? "" : "line-clamp-2"}
-              `}>
-                {data?.question_details[index].question}
+              <div className="min-h-0 mt-4 mb-2.5 border border-gray-200 p-3.5 rounded-xl relative ">
+                <div className="overflow-hidden">
+                  <div className="max-h-[16dvh] overflow-y-auto quizScrollbar pr-1.5 leading-[1.3] text-[16px] sm:text-lg">
+                    {data?.question_details[index].question}
+                  </div>
+                </div>
               </div>
 
-              {/* More / Less */}
-              {
-                heightSetting.showMoreBtn && (
-                  <button
-                    onClick={() => {
-                      setHeightSetting((prev) => {
-                        return {
-                          ...prev,
-                          more: !prev.more
-                        }
-                      })
-                    }}
-                    className='text-[16px] text-indigo-600 font-medium hover:underline'
-                  >
-                    {heightSetting.more ? "Less" : "More"}
-                  </button>
-                )
-              }
-
               {/* options */}
-              <div className='flex flex-col gap-2.5 sm:gap-4 my-4'>
-                {
-                  data && data?.question_details[index].options.map((v, i) => {
-                    return (
-                      <label key={i}
-                        className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer ${aArr && Number(aArr[index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"} transition-all`}
-                      >
-                        <input
-                          type="radio"
-                          name='answer'
-                          checked={aArr && aArr[index] === i}
-                          value={i}
-                          className={`w-5 h-5 accent-purple-600 cursor-pointer`}
-                          onChange={() => {
-                            setAnswer((prev) => {
-                              const updated = [...prev]
-                              updated[index] = {
-                                ...updated[index],
-                                userAns: i
-                              }
-                              localStorage.setItem("ans", JSON.stringify(updated))
-                              return updated
-                            })
+              <div className="border border-gray-200 px-1.5 py-2 rounded-2xl">
+                <div className='p-1.5 space-y-2 quizScrollbar border-gray-300 max-h-[38dvh] overflow-y-auto rounded-2xl'>
+                  {
+                    data && data?.question_details[index].options.map((v, i) => {
+                      return (
+                        <label key={i}
+                          className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer ${aArr && Number(aArr[index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"} transition-all`}
+                        >
+                          <input
+                            type="radio"
+                            name='answer'
+                            checked={aArr && aArr[index] === i}
+                            value={i}
+                            className={`w-5 h-5 accent-purple-600 cursor-pointer`}
+                            onChange={() => {
+                              setAnswer((prev) => {
+                                const updated = [...prev]
+                                updated[index] = {
+                                  ...updated[index],
+                                  userAns: i
+                                }
+                                localStorage.setItem("ans", JSON.stringify(updated))
+                                return updated
+                              })
 
-                            setaArr((prev) => {
-                              const x = [...prev]
-                              x[index] = i
-                              localStorage.setItem("aArr", JSON.stringify(x))
-                              return x
-                            })
-                          }}
-                        />
-                        <span className="text-gray-800 text-lg">{v}</span>
-                      </label>
-                    )
-                  })
-                }
+                              setaArr((prev) => {
+                                const x = [...prev]
+                                x[index] = i
+                                localStorage.setItem("aArr", JSON.stringify(x))
+                                return x
+                              })
+                            }}
+                          />
+                          <span className="text-gray-800 text-[16px] sm:text-lg leading-[1.3]">{v}</span>
+                        </label>
+                      )
+                    })
+                  }
+                </div>
               </div>
 
               {/* next and previous */}

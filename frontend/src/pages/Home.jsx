@@ -159,7 +159,7 @@ const Home = () => {
                             <div className='lg:flex flex-col items-center justify-center md:pt-[60px] pt-8 lg:px-[24%] px-3 '>
                                 <div className='sm:mb-14 mb-10'>
                                     
-                                    <div className='text-[29px] font-bold flex flex-wrap gap-0 space-y-[-10px]'>
+                                    <div className='text-[29px] font-bold flex flex-wrap gap-0 space-y-[-10px] custom-lg:leading-[1.2]'>
                                         <p className='text-[#1633ff] tracking-[2px] md:text-[55px] lg:text-[75px] sm:pr-2 pr-0.5'>Challenge</p>
                                         <p className='tracking-[0.1px] sm:tracking-[0.7px] md:text-[55px] lg:text-[70px]'>Your Mind</p>
                                     </div>

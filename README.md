@@ -1,34 +1,46 @@
 
 # QuizzyBuddy
 
-About QuizzyBuddy
+QuizzyBuddy is a smart, interactive quiz platform designed to help users **learn, compete, and grow every day**.  
+Participate in daily quizzes, host your own challenges, battle 1 vs 1, and track performance with modern analytics.
 
-QuizzyBuddy is a smart quiz platform designed to help you learn, compete, and grow every day.
+---
 
-Daily Quizzes & Leaderboard
+## ✨ Features
 
-Take part in daily skill-based quizzes and track your progress on a real-time global leaderboard.
+### 📅 Daily Quizzes & Leaderboard
+- Skill-based daily quizzes  
+- Real-time global leaderboard  
+- Performance & consistency tracking  
 
-Host & Join Quizzes
+### 🧠 Host & Join Quizzes
+- Manual & AI-assisted quiz creation  
+- Secure join code system  
+- Multi-user participation  
 
-Create quizzes manually or with AI assistance, share a secure join code, and let others participate instantly.
+### 📊 Results & Analytics
+- Participant-wise score breakdown  
+- Instant result release  
+- Clean & modern dashboard UI  
 
-Results & Analytics
+### ⚔️ 1 vs 1 Quiz Battles
+- Real-time head-to-head battles  
+- Time-limited questions  
+- Speed & accuracy based competition  
 
-Hosts get a modern dashboard with participant-wise scores, performance insights, and instant result release.
+### 🏆 Badges & Achievements
+- Streak badges (1 week → 1 year)  
+- Hosting milestones  
+- Top 1 / Top 5 / Top 10 ranking rewards  
 
-1 vs 1 Quiz Battles
-
-Challenge other players in fast-paced, time-limited quiz battles that test speed and accuracy.
-
-Badges & Achievements
-
-Earn streak, hosting, and ranking badges that reward consistency and top performance.
+---
 
 
 ## Demo
 
-Insert gif or link to demo
+🌐 Live Demo : [QuizzyBuddy - Challenge yourself with engaging quizzes](https://quizzy-buddy-fnif.vercel.app)
+
+🎥 Demo Video : will be available soon...
 
 
 ## Acknowledgements
@@ -40,38 +52,7 @@ Insert gif or link to demo
 
 ## Running Tests
 
-To run tests, run the following command
-
-```bash
-  npm run test
-```
-
-
-## API Reference
-
-#### Get all items
-
-```http
-  GET /api/items
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
-
-#### Get item
-
-```http
-  GET /api/items/${id}
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **Required**. Id of item to fetch |
-
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
+Currently, there are no automated tests implemented for this project.
 
 
 ## Badges
@@ -82,77 +63,44 @@ Add badges from somewhere like: [shields.io](https://shields.io/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-## Color Reference
 
-| Color             | Hex                                                                |
-| ----------------- | ------------------------------------------------------------------ |
-| Example Color | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #0a192f |
-| Example Color | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f8f8f8 |
-| Example Color | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #00b48a |
-| Example Color | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #00d1a0 |
+## Other Common GitHub Profile Sections
 
+👩‍💻 **Currently working on:** Building QuizzyBuddy and other full-stack projects  
 
-# Hi, I'm Katherine! 👋
+🧠 **Currently learning:** Advanced AI Algorithm , real-time systems, and React performance optimizations  
 
+👯‍♀️ **Looking to collaborate on:** Open-source projects, educational apps, and AI-assisted platforms  
 
-## Other Common Github Profile Sections
-👩‍💻 I'm currently working on...
+🤔 **Looking for help with:** Best practices for scalable Node.js backends and React architectures  
 
-🧠 I'm currently learning...
+💬 **Ask me about:** Web development, MERN stack, AI integrations, and quizzes  
 
-👯‍♀️ I'm looking to collaborate on...
+📫 **How to reach me:** pallab861774@gmail.com | [LinkedIn](https://linkedin.com/in/pallab-bag)  
 
-🤔 I'm looking for help with...
+😄 **Pronouns:** He/Him  
 
-💬 Ask me about...
-
-📫 How to reach me...
-
-😄 Pronouns...
-
-⚡️ Fun fact...
-
-
-# QuizzyBuddy
-
-About QuizzyBuddy
-
-QuizzyBuddy is a smart quiz platform designed to help you learn, compete, and grow every day.
-
-Daily Quizzes & Leaderboard
-
-Take part in daily skill-based quizzes and track your progress on a real-time global leaderboard.
-
-Host & Join Quizzes
-
-Create quizzes manually or with AI assistance, share a secure join code, and let others participate instantly.
-
-Results & Analytics
-
-Hosts get a modern dashboard with participant-wise scores, performance insights, and instant result release.
-
-1 vs 1 Quiz Battles
-
-Challenge other players in fast-paced, time-limited quiz battles that test speed and accuracy.
-
-Badges & Achievements
-
-Earn streak, hosting, and ranking badges that reward consistency and top performance.
+⚡️ **Fun fact:** I love gamifying learning experiences and building interactive educational platforms
 
 
 ## 🚀 About Me
-I'm a full stack developer...
+I'm a full stack developer passionate about building interactive MERN applications, real-time systems, and AI-assisted platforms like QuizzyBuddy.  
 
+---
 
 ## 🛠 Skills
-Javascript, HTML, CSS...
+- **Frontend:** React, TailwindCSS, HTML, CSS, JavaScript  
+- **Backend:** Node.js, Express, MongoDB, REST APIs, Socket.io  
+- **Tools & Others:** Redux Toolkit, Vite, Git, Nodemailer, Google Gemini API, Resend API  
 
+---
 
 ## Deployment
 
-To deploy this project run
+To deploy this project locally, run:
 
 ```bash
-  npm run deploy
-```
+npm install
+npm run dev
+
 

@@ -84,7 +84,6 @@ const GlobalProvider = ({ children }) => {
         fetchNotification()
     }, [])
 
-
     // socket configure
     useEffect(() => {
         if (user?._id && localStorage.getItem("accesstoken")) {

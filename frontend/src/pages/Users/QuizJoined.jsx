@@ -7,7 +7,6 @@ import { MdPlayCircle } from 'react-icons/md'
 import { useSelector } from 'react-redux'
 import { useGlobalContext } from '../../provider/GlobalProvider'
 
-
 const QuizJoined = () => {
 
   const params = useParams()
@@ -151,50 +150,50 @@ const QuizJoined = () => {
         params.userId ? (
           <Outlet />
         ) : count ? (
-          <section className="fixed inset-0 flex flex-col justify-center items-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200  z-50">
+          <section className="fixed inset-0 flex flex-col justify-center items-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200 z-50">
             <div className="text-center space-y-4">
               {/* Countdown Number */}
-              <h1 className="text-[8rem] font-extrabold tracking-widest animate-pulse drop-shadow-lg select-none">
+              <h1 className="text-[5rem] sm:text-[8rem] font-extrabold tracking-widest animate-pulse drop-shadow-lg select-none">
                 {count}
               </h1>
               {/* Text Below */}
-              <p className="text-2xl font-medium opacity-90">
+              <p className="text-2xl font-medium opacity-90 px-6">
                 Get ready... Your quiz is about to begin!
               </p>
             </div>
           </section>
         ) : data ? (
-          <section className="w-full flex flex-col justify-center items-center  p-8 ">
+          <section className="h-full w-full flex flex-col justify-center items-center">
 
             {/* Card Container */}
-            <div className={`bg-white ${!data.strict.enabled && "mt-[75px]"} w-full max-w-3xl rounded-3xl shadow-2xl p-10 border border-gray-200 flex flex-col items-center text-center`}>
+            <div className={`bg-white custom-lg:max-w-3xl rounded-3xl shadow-2xl py-5 custom-sm:py-7 px-8 custom-lg:px-10 custom-lg:py-10 border border-gray-200 flex flex-col items-center text-center`}>
 
               {/* Title */}
-              <h1 className="text-4xl font-extrabold mb-8 bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent">
+              <h1 className="text-[30px] sm:text-4xl font-extrabold mb-3 sm:mb-8 bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent">
                 Quiz Details
               </h1>
 
               {/* Quiz Info */}
-              <div className="bg-gradient-to-br from-purple-100 to-teal-50 rounded-2xl p-4 w-full text-left space-y-3 mb-5 border border-purple-600 pl-5 pr-10">
+              <div className="text-[16px] sm:text-lg bg-gradient-to-br from-purple-100 to-teal-50 rounded-2xl p-4 w-full text-left sm:space-y-3 mb-3 sm:mb-5 border border-purple-600 sm:px-8">
 
-                <div className='grid grid-cols-2 grid-rows-3 gap-2'>
-                  <p className="text-gray-700 text-lg">
+                <div className='grid sm:grid-cols-2 sm:grid-rows-3 gap-1.5 sm:gap-2'>
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">Start : </span> {localDateFormate(data?.quiz_start) || "N/A"}
                   </p>
-                  <p className="text-gray-700 text-lg">
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">End : </span> {localDateFormate(data?.quiz_end) || "N/A"}
                   </p>
-                  <p className="text-gray-700 text-lg">
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">Duration : </span> {quizDuration(data?.quiz_start, data?.quiz_end)}
                   </p>
-                  <p className="text-gray-700 text-lg">
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">Status : </span>{" "}
                     <span className="px-2 py-1 rounded bg-green-100 text-green-700 font-medium">{quizStatus(data?.quiz_start, data?.quiz_end) || "N/A"}</span>
                   </p>
-                  <p className="text-gray-700 text-lg">
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">Total Questions : </span> {data?.quiz_data?.length || 0}
                   </p>
-                  <p className="text-gray-700 text-lg">
+                  <p className="text-gray-700">
                     <span className="font-semibold text-gray-800">Total Marks : </span> {data?.total_marks}
                   </p>
                 </div>
@@ -221,7 +220,7 @@ const QuizJoined = () => {
                   startQuiz()
                 }}
                 state={{ on_Quiz: true }}
-                className="flex items-center w-full justify-center cursor-pointer gap-2 bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 text-white font-semibold text-lg px-10 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all duration-200"
+                className="flex items-center w-full justify-center cursor-pointer gap-2 bg-gradient-to-r from-purple-600 to-teal-500 hover:from-purple-700 hover:to-teal-600 text-white font-semibold text-lg py-2 sm:py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all duration-200"
               >
                 <MdPlayCircle className="text-2xl" />
                 Start Quiz
@@ -229,7 +228,7 @@ const QuizJoined = () => {
             </div>
           </section>
         ) : (
-          <div className='text-gray-400 text-center mt-[240px] text-[30px] font-semibold select-none'>
+          <div className='text-gray-400 text-center h-full w-full flex items-center justify-center font-semibold select-none pb-[120px]'>
             {`${error}`}
           </div>
         )

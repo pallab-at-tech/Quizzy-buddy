@@ -49,6 +49,21 @@ body::-webkit-scrollbar {
   scrollbar-width: none;
 }
 
+/* scroll bar customized */
+.quizScrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quizScrollbar::-webkit-scrollbar-track{
+   background: #dbdbdb;
+  border-radius: 10px;
+}
+
+.quizScrollbar::-webkit-scrollbar-thumb{
+  background: #6366f1; /* indigo */
+  border-radius: 10px;
+}
+
 
 @keyframes gradient {
 

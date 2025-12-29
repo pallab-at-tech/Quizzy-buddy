@@ -303,21 +303,18 @@ const StartQuiz = () => {
 
     }, [socketConnection])
 
-    // console.log("data", answer)
-    // console.log("Q", timer)
-
     return (
         <section>
             {
                 location.state?.on_Quiz ? (
-                    <section className='fixed overflow-y-auto inset-0 z-50  bg-gradient-to-br from-purple-100 via-purple-100 to-teal-100'>
+                    <section className='fixed flex items-center justify-center inset-0 z-50  bg-gradient-to-br from-[#f9fcff] to-[#f9fcff] sm:from-purple-100 sm:via-purple-100 sm:to-teal-100'>
+                        <div className={`bg-white w-full max-h-[95dvh] custom-lg:[98dvh] overflow-y-auto scrollbar-hide custom-lg:w-[800px] shadow-md border border-gray-100 sm:border-none rounded-xl px-6 sm:px-8 py-8 mx-5 sm:mx-14`}>
 
-                        <div className={`bg-white  min-w-[850px] max-w-[850px] shadow-md rounded-xl mx-[300px] ${question?.inputBox ? "my-[180px]" : "my-[80px]"} px-10 py-8`}>
-
-                            <div className='flex items-center justify-between mb-4'>
+                            {/* sm:mb-4 */}
+                            <div className='flex items-center justify-between mb-2.5 '>
 
                                 {/* questions */}
-                                <div className="text-2xl font-bold text-gray-800  flex items-center gap-2">
+                                <div className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-1.5 sm:gap-2">
                                     <FaClipboardQuestion size={24} className="text-blue-600" />
                                     {`Question ${index + 1} )`}
                                 </div>
@@ -326,13 +323,13 @@ const StartQuiz = () => {
                                 {
                                     data?.strict?.enabled ? (
                                         <div className={`flex gap-1.5 items-center ${Number(timer?.t) <= 5 ? "bg-red-200" : "bg-blue-200 "} shadow-md rounded-md px-3.5 py-1.5`}>
-                                            <BiTimer size={32} className={`${Number(timer?.t) <= 5 ? "text-red-600 animate-pulse" : "text-blue-600"}`} />
-                                            {answer && <div className='text-[18px]'>{formatTime(Number(timer?.t))}</div>}
+                                            <BiTimer className={`text-[25px] sm:text-[32px] ${Number(timer?.t) <= 5 ? "text-red-600 animate-pulse" : "text-blue-600"}`} />
+                                            {answer && <div className='text-[16px] sm:text-[18px]'>{formatTime(Number(timer?.t))}</div>}
                                         </div>
                                     ) : (
-                                        <div className='flex gap-1.5 items-center bg-blue-200 shadow-md rounded-md px-3.5 py-1.5'>
-                                            <BiTimer size={32} className='text-blue-600' />
-                                            {answer && <div className='text-[18px]'>{formatTime(Number(timer?.t))}</div>}
+                                        <div className='flex gap-1.5 items-center bg-blue-200 shadow-md rounded-md px-3 sm:px-3.5 py-1.5'>
+                                            <BiTimer className='text-blue-600 text-[25px] sm:text-[32px]' />
+                                            {answer && <div className='text-[16px] sm:text-[18px]'>{formatTime(Number(timer?.t))}</div>}
                                         </div>
                                     )
                                 }
@@ -342,15 +339,17 @@ const StartQuiz = () => {
                             <div>
                                 {
                                     question?.image && (
-                                        <div className=''>
-                                            <img src={question?.image} alt="" className='w-full max-h-[220px] object-contain rounded-lg border' />
+                                        <div className='mb-2'>
+                                            <img src={`${question?.image}`} alt=""
+                                                className='w-full max-h-[16dvh] object-contain rounded-lg border'
+                                            />
                                         </div>
                                     )
                                 }
                             </div>
 
                             {/* question */}
-                            <div className='w-full p-2 text-lg font-semibold  mb-3 text-gray-800'>
+                            <div className='w-full text-[16px] custom-lg:text-lg max-h-[16dvh] custom-lg:max-h-[14dvh] quizScrollbar overflow-y-auto p-2 font-semibold  mb-4 text-gray-800 leading-[1.3]'>
                                 {question?.question}
                             </div>
 
@@ -376,15 +375,15 @@ const StartQuiz = () => {
                                                 })
                                             }}
                                             placeholder="Enter the correct answer..."
-                                            className="w-full min-h-[70px] max-h-[150px] p-3 border-2 border-gray-300 rounded-md outline-none transition">
+                                            className="w-full min-h-[70px] max-h-[150px] p-2 sm:p-3 border-2 border-gray-300 rounded-md outline-none transition">
                                         </textarea>
                                     ) : (
-                                        <div className="flex flex-col gap-4 mb-3">
+                                        <div className="flex flex-col gap-2.5 mb-3 max-h-[34dvh] overflow-y-auto quizScrollbar">
                                             {
                                                 question?.options.map((v, i) => (
                                                     <label
                                                         key={i}
-                                                        className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer ${ansArray && Number(ansArray[index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"} transition-all`}
+                                                        className={`flex items-center gap-3 p-2.5 border rounded-xl cursor-pointer ${ansArray && Number(ansArray[index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"} transition-all`}
                                                         id={`i-${i}`}
                                                     >
                                                         <input
@@ -416,7 +415,7 @@ const StartQuiz = () => {
                                                                 })
                                                             }}
                                                         />
-                                                        <span className="text-gray-800 text-lg">{v}</span>
+                                                        <span className="text-gray-800 text-[16px] custom-lg:text-lg leading-[1.3]">{v}</span>
                                                     </label>
                                                 ))
                                             }
@@ -425,13 +424,13 @@ const StartQuiz = () => {
                                 }
                             </div>
 
-                            {/* next and previous */}
-                            <div className="flex items-center justify-between mt-6 w-full">
+                            {/* next and previous mt-6*/}
+                            <div className="flex items-center justify-between mt-4 w-full text-[15px] sm:text-lg">
 
                                 {/* finish */}
                                 <button
                                     disabled={submitLoading}
-                                    className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-8 py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
+                                    className={` ${submitLoading ? "cursor-not-allowed bg-blue-400" : "cursor-pointer bg-blue-500 hover:bg-blue-600"}  text-white font-bold px-5 sm:px-8 py-2 sm:py-2.5 rounded-lg transition-all duration-200 active:scale-95`}
                                     onClick={() => {
                                         removeDetails()
                                         handleFinishQuiz()
@@ -440,12 +439,12 @@ const StartQuiz = () => {
                                     {`${submitLoading ? "Submitting..." : "Finish"}`}
                                 </button>
 
-                                <div className='flex items-center justify-end gap-8'>
+                                <div className='flex items-center justify-end gap-2.5 sm:gap-8'>
                                     {
                                         !data?.strict?.enabled && (
                                             // Previous Button
                                             <button
-                                                className={`${index === 0 ? "cursor-not-allowed bg-gray-200" : "cursor-pointer bg-gray-300 hover:bg-gray-400"}  text-gray-800 font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-200`}
+                                                className={`${index === 0 ? "cursor-not-allowed bg-gray-200" : "cursor-pointer bg-gray-300 hover:bg-gray-400"}  text-gray-800 font-semibold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-md transition-all duration-200`}
                                                 onClick={() => {
                                                     if (!data?.quiz_data.length || index === 0) return
                                                     setIndex(index - 1)
@@ -458,7 +457,7 @@ const StartQuiz = () => {
 
                                     {/* Next Button */}
                                     <button
-                                        className={`${index >= data?.quiz_data.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-8 py-3 rounded-xl shadow-md transition-all duration-200`}
+                                        className={`${index >= data?.quiz_data.length - 1 ? "cursor-not-allowed bg-purple-400" : "cursor-pointer bg-purple-600 hover:bg-purple-700"} text-white font-semibold px-5 sm:px-8 py-2 sm:py-3 rounded-xl shadow-md transition-all duration-200`}
                                         onClick={() => {
                                             if (!data?.quiz_data.length || index >= data?.quiz_data.length - 1) return
                                             setIndex((prevIdx) => {
@@ -498,16 +497,19 @@ const StartQuiz = () => {
                     </section>
                 ) : (
                     <section className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-200 via-purple-300 to-teal-200 z-50">
-                        <div className="text-center space-y-4">
-                            {/* Warning Icon */}
-                            <div className="flex justify-center">
-                                <span className="text-red-400 text-7xl animate-pulse">⚠️</span>
-                            </div>
+                        <div className="text-center space-y-4 px-4">
 
-                            {/* Main Text */}
-                            <h1 className="text-6xl font-extrabold tracking-widest drop-shadow-lg">
-                                ILLEGAL ACCESS
-                            </h1>
+                            <div className='flex flex-row gap-1 sm:flex-col items-center justify-center'>
+                                {/* Warning Icon */}
+                                <div className="flex justify-center">
+                                    <span className="text-red-400 text-3xl sm:text-7xl animate-pulse pb-1">⚠️</span>
+                                </div>
+
+                                {/* Main Text */}
+                                <h1 className="text-[26px] sm:text-6xl font-extrabold tracking-widest drop-shadow-lg">
+                                    ILLEGAL ACCESS
+                                </h1>
+                            </div>
 
                             {/* Subtext */}
                             <p className="text-lg  max-w-md mx-auto text-gray-900 font-medium">
@@ -517,7 +519,7 @@ const StartQuiz = () => {
                             {/* Action Button */}
                             <button
                                 onClick={() => window.location.href = '/'}
-                                className="mt-6 cursor-pointer  bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
+                                className="mt-3 sm:mt-6 cursor-pointer  bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition-transform duration-200"
                             >
                                 Go Back
                             </button>

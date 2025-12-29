@@ -14,9 +14,6 @@ const QuestionSection = () => {
   const navigate = useNavigate()
   const user = useSelector(state => state?.user)
 
-  const [more, setMore] = useState(false)
-  const [heights, setHeights] = useState(0)
-
   const [countDown, setCountDown] = useState(0)
   const [questionSet, setQuestionSet] = useState(null)
   const [answerArr, setAnswerArr] = useState(Array.from({ length: 10 }).fill("-1"))
@@ -88,15 +85,6 @@ const QuestionSection = () => {
     }
 
     // return () => localStorage.removeItem("left")
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const height = document.querySelector("#heighBox")?.scrollHeight || 0;
-      setHeights(height);
-    }, 50);
-
-    return () => clearTimeout(timer);
   }, [])
 
   // ReEstablish connection...
@@ -222,10 +210,10 @@ const QuestionSection = () => {
 
   return (
     <>
-      <section className={`h-screen inset-0 z-50 fixed w-full bg-gradient-to-br ${questionSet ? "from-[#ffffff] to-[#c7d7ee]" : "from-[#fffafa] to-[#c7d7ee]"} flex justify-center  ${heights >= 50 ? "sm:py-[30px]" : "sm:py-[35px]"} sm:px-4 gap-0`}>
+      <section className={`inset-0 z-50 fixed w-full bg-gradient-to-br ${questionSet ? "from-[#ffffff] to-[#c7d7ee]" : "from-[#fffafa] to-[#c7d7ee]"} flex justify-center sm:px-4 gap-0`}>
         {
           questionSet ? (
-            <div className="h-screen custom-sm:h-[700px] custom-lg:h-auto my-auto w-full sm:w-[600px] custom-lg:max-w-3xl bg-white shadow-xl rounded-2xl px-6 space-y-6 overflow-auto relative pb-6">
+            <div className="max-h-[95dvh] mx-3.5 my-auto w-full sm:w-[600px] sm:max-w-[50%] custom-lg:max-w-3xl bg-white shadow-xl rounded-2xl px-6 overflow-y-auto scrollbar-hide relative pb-6">
 
               {/* Scoreboard */}
               <div className='sticky top-0 z-10'>
@@ -261,57 +249,51 @@ const QuestionSection = () => {
                 </div>
               </div>
 
-              {/* ${!more && "line-clamp-2 overflow-y-hidden "} */}
               {/* Question */}
-              <div className="bg-gray-100 p-3 sm:p-5 rounded-xl shadow-sm relative">
+              <div className="min-h-0 mt-4 mb-2.5 border border-gray-200 p-3.5 rounded-xl relative ">
 
-                <p id='heighBox' className={`text-xl font-semibold text-gray-800 leading-tight  select-none`}>
-                  <span>{`Q.${Number(questionSet?.index) + 1} ) `}</span>
-                  {`${questionSet?.question?.question}`}
-                </p>
-
-                {/* {heights >= 50 && (
-                  <div className="flex justify-end">
-                    <span
-                      onClick={() => setMore(prev => !prev)}
-                      className="text-blue-600 text-[18px] font-semibold cursor-pointer hover:underline"
-                    >
-                      {more ? "less" : "more"}
+                <div className="overflow-hidden">
+                  <div className="max-h-[16dvh] overflow-y-auto quizScrollbar pr-1.5 leading-[1.3] text-base sm:text-lg">
+                    <span className="font-semibold">{`Q.${Number(questionSet?.index) + 1} ) `}</span>
+                    <span>
+                      {`${questionSet?.question?.question}`}
                     </span>
                   </div>
-                )} */}
+                </div>
               </div>
 
               {/* Options */}
-              <div className="space-y-4">
-                {
-                  questionSet?.question?.options.map((v, i) => {
-                    return <label key={i} className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${answerArr && Number(answerArr[questionSet?.index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"}`}>
-                      <input
-                        type="radio"
-                        checked={answerArr && answerArr[questionSet?.index] === i}
-                        className={`w-5 h-5 accent-purple-600 cursor-pointer`}
-                        value={i}
-                        onChange={() => {
-                          setAnswerArr((prev) => {
-                            if (!prev) return prev
+              <div className="border border-gray-200 px-1.5 py-2 rounded-2xl">
+                <div className='p-1.5 space-y-2 quizScrollbar border-gray-300 max-h-[38dvh] overflow-y-auto rounded-2xl'>
+                  {
+                    questionSet?.question?.options.map((v, i) => {
+                      return <label key={i} className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition-all ${answerArr && Number(answerArr[questionSet?.index]) === Number(i) ? "bg-purple-300 border-purple-500" : "hover:bg-purple-50 border-gray-300"}`}>
+                        <input
+                          type="radio"
+                          checked={answerArr && answerArr[questionSet?.index] === i}
+                          className={`w-5 h-5 accent-purple-600 cursor-pointer`}
+                          value={i}
+                          onChange={() => {
+                            setAnswerArr((prev) => {
+                              if (!prev) return prev
 
-                            const newArr = [...prev]
-                            newArr[questionSet?.index] = i
-                            localStorage.setItem("answerArr", JSON.stringify(newArr))
+                              const newArr = [...prev]
+                              newArr[questionSet?.index] = i
+                              localStorage.setItem("answerArr", JSON.stringify(newArr))
 
-                            return newArr
-                          })
-                        }}
-                      />
-                      <span className="text-gray-800 text-lg">{v}</span>
-                    </label>
-                  })
-                }
+                              return newArr
+                            })
+                          }}
+                        />
+                        <span className="text-gray-800 text-lg">{v}</span>
+                      </label>
+                    })
+                  }
+                </div>
               </div>
 
               {/* Navigation Buttons */}
-              <div className={`flex justify-between items-center ${heights > 52 && "my-4"}`}>
+              <div className={`flex justify-between items-center my-3.5`}>
 
                 <button
                   onClick={() => {
@@ -342,11 +324,17 @@ const QuestionSection = () => {
             </div>
           ) : (
             <div className='flex items-center justify-center bg-gradient-to-br'>
-              <h1 className='text-[28px] sm:text-4xl animate-pulse'>
-                <strong>
-                  Fetching Question ...
-                </strong>
-              </h1>
+              <div className="flex flex-col items-center justify-center text-center gap-2.5 
+                rounded-2xl bg-[#f1f5ff]
+                shadow-md px-8 py-7">
+                <h1 className="text-[24px] sm:text-3xl font-semibold text-gray-800 tracking-tight">
+                  Just a moment
+                </h1>
+
+                <p className="text-sm sm:text-base text-gray-500 animate-pulse">
+                  question is on the way…
+                </p>
+              </div>
             </div>
           )
         }
@@ -463,7 +451,7 @@ const QuestionSection = () => {
 
                   <div className="flex justify-between items-center bg-white/10 p-4 rounded-xl border border-white/20">
                     <div className="text-lg font-semibold flex flex-col sm:flex-row sm:items-center sm:gap-3">
-                      Opponent Score 
+                      Opponent Score
                       <span className='text-red-400 animate-pulse'>( updating... )</span>
                     </div>
 

@@ -181,7 +181,7 @@ const Leaderboard = () => {
             <div className="flex items-center justify-center py-0.5 sm:py-4">
               <div className="border border-gray-200 bg-white rounded-xl px-4 sm:px-6 py-4 shadow-sm flex items-center gap-3">
                 <p className="text-purple-700 text-[24px] sm:text-[25px] font-bold">
-                  ! Leaderboard is not updated yet
+                  ! Leaderboard not updated yet
                 </p>
               </div>
             </div>

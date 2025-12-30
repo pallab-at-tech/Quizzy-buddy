@@ -2,36 +2,25 @@ import { quizHostModel } from "../model/host_quiz.model.js"
 import leaderBoardModel from "../model/leaderBoard.model.js"
 import userModel from "../model/user.model.js"
 
-export const leaderboardMake = async (payload, quizId, newLeaderBoard = false) => {
+export const leaderboardMake = async (payload, quizId) => {
     try {
-        let leaderboard = null
+        let leaderboard = await leaderBoardModel.findOne({ quizId: quizId })
 
-        if (newLeaderBoard) {
+        if(!leaderboard){
             leaderboard = new leaderBoardModel({
-                quizId: payload.quizId,
-                top_users: [{ ...payload.user }]
+                quizId : quizId,
+                top_users : [],
+                boardType : "Normal"
             })
-            await leaderboard.save()
-            return true
-        }
-        else {
-            leaderboard = await leaderBoardModel.findOne({ quizId: quizId })
         }
 
-        if (!leaderboard) {
-            return false
-        }
+        const idx = leaderboard.top_users.findIndex((u) => u.userId.Id.toString() === payload?.user?.userId?.Id.toString())
 
-        const existUserId = leaderboard.top_users.findIndex((u) => u.userId.Id.toString() === payload.user.userId.Id.toString())
-
-        if (existUserId !== -1) {
-            leaderboard.top_users[existUserId] = {
-                ...leaderboard.top_users[existUserId],
-                ...payload.user
-            }
+        if(idx !== -1){
+            leaderboard.top_users[idx]  = payload?.user
         }
-        else {
-            leaderboard.top_users.push(payload.user)
+        else{
+            leaderboard.top_users.push(payload?.user)
         }
 
         leaderboard.top_users.sort((a, b) => {

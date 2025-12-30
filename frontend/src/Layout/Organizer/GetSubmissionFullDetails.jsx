@@ -15,6 +15,7 @@ const GetSubmissionFullDetails = () => {
     const location = useLocation()
 
     const [leaderBoardData, setLeaderBoardData] = useState(null)
+    const [chartData, setChartData] = useState([])
     const [deleteSet, setDeleteSet] = useState({
         data: {},
         has: false,
@@ -51,7 +52,7 @@ const GetSubmissionFullDetails = () => {
 
     const convertToScoreBuckets = (users, total_marks) => {
 
-        if (!users || !total_marks || data) return
+        if (!users || !total_marks || !data) return
         if (new Date() < new Date(data?.quiz_end)) return
 
         const bucketCount = 5
@@ -137,7 +138,12 @@ const GetSubmissionFullDetails = () => {
         }
     }
 
-    const chartData = convertToScoreBuckets(leaderBoardData?.top_users || [], data?.total_marks);
+    useEffect(() => {
+        const x = convertToScoreBuckets(leaderBoardData?.top_users || [], data?.total_marks);
+        if (x) {
+            setChartData(x)
+        }
+    }, [leaderBoardData])
 
 
     return (
@@ -459,7 +465,7 @@ const GetSubmissionFullDetails = () => {
                             <div className="flex items-center justify-between">
                                 <h2 className="mb-3 custom-lg:mb-4 text-xl sm:text-2xl font-semibold text-blue-700 flex items-center gap-2 ">
                                     <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-                                    Stats <span className='text-blue-800'>( Last 5 Days )</span>
+                                    Stats
                                 </h2>
                             </div>
 

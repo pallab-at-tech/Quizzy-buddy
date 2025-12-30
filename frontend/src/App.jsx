@@ -36,7 +36,7 @@ function App() {
       }
 
       {
-        isLogin && !user?._id! && (
+        isLogin && !user?._id && (
           <section className='fixed h-screen inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50'>
             <div className='flex flex-col items-center justify-center'>
               <div className='participants_loader'></div>

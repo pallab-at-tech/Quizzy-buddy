@@ -36,9 +36,12 @@ function App() {
       }
 
       {
-        !user && (
+        isLogin && !user?._id! && (
           <section className='fixed h-screen inset-0 flex items-center justify-center bg-[#aac1de8f] backdrop-blur-[5px] z-50'>
-            <div className='participants_loader'></div>
+            <div className='flex flex-col items-center justify-center'>
+              <div className='participants_loader'></div>
+              <p className="mt-3 text-gray-900 font-medium animate-pulse select-none">Loading, please wait...</p>
+            </div>
           </section>
         )
       }

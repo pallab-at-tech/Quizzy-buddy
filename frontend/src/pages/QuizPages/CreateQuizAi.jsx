@@ -291,7 +291,7 @@ const CreateQuizAi = () => {
   return (
     <section className="h-[calc(100vh-70px)] overflow-y-auto bg-gray-50 p-4 custom-lg:p-6 scrollbar-hide">
 
-      <div className="sm:max-w-3xl mx-auto bg-white shadow-sm rounded-2xl p-4 custom-lg:p-6 border border-gray-200">
+      <div className="custom-sm:max-w-4xl mx-auto bg-white shadow-sm rounded-2xl p-4 custom-lg:p-6 border border-gray-200">
         {/* Header */}
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6 sm:text-center">
           Create Quiz With AI

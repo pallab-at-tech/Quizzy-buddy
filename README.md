@@ -35,6 +35,19 @@ Participate in daily quizzes, host your own challenges, battle 1 vs 1, and track
 
 ---
 
+## 🛠️ Tech Stack
+
+| Category       | Technology         |
+|----------------|--------------------|
+| **Frontend**   | React, Tailwind CSS, Context API |
+| **Backend**    | Node.js, Express.js |
+| **Database**   | MongoDB (Mongoose) |
+| **Real-Time**  | Socket.io          |
+| **Auth**       | JWT, Bcrypt        |
+| **State Mgmt** | React Context / Redux (optional) |
+| **Hosting**    | Vercel (Frontend), Render (Backend) |
+| **API**        | Gemini Api (gemini-2.5-flash , gemini-2.5-pro) , Resend API | 
+
 
 ## Demo
 
@@ -43,30 +56,12 @@ Participate in daily quizzes, host your own challenges, battle 1 vs 1, and track
 🎥 Demo Video : will be available soon...
 
 
-## Acknowledgements
-
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
-
-
 ## Running Tests
 
 Currently, there are no automated tests implemented for this project.
 
 
-## Badges
-
-Add badges from somewhere like: [shields.io](https://shields.io/)
-
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
-
-
 ## Other Common GitHub Profile Sections
-
-👩‍💻 **Currently working on:** Building QuizzyBuddy and other full-stack projects  
 
 🧠 **Currently learning:** Advanced AI Algorithm , real-time systems, and React performance optimizations  
 
@@ -85,13 +80,6 @@ Add badges from somewhere like: [shields.io](https://shields.io/)
 
 ## 🚀 About Me
 I'm a full stack developer passionate about building interactive MERN applications, real-time systems, and AI-assisted platforms like QuizzyBuddy.  
-
----
-
-## 🛠 Skills
-- **Frontend:** React, TailwindCSS, HTML, CSS, JavaScript  
-- **Backend:** Node.js, Express, MongoDB, REST APIs, Socket.io  
-- **Tools & Others:** Redux Toolkit, Vite, Git, Nodemailer, Google Gemini API, Resend API  
 
 ---
 
